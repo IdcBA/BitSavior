@@ -1,4 +1,4 @@
-package com.mygdx.game;
+package com.bitsavior.game;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
