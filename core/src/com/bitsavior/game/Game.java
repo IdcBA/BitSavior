@@ -1,4 +1,4 @@
-package com.mygdx.game;
+package com.bitsavior.game;
 
 public class Game {
 	
