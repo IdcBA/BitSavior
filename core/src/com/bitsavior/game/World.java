@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Vector2;
 
 public class World {
 	
@@ -16,12 +17,20 @@ public class World {
 	{
 		assetHolder = new AssetManager();
 		batch = new SpriteBatch();
-		camera = new OrthographicCamera(50,50);
+		camera = new OrthographicCamera();
+
+		WORLDBOUNDS = new Vector2(50.f, 50.f);
 		
 	}
 	
 	public void create()
 	{
+		// sets the camera to the world bounds
+		camera.viewportWidth  = WORLDBOUNDS.x;
+		camera.viewportHeight = WORLDBOUNDS.y;
+
+		// centers camera at 0,0
+		camera.position.set(WORLDBOUNDS.x / 2.f, WORLDBOUNDS.y / 2.f, 0);
 		
 		// loading all assets regarding the game world
 		assetHolder.load("badlogic.jpg", Texture.class);
@@ -30,7 +39,9 @@ public class World {
 		// wait until everything is loaded
 		assetHolder.finishLoading();
 		
-		img = assetHolder.get("badlogic.jpg", Texture.class);
+		//img = assetHolder.get("badlogic.jpg", Texture.class);
+		player = new Player(assetHolder.get("badlogic.jpg", Texture.class));
+
 		
 	}
 	
@@ -45,6 +56,7 @@ public class World {
 	public void update()
 	{
 		handlePlayerInput();
+		checkCollisions();
 		
 	}
 	
@@ -53,12 +65,14 @@ public class World {
 		// Clear the Screen
 		Gdx.gl.glClearColor(0, 0, 0, 0);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		
+
+		// update camera
+		camera.update();
 		// set the projection matrix of the ScreenBatch to camera's size
 		batch.setProjectionMatrix(camera.combined);
 		
 		batch.begin();
-		batch.draw(img, x, y, 25, 25);
+		player.draw(batch);
 		batch.end();
 	}
 	
@@ -74,16 +88,32 @@ public class World {
 	// private methods
 	private void handlePlayerInput()
 	{
-		// just an example
-		// multiplied with DeltaTime to ensure same movement with different Framerates
+		// multiplied with DeltaTime to ensure same movement with different framerates
 		if(Gdx.input.isKeyPressed(Keys.A))
-			x -= 50 * Gdx.graphics.getDeltaTime();
+			player.setPosition(-player.velocity * Gdx.graphics.getDeltaTime(), 0);
 		if(Gdx.input.isKeyPressed(Keys.D))
-			x += 50 * Gdx.graphics.getDeltaTime();
+			player.setPosition(player.velocity * Gdx.graphics.getDeltaTime(), 0);
 		if(Gdx.input.isKeyPressed(Keys.W))
-			y += 50 * Gdx.graphics.getDeltaTime();
+			player.setPosition(0,player.velocity * Gdx.graphics.getDeltaTime());
 		if(Gdx.input.isKeyPressed(Keys.S))
-			y -= 50 * Gdx.graphics.getDeltaTime();
+			player.setPosition(0,-player.velocity * Gdx.graphics.getDeltaTime());
+	}
+
+	/**
+	 * - JUST FOR TESTING PURPOSES - !!!!!!!!!!!!!
+	 * checkCollisions()
+	 * - check if player reaches the end of the camera
+	 */
+	private void checkCollisions()
+	{
+		if(player.getPosition().x <  0.f)
+			player.setPosition(player.velocity * Gdx.graphics.getDeltaTime(), 0.f);
+		if(player.getPosition().x + player.getSize().x >  WORLDBOUNDS.x)
+			player.setPosition(-player.velocity * Gdx.graphics.getDeltaTime(), 0.f);
+		if(player.getPosition().y <  0.f)
+			player.setPosition(0.f, player.velocity * Gdx.graphics.getDeltaTime());
+		if(player.getPosition().y + + player.getSize().y  >  WORLDBOUNDS.y)
+			player.setPosition(0.f, -player.velocity * Gdx.graphics.getDeltaTime());
 	}
 	
 	// private Members
@@ -99,13 +129,19 @@ public class World {
 	 * and use Box2D
 	 */
 	private OrthographicCamera camera;
-	
-	
-	// just an example
+	/**
+	 * collecting drawable objects
+	 */
 	private SpriteBatch batch;
-	private Texture img;
-	private float x = 0.f;
-	private float y = 0.f;
-	
+	/**
+	 * Player class
+	 */
+	private Player player;
+	/**
+	 * Worldbounds
+	 */
+	final Vector2 WORLDBOUNDS;
+
+
 	
 }

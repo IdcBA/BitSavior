@@ -9,8 +9,8 @@ public class Game {
 	 * 
 	 */
 	public Game()
-	{	
-		world = new World();	// creating the World
+	{
+		world = new World();    // creating the World
 	}
 	
 	public void create()
