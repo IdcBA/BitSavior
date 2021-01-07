@@ -7,44 +7,80 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.math.Vector2;
 
 public class World {
+
+	// private Members
+	/**
+	 * Manage all game-assets
+	 */
+	private AssetManager assetHolder;
+	/**
+	 * Orthographic Camera:
+	 * Shows what we see in the world.
+	 * Works with WorldUnits instead of Pixels,
+	 * makes it easier to handle different screensizes
+	 * and use Box2D
+	 */
+	private OrthographicCamera camera;
+	/**
+	 * collecting drawable objects
+	 */
+	private SpriteBatch batch;
+	/**
+	 * class contains the Tiled Map, additional renderer and related data
+	 */
+	private Tilemap map;
+	/**
+	 * Player class
+	 */
+	private Player player;
+	/**
+	 * Worldbounds in worldunits
+	 */
+	final Vector2 WORLDBOUNDS;
+
+	/**
+	 * relation worldunits / pixels
+	 */
+	final float UNIT_SCALE;
 	
 	// public Methods
-	
 	public World()
 	{
 		assetHolder = new AssetManager();
 		batch = new SpriteBatch();
 		camera = new OrthographicCamera();
 
-		WORLDBOUNDS = new Vector2(50.f, 50.f);
+		WORLDBOUNDS = new Vector2(100.f, 100.f);
+		UNIT_SCALE = 1.f / 4.f;
 		
 	}
 	
 	public void create()
 	{
+
 		// sets the camera to the world bounds
 		camera.viewportWidth  = WORLDBOUNDS.x;
 		camera.viewportHeight = WORLDBOUNDS.y;
 
 		// centers camera at 0,0
 		camera.position.set(WORLDBOUNDS.x / 2.f, WORLDBOUNDS.y / 2.f, 0);
-		
-		// loading all assets regarding the game world
-		assetHolder.load("badlogic.jpg", Texture.class);
-		
-		
-		// wait until everything is loaded
-		assetHolder.finishLoading();
-		
-		//img = assetHolder.get("badlogic.jpg", Texture.class);
+		camera.update();
+
+		// load assets
+		loadAssets();
+
+
+		// distribute textures
+		map = new Tilemap(assetHolder.get("level.tmx",TiledMap.class), UNIT_SCALE, camera);
 		player = new Player(assetHolder.get("badlogic.jpg", Texture.class));
 
 		
 	}
-	
 	/**
 	 * update():
 	 * updates the world logic including:
@@ -68,9 +104,11 @@ public class World {
 
 		// update camera
 		camera.update();
+		// render the map
+		map.render();
+
 		// set the projection matrix of the ScreenBatch to camera's size
 		batch.setProjectionMatrix(camera.combined);
-		
 		batch.begin();
 		player.draw(batch);
 		batch.end();
@@ -81,11 +119,30 @@ public class World {
 	 */
 	public void dispose()
 	{
-		assetHolder.unload("badlogic.jpg");
+		assetHolder.dispose();
 		
 	}
 	
 	// private methods
+
+	/**
+	 * loadAssets()
+	 * - loads all assets
+	 */
+	private void loadAssets()
+	{
+		// set the loader for tmx maps
+		assetHolder.setLoader(TiledMap.class, new TmxMapLoader());
+
+		// loading all assets regarding the game world
+		assetHolder.load("level.tmx", TiledMap.class);
+		assetHolder.load("badlogic.jpg", Texture.class);
+
+		// wait until everything is loaded
+		assetHolder.finishLoading();
+
+	}
+
 	private void handlePlayerInput()
 	{
 		// multiplied with DeltaTime to ensure same movement with different framerates
@@ -115,33 +172,6 @@ public class World {
 		if(player.getPosition().y + + player.getSize().y  >  WORLDBOUNDS.y)
 			player.setPosition(0.f, -player.velocity * Gdx.graphics.getDeltaTime());
 	}
-	
-	// private Members
-	/**
-	 * Manage all game-assets
-	 */
-	private AssetManager assetHolder;
-	/**
-	 * Orthographic Camera:
-	 * Shows what we see in the world.
-	 * Works with WorldUnits instead of Pixels, 
-	 * makes it easier to handle different screensizes
-	 * and use Box2D
-	 */
-	private OrthographicCamera camera;
-	/**
-	 * collecting drawable objects
-	 */
-	private SpriteBatch batch;
-	/**
-	 * Player class
-	 */
-	private Player player;
-	/**
-	 * Worldbounds
-	 */
-	final Vector2 WORLDBOUNDS;
-
 
 	
 }

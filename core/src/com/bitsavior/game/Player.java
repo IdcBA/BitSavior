@@ -6,6 +6,10 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public class Player extends Entity
 {
+    // private Members
+    private int health;
+
+    // public Methods
     /**
      * Constructor
      * @param texture : players texture
@@ -30,6 +34,4 @@ public class Player extends Entity
         batch.draw(sprite,position.x, position.y, sprite.getWidth(), sprite.getHeight());
     }
 
-    // private Members
-    private int health;
 }

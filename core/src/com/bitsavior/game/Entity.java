@@ -7,6 +7,22 @@ import com.badlogic.gdx.math.Vector2;
 public class Entity
 {
 
+    // public Members
+    /**
+     * Velocity of the Entity
+     */
+    public final float velocity;
+
+    // protected Members
+    /**
+     * Players position
+     */
+    protected Vector2 position;
+    /**
+     * holds the players texture
+     */
+    protected Sprite sprite;
+
     // public Methods
     public Entity(Texture texture)
     {
@@ -42,27 +58,5 @@ public class Entity
 
         return size;
     }
-
-    // public Members
-    /**
-     * Velocity of the Entity
-     */
-    public final float velocity;
-
-    // protected Members
-    /**
-     * Players position
-     */
-    protected Vector2 position;
-    /**
-     * holds the players texture
-     */
-    protected Sprite sprite;
-
-
-
-
-
-
 
 }

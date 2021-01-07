@@ -1,9 +1,11 @@
 package com.bitsavior.game;
 
 public class Game {
-	
+
+	// private Members
+	private World world;
+
 	// public methods
-	
 	/**
 	 * Constructor:
 	 * 
@@ -33,11 +35,4 @@ public class Game {
 	}
 	// private methods
 	private void processEvents() {}
-	
-	
-	
-	// private methods
-	
-	// Variables
-	private World world;
 }
