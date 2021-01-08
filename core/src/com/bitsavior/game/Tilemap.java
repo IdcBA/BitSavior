@@ -46,7 +46,6 @@ public class Tilemap {
 	}
 
 	/**
-	 * - loads .tmx into manager
 	 * - loads map properties
 	 */
 	public void create() {
@@ -71,7 +70,7 @@ public class Tilemap {
 	}
 
 	/**
-	 * triggers OrthogonalTiledMapRenderer
+	 * render the tiled map
 	 */
 	public void render() {
 		renderer.render();

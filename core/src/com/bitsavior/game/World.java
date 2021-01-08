@@ -39,14 +39,15 @@ public class World {
 	 */
 	private Player player;
 	/**
-	 * Worldbounds in worldunits
-	 */
-	final Vector2 WORLDBOUNDS;
-
-	/**
 	 * relation worldunits / pixels
 	 */
-	final float UNIT_SCALE;
+	private final float UNIT_SCALE;
+
+	// public Members
+	/**
+	 * Worldbounds in worldunits
+	 */
+	public final Vector2 WORLDBOUNDS;
 	
 	// public Methods
 	public World()
