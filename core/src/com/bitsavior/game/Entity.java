@@ -2,6 +2,7 @@ package com.bitsavior.game;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 
 public class Entity
@@ -24,9 +25,9 @@ public class Entity
     protected Sprite sprite;
 
     // public Methods
-    public Entity(Texture texture)
+    public Entity(Texture texture, float velocity)
     {
-        velocity = 50.f;
+        this.velocity = velocity;
         position = new Vector2(0.f, 0.f);
         sprite = new Sprite(texture);
     }
@@ -57,6 +58,15 @@ public class Entity
         Vector2 size = new Vector2(sprite.getWidth(), sprite.getHeight());
 
         return size;
+    }
+
+    /**
+     * draw()
+     * @param batch : current SpriteBatch for drawing
+     */
+    public void draw(SpriteBatch batch)
+    {
+        batch.draw(sprite,position.x, position.y, sprite.getWidth(), sprite.getHeight());
     }
 
 }

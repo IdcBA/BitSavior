@@ -3,8 +3,11 @@ package com.bitsavior.game;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 
-public class Player extends Entity
+public class Player
+        extends Entity
+        implements ICollision
 {
     // private Members
     private int health;
@@ -14,24 +17,25 @@ public class Player extends Entity
      * Constructor
      * @param texture : players texture
      */
-    public Player(Texture texture)
+    public Player(Texture texture, float velocity)
     {
         // call constructor of Entity and set texture
-        super(texture);
+        super(texture, velocity);
         health = 10;
 
         // set player size
         sprite.setSize(10, 10);
 
     }
-
-    /**
-     * draw()
-     * @param batch : current SpriteBatch for drawing
-     */
-    public void draw(SpriteBatch batch)
+    public boolean isCollided(Entity entity)
     {
-        batch.draw(sprite,position.x, position.y, sprite.getWidth(), sprite.getHeight());
+        return true;
     }
+    public boolean isCollided(TiledMapTileLayer collisionLayer)
+    {
+        return true;
+    }
+
+
 
 }

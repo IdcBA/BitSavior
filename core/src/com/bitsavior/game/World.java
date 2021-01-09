@@ -11,7 +11,8 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.math.Vector2;
 
-public class World {
+public class World
+{
 
 	// private Members
 	/**
@@ -60,7 +61,10 @@ public class World {
 		UNIT_SCALE = 1.f / 4.f;
 		
 	}
-	
+
+	/**
+	 * setup the game session
+	 */
 	public void create()
 	{
 
@@ -78,7 +82,7 @@ public class World {
 
 		// distribute textures
 		map = new Tilemap(assetHolder.get("level.tmx",TiledMap.class), UNIT_SCALE, camera);
-		player = new Player(assetHolder.get("badlogic.jpg", Texture.class));
+		player = new Player(assetHolder.get("badlogic.jpg", Texture.class), 50.f);
 
 		
 	}
@@ -121,7 +125,6 @@ public class World {
 	public void dispose()
 	{
 		assetHolder.dispose();
-		
 	}
 	
 	// private methods

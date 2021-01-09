@@ -1,12 +1,16 @@
 package com.bitsavior.game;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 
 import java.util.Random;
 
-public class Enemy extends Entity{
-
+public class Enemy
+        extends Entity
+        implements ICollision
+{
     // public Members
     public boolean isAlive;
 
@@ -28,6 +32,11 @@ public class Enemy extends Entity{
     }
     private Direction direction;
 
+    /**
+     * walked worldunits before direction change
+     */
+    private float walkDistance;
+
 
     // public Methods
 
@@ -36,12 +45,13 @@ public class Enemy extends Entity{
      * @param texture : texture of the enemy
      * @param viewRange : viewRange in worldunits
      */
-    public Enemy(Texture texture, float viewRange)
+    public Enemy(Texture texture, float viewRange, float velocity)
     {
-        super(texture);
+        super(texture, velocity);
 
         isAlive = false;
         this.viewRange = viewRange;
+        walkDistance = 0.f;
 
 
         // set size
@@ -69,18 +79,17 @@ public class Enemy extends Entity{
 
     }
 
-    /**
-     * draw()
-     * @param batch : current SpriteBatch for drawing
-     */
-    public void draw(SpriteBatch batch)
+    public boolean isCollided(Entity entity)
     {
-        if(isAlive)
-            batch.draw(sprite,position.x, position.y, sprite.getWidth(), sprite.getHeight());
+        return true;
+    }
+
+    public boolean isCollided(TiledMapTileLayer collisionLayer)
+    {
+        return true;
     }
 
     // private Methods
-
     /**
      * set move direction of the enemy randomly
      */
@@ -104,6 +113,34 @@ public class Enemy extends Entity{
                 break;
             default:
         }
+    }
+
+
+    /**
+     * move the enemy
+     */
+    private void move()
+    {
+        switch(direction)
+        {
+            case LEFT:
+                sprite.setPosition(-velocity * Gdx.graphics.getDeltaTime(), 0);
+                break;
+            case RIGHT:
+                sprite.setPosition(velocity * Gdx.graphics.getDeltaTime(), 0);
+                break;
+            case UP:
+                sprite.setPosition(0,velocity * Gdx.graphics.getDeltaTime());
+                break;
+            case DOWN:
+                sprite.setPosition(0,-velocity * Gdx.graphics.getDeltaTime());
+                break;
+            default:
+        }
+
+        // add covered distance of the frame
+        walkDistance += velocity * Gdx.graphics.getDeltaTime();
+
     }
 
 }
