@@ -11,6 +11,9 @@ import com.badlogic.gdx.maps.MapProperties;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 
+/**
+ * represents the map of the game and all related data and renderer
+ */
 public class Tilemap {
 
 	//private Members

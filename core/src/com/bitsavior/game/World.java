@@ -11,9 +11,11 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.math.Vector2;
 
+/**
+ * represents the world of the game
+ */
 public class World
 {
-
 	// private Members
 	/**
 	 * Manage all game-assets
@@ -42,6 +44,8 @@ public class World
 	/**
 	 * relation worldunits / pixels
 	 */
+	// array of enemies
+	// array of pickups
 	private final float UNIT_SCALE;
 
 	// public Members

@@ -16,49 +16,44 @@ public class Entity
 
     // protected Members
     /**
-     * Players position
-     */
-    protected Vector2 position;
-    /**
      * holds the players texture
      */
     protected Sprite sprite;
+    /**
+     * lifestate of the entity
+     */
+    protected boolean isAlive;
 
+    /**
+     * Constructor()
+     * @param texture : texture for the entity
+     * @param velocity : velocity of the entity
+     */
     // public Methods
     public Entity(Texture texture, float velocity)
     {
         this.velocity = velocity;
-        position = new Vector2(0.f, 0.f);
         sprite = new Sprite(texture);
     }
 
     /**
-     * setPosition()
+     * sets the position of the entity
      * @param x : horizontal position of the Player
      * @param y : vertical position of the Player
      */
-    public void setPosition(float x, float y)
-    {
-        position.x += x;
-        position.y += y;
-    }
+    public void setPosition(float x, float y) { sprite.setPosition(sprite.getX() + x,sprite.getY() + y); }
 
     /**
      * getPosition()
      * @return : current position as worldunits
      */
-    public Vector2 getPosition(){ return position; }
+    public Vector2 getPosition() { return new Vector2(sprite.getX(), sprite.getY()); }
 
     /**
      * getSize()
      * @return : size of the Object(Width, Height)
      */
-    public Vector2 getSize()
-    {
-        Vector2 size = new Vector2(sprite.getWidth(), sprite.getHeight());
-
-        return size;
-    }
+    public Vector2 getSize() { return new Vector2(sprite.getWidth(), sprite.getHeight()); }
 
     /**
      * draw()
@@ -66,7 +61,7 @@ public class Entity
      */
     public void draw(SpriteBatch batch)
     {
-        batch.draw(sprite,position.x, position.y, sprite.getWidth(), sprite.getHeight());
+        batch.draw(sprite,sprite.getX(), sprite.getY(), sprite.getWidth(), sprite.getHeight());
     }
 
 }

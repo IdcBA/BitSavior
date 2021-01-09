@@ -2,8 +2,11 @@ package com.bitsavior.game;
 
 import com.badlogic.gdx.ApplicationAdapter;
 
-public class BitSavior extends ApplicationAdapter {
-	
+public class BitSavior extends ApplicationAdapter
+{
+
+	Game game;
+
 	@Override
 	public void create () {	
 		game = new Game();
@@ -19,9 +22,5 @@ public class BitSavior extends ApplicationAdapter {
 	@Override
 	public void dispose () {
 		game.dispose();
-
 	}
-	
-	Game game;
-	
 }

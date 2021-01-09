@@ -2,8 +2,10 @@ package com.bitsavior.game;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.maps.MapObjects;
+import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
+import com.badlogic.gdx.math.Rectangle;
 
 import java.util.Random;
 
@@ -11,9 +13,6 @@ public class Enemy
         extends Entity
         implements ICollision
 {
-    // public Members
-    public boolean isAlive;
-
     // private Members
     /**
      * view range of the enemy in units
@@ -81,13 +80,27 @@ public class Enemy
 
     public boolean isCollided(Entity entity)
     {
-        return true;
-    }
+        // get the sprites bounding rectangle
+        Rectangle boundaries = new Rectangle(sprite.getBoundingRectangle());
 
+        // check if the boundaries collided and return
+        return boundaries.overlaps(entity.sprite.getBoundingRectangle());
+    }
     public boolean isCollided(TiledMapTileLayer collisionLayer)
     {
-        return true;
+        // get all objects out of the collision layer
+        MapObjects objects = collisionLayer.getObjects();
+        // get the sprites bounding rectangle
+        Rectangle boundaries = new Rectangle(sprite.getBoundingRectangle());
+
+        // iterate through all objects and check for collision
+        for(RectangleMapObject rectangleObject : objects.getByType(RectangleMapObject.class))
+            if(boundaries.overlaps(rectangleObject.getRectangle()))
+                return true;
+
+        return false;
     }
+
 
     // private Methods
     /**
