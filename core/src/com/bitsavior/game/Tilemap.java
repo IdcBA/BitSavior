@@ -11,6 +11,9 @@ import com.badlogic.gdx.maps.MapProperties;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 
+/**
+ * represents the map of the game and all related data and renderer
+ */
 public class Tilemap {
 
 	//private Members
@@ -46,7 +49,6 @@ public class Tilemap {
 	}
 
 	/**
-	 * - loads .tmx into manager
 	 * - loads map properties
 	 */
 	public void create() {
@@ -71,7 +73,7 @@ public class Tilemap {
 	}
 
 	/**
-	 * triggers OrthogonalTiledMapRenderer
+	 * render the tiled map
 	 */
 	public void render() {
 		renderer.render();

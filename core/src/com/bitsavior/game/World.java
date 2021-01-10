@@ -7,12 +7,16 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.math.Vector2;
 
-public class World {
-
+/**
+ * represents the world of the game
+ */
+public class World
+{
 	// private Members
 	/**
 	 * Manage all game-assets
@@ -39,14 +43,17 @@ public class World {
 	 */
 	private Player player;
 	/**
-	 * Worldbounds in worldunits
-	 */
-	final Vector2 WORLDBOUNDS;
-
-	/**
 	 * relation worldunits / pixels
 	 */
-	final float UNIT_SCALE;
+	// array of enemies
+	// array of pickups
+	private final float UNIT_SCALE;
+
+	// public Members
+	/**
+	 * Worldbounds in worldunits
+	 */
+	public final Vector2 WORLDBOUNDS;
 	
 	// public Methods
 	public World()
@@ -59,7 +66,10 @@ public class World {
 		UNIT_SCALE = 1.f / 4.f;
 		
 	}
-	
+
+	/**
+	 * setup the game session
+	 */
 	public void create()
 	{
 
@@ -77,7 +87,7 @@ public class World {
 
 		// distribute textures
 		map = new Tilemap(assetHolder.get("level.tmx",TiledMap.class), UNIT_SCALE, camera);
-		player = new Player(assetHolder.get("badlogic.jpg", Texture.class));
+		player = new Player(assetHolder.get("pacman.png", Texture.class), 50.f);
 
 		
 	}
@@ -120,7 +130,6 @@ public class World {
 	public void dispose()
 	{
 		assetHolder.dispose();
-		
 	}
 	
 	// private methods
@@ -136,7 +145,7 @@ public class World {
 
 		// loading all assets regarding the game world
 		assetHolder.load("level.tmx", TiledMap.class);
-		assetHolder.load("badlogic.jpg", Texture.class);
+		assetHolder.load("pacman.png", Texture.class);
 
 		// wait until everything is loaded
 		assetHolder.finishLoading();

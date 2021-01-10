@@ -1,37 +1,59 @@
 package com.bitsavior.game;
 
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.maps.MapObjects;
+import com.badlogic.gdx.maps.objects.RectangleMapObject;
+import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
+import com.badlogic.gdx.math.Rectangle;
 
-public class Player extends Entity
+/**
+ * represents the Player
+ */
+public class Player
+        extends Entity
+        implements ICollision
 {
-    // private Members
-    private int health;
-
     // public Methods
     /**
      * Constructor
      * @param texture : players texture
      */
-    public Player(Texture texture)
+    public Player(Texture texture, float velocity)
     {
         // call constructor of Entity and set texture
-        super(texture);
-        health = 10;
+        super(texture, velocity);
+
+
+
+        isAlive = true;
 
         // set player size
         sprite.setSize(10, 10);
 
     }
-
-    /**
-     * draw()
-     * @param batch : current SpriteBatch for drawing
-     */
-    public void draw(SpriteBatch batch)
+    public boolean isCollided(Entity entity)
     {
-        batch.draw(sprite,position.x, position.y, sprite.getWidth(), sprite.getHeight());
+        // get the sprites bounding rectangle
+        Rectangle boundaries = new Rectangle(sprite.getBoundingRectangle());
+
+        // check if the boundaries collided and return
+        return boundaries.overlaps(entity.sprite.getBoundingRectangle());
     }
+    public boolean isCollided(TiledMapTileLayer collisionLayer)
+    {
+        // get all objects out of the collision layer
+        MapObjects objects = collisionLayer.getObjects();
+        // get the sprites bounding rectangle
+        Rectangle boundaries = new Rectangle(sprite.getBoundingRectangle());
+
+        // iterate through all objects and check for collision
+        for(RectangleMapObject rectangleObject : objects.getByType(RectangleMapObject.class))
+            if(boundaries.overlaps(rectangleObject.getRectangle()))
+                return true;
+
+        return false;
+    }
+
+
 
 }
