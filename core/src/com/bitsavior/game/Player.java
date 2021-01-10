@@ -23,6 +23,8 @@ public class Player
         // call constructor of Entity and set texture
         super(texture, velocity);
 
+
+
         isAlive = true;
 
         // set player size
