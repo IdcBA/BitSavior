@@ -77,7 +77,7 @@ public class World {
 
 
 		// distribute textures
-		map = new Tilemap(assetHolder.get("level.tmx",TiledMap.class), UNIT_SCALE, camera);
+		map = new Tilemap(assetHolder.get("BitSavior_1.tmx",TiledMap.class), UNIT_SCALE, camera);
 		player = new Player(assetHolder.get("badlogic.jpg", Texture.class));
 
 		
@@ -136,7 +136,7 @@ public class World {
 		assetHolder.setLoader(TiledMap.class, new TmxMapLoader());
 
 		// loading all assets regarding the game world
-		assetHolder.load("level.tmx", TiledMap.class);
+		assetHolder.load("BitSavior_1.tmx", TiledMap.class);
 		assetHolder.load("badlogic.jpg", Texture.class);
 
 		// wait until everything is loaded

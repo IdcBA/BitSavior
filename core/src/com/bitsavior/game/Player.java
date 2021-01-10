@@ -21,7 +21,7 @@ public class Player extends Entity
         health = 10;
 
         // set player size
-        sprite.setSize(10, 10);
+        sprite.setSize(5, 5);
 
     }
 
