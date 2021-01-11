@@ -2,16 +2,16 @@ package com.bitsavior.game;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.MapObjects;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
-import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.math.Rectangle;
 
 import java.util.Random;
 
 public class Enemy
         extends Entity
-        implements ICollision
+        implements ICollision, IMovement
 {
     // private Members
     /**
@@ -22,13 +22,6 @@ public class Enemy
     /**
      * move direction of the enemy
      */
-    private enum Direction
-    {
-        LEFT,
-        RIGHT,
-        UP,
-        DOWN
-    }
     private Direction direction;
 
     /**
@@ -86,7 +79,7 @@ public class Enemy
         // check if the boundaries collided and return
         return boundaries.overlaps(entity.sprite.getBoundingRectangle());
     }
-    public boolean isCollided(TiledMapTileLayer collisionLayer)
+    public boolean isCollided(MapLayer collisionLayer)
     {
         // get all objects out of the collision layer
         MapObjects objects = collisionLayer.getObjects();
@@ -100,6 +93,8 @@ public class Enemy
 
         return false;
     }
+
+    public void move(Direction direction, int inversion){}
 
 
     // private Methods

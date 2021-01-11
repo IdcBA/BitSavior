@@ -7,8 +7,11 @@
 package com.bitsavior.game;
 
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.MapProperties;
 import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 
 /**
@@ -35,16 +38,16 @@ public class Tilemap {
 	/**
 	 * Constructor()
 	 * @param tiledMap : reference to the asset
-	 * @param unitScale : relation of pixels per unit for the renderer
 	 * @param camera : actual camera
 	 */
-	public Tilemap(TiledMap tiledMap, float unitScale, OrthographicCamera camera) {
+	public Tilemap(TiledMap tiledMap, OrthographicCamera camera) {
 		this.tiledMap = new TiledMap();
 		this.tiledMap = tiledMap;
 
-		renderer = new OrthogonalTiledMapRenderer(tiledMap, unitScale);
+		renderer = new OrthogonalTiledMapRenderer(tiledMap);
 
 		renderer.setView(camera);
+
 
 	}
 
@@ -76,6 +79,14 @@ public class Tilemap {
 	 * render the tiled map
 	 */
 	public void render() {
+
 		renderer.render();
+
+	}
+
+	public MapLayer getLayer(int LayerID)
+	{
+		return tiledMap.getLayers().get(LayerID);
+
 	}
 }
