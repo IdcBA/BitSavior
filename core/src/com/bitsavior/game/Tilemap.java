@@ -7,11 +7,8 @@
 package com.bitsavior.game;
 
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.MapLayer;
-import com.badlogic.gdx.maps.MapProperties;
 import com.badlogic.gdx.maps.tiled.TiledMap;
-import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 
 /**
@@ -22,16 +19,6 @@ public class Tilemap {
 	//private Members
 	private TiledMap tiledMap;
 	private OrthogonalTiledMapRenderer renderer;
-
-	//map properties
-	private int tileWidth;
-	private int tileHeight;
-	private int mapWidthInTiles;
-	private int mapHeightInTiles;
-	@SuppressWarnings("unused")
-	private int mapWidthInPixels;
-	@SuppressWarnings("unused")
-	private int mapHeightInPixels;
 
 	//public Methods
 
@@ -54,19 +41,7 @@ public class Tilemap {
 	/**
 	 * - loads map properties
 	 */
-	public void create() {
-
-		//Read map properties
-		MapProperties properties = tiledMap.getProperties();
-		tileWidth = properties.get("tilewidth", Integer.class);
-		tileHeight = properties.get("tileheight", Integer.class);
-		mapWidthInTiles = properties.get("width", Integer.class);
-		mapHeightInTiles = properties.get("height", Integer.class);
-		mapWidthInPixels = mapWidthInTiles * tileWidth;
-		mapHeightInPixels = mapHeightInTiles * tileHeight;
-
-
-	}
+	public void create() { }
 
 	/**
 	 * does nothing yet

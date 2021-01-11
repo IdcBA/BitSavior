@@ -1,12 +1,10 @@
 package com.bitsavior.game;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.MapObjects;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
-import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.math.Rectangle;
 
 /**
@@ -42,7 +40,13 @@ public class Player
 
     }
 
-    public void move(Direction direction, int inversion) {
+
+    public void update()
+    {
+        move(1);
+    }
+
+    public void move(int inversion) {
         switch (direction) {
             case LEFT:
                 setPosition(inversion * -velocity * Gdx.graphics.getDeltaTime(), 0);
@@ -64,8 +68,8 @@ public class Player
 
         }
 
-
     }
+
 
     public boolean isCollided(Entity entity) {
         // get the sprites bounding rectangle
@@ -74,6 +78,7 @@ public class Player
         // check if the boundaries collided and return
         return boundaries.overlaps(entity.sprite.getBoundingRectangle());
     }
+
 
     public boolean isCollided(MapLayer collisionLayer) {
         // get all objects out of the collision layer

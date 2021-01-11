@@ -5,6 +5,9 @@ package com.bitsavior.game;
  */
 public interface IMovement
 {
+    /**
+     * Movement Direction
+     */
     enum Direction
     {
         LEFT,
@@ -14,5 +17,9 @@ public interface IMovement
         UNMOVED
     }
 
-    void move(Direction direction, int inversion);
+    /**
+     * move the entity
+     * @param inversion : 1 for normal movement, -1 for inversed movement
+     */
+    void move(int inversion);
 }

@@ -25,6 +25,11 @@ public class Enemy
     private Direction direction;
 
     /**
+     * maximum walk distance before change of direction
+     */
+    private final float maxWalkingDistance;
+
+    /**
      * walked worldunits before direction change
      */
     private float walkDistance;
@@ -41,13 +46,15 @@ public class Enemy
     {
         super(texture, velocity);
 
+        maxWalkingDistance = 100.f;
         isAlive = false;
         this.viewRange = viewRange;
+
         walkDistance = 0.f;
 
 
         // set size
-        sprite.setSize(10, 10);
+        sprite.setSize(50, 50);
     }
 
     /**
@@ -57,8 +64,10 @@ public class Enemy
      */
     public void spawn(float x, float y)
     {
+        // testing
         isAlive = true;
         sprite.setPosition(x, y);
+        chooseDirection();
     }
 
     /**
@@ -66,9 +75,10 @@ public class Enemy
      */
     public void update()
     {
-        chooseDirection();
-
-
+        // testing
+        if(walkDistance >= maxWalkingDistance)
+            chooseDirection();
+        move(1);
     }
 
     public boolean isCollided(Entity entity)
@@ -79,6 +89,7 @@ public class Enemy
         // check if the boundaries collided and return
         return boundaries.overlaps(entity.sprite.getBoundingRectangle());
     }
+
     public boolean isCollided(MapLayer collisionLayer)
     {
         // get all objects out of the collision layer
@@ -94,8 +105,6 @@ public class Enemy
         return false;
     }
 
-    public void move(Direction direction, int inversion){}
-
 
     // private Methods
     /**
@@ -105,21 +114,30 @@ public class Enemy
     {
         Random random = new Random();
 
+        // reset walked distance
+        walkDistance = 0.f;
+
         switch(random.nextInt(4))
         {
             case 0:
-                direction = Direction.LEFT;
+                this.direction = Enemy.Direction.LEFT;
+                System.out.println("left");
                 break;
             case 1:
-                direction = Direction.RIGHT;
+                this.direction = Enemy.Direction.RIGHT;
+                System.out.println("right");
                 break;
             case 2:
-                direction = Direction.UP;
+                this.direction = Enemy.Direction.UP;
+                System.out.println("up");
                 break;
             case 3:
-                direction = Direction.DOWN;
+                this.direction = Enemy.Direction.DOWN;
+                System.out.println("down");
                 break;
             default:
+                System.out.println("fail");
+
         }
     }
 
@@ -127,21 +145,21 @@ public class Enemy
     /**
      * move the enemy
      */
-    private void move()
+    public void move(int inversion)
     {
         switch(direction)
         {
             case LEFT:
-                sprite.setPosition(-velocity * Gdx.graphics.getDeltaTime(), 0);
+                setPosition(inversion * -velocity * Gdx.graphics.getDeltaTime(), 0);
                 break;
             case RIGHT:
-                sprite.setPosition(velocity * Gdx.graphics.getDeltaTime(), 0);
+                setPosition(inversion * velocity * Gdx.graphics.getDeltaTime(), 0);
                 break;
             case UP:
-                sprite.setPosition(0,velocity * Gdx.graphics.getDeltaTime());
+                setPosition(0,inversion * velocity * Gdx.graphics.getDeltaTime());
                 break;
             case DOWN:
-                sprite.setPosition(0,-velocity * Gdx.graphics.getDeltaTime());
+                setPosition(0,inversion * -velocity * Gdx.graphics.getDeltaTime());
                 break;
             default:
         }
