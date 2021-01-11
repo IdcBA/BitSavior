@@ -54,7 +54,7 @@ public class Enemy
 
 
         // set size
-        sprite.setSize(50, 50);
+        sprite.setSize(25, 25);
     }
 
     /**

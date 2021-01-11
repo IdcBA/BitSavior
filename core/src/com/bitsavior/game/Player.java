@@ -36,7 +36,8 @@ public class Player
         direction = Direction.UNMOVED;
 
         // set player size
-        sprite.setSize(10, 10);
+        sprite.setSize(40, 40);
+        sprite.setPosition(35, 35);
 
     }
 
