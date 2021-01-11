@@ -1,7 +1,6 @@
 package com.bitsavior.game;
 
 import com.badlogic.gdx.maps.MapLayer;
-import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 
 /**
  * Interface for collision detection between two Entities

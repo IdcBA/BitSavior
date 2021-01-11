@@ -7,10 +7,11 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.math.Vector2;
+
+import java.util.ArrayList;
 
 /**
  * represents the world of the game
@@ -42,7 +43,14 @@ public class World
 	 * Player class
 	 */
 	private Player player;
-	// array of enemies
+	/**
+	 * List of all enemies
+	 */
+	private ArrayList<Enemy> Enemies;
+	/**
+	 * maximum Number of Enemies
+	 */
+	private final int MaxNumberOfEnemies;
 	// array of pickups
 
 	// public Members
@@ -59,6 +67,10 @@ public class World
 		camera = new OrthographicCamera();
 
 		WORLDBOUNDS = new Vector2(1280.f, 960.f);
+
+		// testing
+		Enemies = new ArrayList<Enemy>();
+		MaxNumberOfEnemies = 1;
 	}
 
 	/**
@@ -66,38 +78,48 @@ public class World
 	 */
 	public void create()
 	{
-
 		// sets the camera to the world bounds
 		camera.viewportWidth  = WORLDBOUNDS.x;
 		camera.viewportHeight = WORLDBOUNDS.y;
-
 		// centers camera at 0,0
 		camera.position.set(WORLDBOUNDS.x / 2.f, WORLDBOUNDS.y / 2.f, 0);
 		camera.update();
+
 
 		// load assets
 		loadAssets();
 
 
-		// distribute textures
+		// distribute textures & create Entities
 		map = new Tilemap(assetHolder.get("map_1.tmx",TiledMap.class), camera);
 		player = new Player(assetHolder.get("pacman.png", Texture.class), 200.f);
+		// testing, create Enemies
+		for(int i = 0; i < MaxNumberOfEnemies ; i++)
+			Enemies.add(new Enemy(assetHolder.get("pacman.png", Texture.class), 10.f, 200.f));
 
-		
+		// testing, spawn Enemies
+		spawnEntities();
+
+
+
+
 	}
 	/**
-	 * update():
-	 * updates the world logic including:
-	 * - player input
-	 * - position of enemies
-	 * - collisions
-	 * ...
+	 * update the game logic
+	 * all update functions to be called
+	 * between handlePlayerInput() and checkCollisions()
 	 */
 	public void update()
 	{
 		handlePlayerInput();
+		player.update();
+
+		// testing
+		for(int i = 0; i < MaxNumberOfEnemies; i++)
+		{
+			Enemies.get(i).update();
+		}
 		checkCollisions();
-		
 	}
 	
 	public void render()
@@ -115,6 +137,9 @@ public class World
 		batch.setProjectionMatrix(camera.combined);
 		batch.begin();
 		player.draw(batch);
+		// testing/draw all enemies
+		for(Enemy enemy : Enemies)
+			enemy.draw(batch);
 		batch.end();
 	}
 	
@@ -146,28 +171,69 @@ public class World
 
 	}
 
+
+	/**
+	 * manages the player input
+	 */
 	private void handlePlayerInput()
 	{
 
+
+		// if a specific key is pressed, move the player
 		if(Gdx.input.isKeyPressed(Keys.A)) {
-			player.move(Player.Direction.LEFT, 1);
+			//player.move(Player.Direction.LEFT, 1);
+			player.direction = Player.Direction.LEFT;
 		}
 		else if(Gdx.input.isKeyPressed(Keys.D)) {
-			player.move(Player.Direction.RIGHT, 1);
+			//player.move(Player.Direction.RIGHT, 1);
+			player.direction = Player.Direction.RIGHT;
 		}
 		else if(Gdx.input.isKeyPressed(Keys.W)) {
-			player.move(Player.Direction.UP, 1);
+			//player.move(Player.Direction.UP, 1);
+			player.direction = Player.Direction.UP;
 		}
 		else if(Gdx.input.isKeyPressed(Keys.S)) {
-			player.move(Player.Direction.DOWN, 1);
+			player.direction = Player.Direction.DOWN;
+			//player.move(Player.Direction.DOWN, 1);
 		}
+
 	}
 
 
+	/**
+	 * check alle Entities for collision
+	 */
 	private void checkCollisions()
 	{
+		// if collided with Environment, move back
 		if(player.isCollided(map.getLayer(1)))
-			player.move(player.direction, -1);
+			player.move(-1);
+
+		// testing, check enemy collision
+		for(int i = 0; i < MaxNumberOfEnemies; i++)
+		{
+			if(player.isCollided(Enemies.get(i)))
+			{
+				player.move(-1);
+			}
+			if(Enemies.get(i).isCollided(map.getLayer(1)))
+				Enemies.get(i).move(-1);
+
+
+		}
+		// reset current Direction for next update
+		player.direction = Player.Direction.UNMOVED;
+
+
+
+
+	}
+
+	// testing
+	void spawnEntities()
+	{
+		for(Enemy enemy : Enemies)
+			enemy.spawn(100, 100);
 	}
 
 	
