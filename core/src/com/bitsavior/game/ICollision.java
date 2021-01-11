@@ -1,5 +1,6 @@
 package com.bitsavior.game;
 
+import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 
 /**
@@ -19,5 +20,6 @@ public interface ICollision
      * @param collisionLayer : collision layer of the TiledMap
      * @return : returns true if a collision happened
      */
-    boolean isCollided(TiledMapTileLayer collisionLayer);
+    boolean isCollided(MapLayer collisionLayer);
+
 }

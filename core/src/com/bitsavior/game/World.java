@@ -42,12 +42,8 @@ public class World
 	 * Player class
 	 */
 	private Player player;
-	/**
-	 * relation worldunits / pixels
-	 */
 	// array of enemies
 	// array of pickups
-	private final float UNIT_SCALE;
 
 	// public Members
 	/**
@@ -62,9 +58,7 @@ public class World
 		batch = new SpriteBatch();
 		camera = new OrthographicCamera();
 
-		WORLDBOUNDS = new Vector2(100.f, 100.f);
-		UNIT_SCALE = 1.f / 4.f;
-		
+		WORLDBOUNDS = new Vector2(1280.f, 960.f);
 	}
 
 	/**
@@ -86,8 +80,8 @@ public class World
 
 
 		// distribute textures
-		map = new Tilemap(assetHolder.get("level.tmx",TiledMap.class), UNIT_SCALE, camera);
-		player = new Player(assetHolder.get("pacman.png", Texture.class), 50.f);
+		map = new Tilemap(assetHolder.get("map_1.tmx",TiledMap.class), camera);
+		player = new Player(assetHolder.get("pacman.png", Texture.class), 200.f);
 
 		
 	}
@@ -144,7 +138,7 @@ public class World
 		assetHolder.setLoader(TiledMap.class, new TmxMapLoader());
 
 		// loading all assets regarding the game world
-		assetHolder.load("level.tmx", TiledMap.class);
+		assetHolder.load("map_1.tmx", TiledMap.class);
 		assetHolder.load("pacman.png", Texture.class);
 
 		// wait until everything is loaded
@@ -154,32 +148,26 @@ public class World
 
 	private void handlePlayerInput()
 	{
-		// multiplied with DeltaTime to ensure same movement with different framerates
-		if(Gdx.input.isKeyPressed(Keys.A))
-			player.setPosition(-player.velocity * Gdx.graphics.getDeltaTime(), 0);
-		if(Gdx.input.isKeyPressed(Keys.D))
-			player.setPosition(player.velocity * Gdx.graphics.getDeltaTime(), 0);
-		if(Gdx.input.isKeyPressed(Keys.W))
-			player.setPosition(0,player.velocity * Gdx.graphics.getDeltaTime());
-		if(Gdx.input.isKeyPressed(Keys.S))
-			player.setPosition(0,-player.velocity * Gdx.graphics.getDeltaTime());
+
+		if(Gdx.input.isKeyPressed(Keys.A)) {
+			player.move(Player.Direction.LEFT, 1);
+		}
+		else if(Gdx.input.isKeyPressed(Keys.D)) {
+			player.move(Player.Direction.RIGHT, 1);
+		}
+		else if(Gdx.input.isKeyPressed(Keys.W)) {
+			player.move(Player.Direction.UP, 1);
+		}
+		else if(Gdx.input.isKeyPressed(Keys.S)) {
+			player.move(Player.Direction.DOWN, 1);
+		}
 	}
 
-	/**
-	 * - JUST FOR TESTING PURPOSES - !!!!!!!!!!!!!
-	 * checkCollisions()
-	 * - check if player reaches the end of the camera
-	 */
+
 	private void checkCollisions()
 	{
-		if(player.getPosition().x <  0.f)
-			player.setPosition(player.velocity * Gdx.graphics.getDeltaTime(), 0.f);
-		if(player.getPosition().x + player.getSize().x >  WORLDBOUNDS.x)
-			player.setPosition(-player.velocity * Gdx.graphics.getDeltaTime(), 0.f);
-		if(player.getPosition().y <  0.f)
-			player.setPosition(0.f, player.velocity * Gdx.graphics.getDeltaTime());
-		if(player.getPosition().y + + player.getSize().y  >  WORLDBOUNDS.y)
-			player.setPosition(0.f, -player.velocity * Gdx.graphics.getDeltaTime());
+		if(player.isCollided(map.getLayer(1)))
+			player.move(player.direction, -1);
 	}
 
 	
