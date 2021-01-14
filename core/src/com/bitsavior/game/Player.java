@@ -7,6 +7,8 @@ import com.badlogic.gdx.maps.MapObjects;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.math.Rectangle;
 
+import java.util.ArrayList;
+
 /**
  * represents the Player
  */
@@ -18,8 +20,10 @@ public class Player
     /**
      * move direction of the player
      */
-
     Direction direction;
+
+    // private Methods
+    private int pickUpCounter;
 
     /**
      * Constructor
@@ -35,9 +39,10 @@ public class Player
 
         direction = Direction.UNMOVED;
 
+        pickUpCounter = 0;
+
         // set player size
-        sprite.setSize(40, 40);
-        sprite.setPosition(35, 35);
+        sprite.setSize(10, 10);
 
     }
 
@@ -46,6 +51,7 @@ public class Player
     {
         move(1);
     }
+
 
     public void move(int inversion) {
         switch (direction) {
@@ -71,6 +77,15 @@ public class Player
 
     }
 
+    public void collect(PickUp pickUp)
+    {
+        pickUp.isAlive = false;
+        pickUpCounter++;
+        System.out.println(pickUpCounter);
+
+
+    }
+
 
     public boolean isCollided(Entity entity) {
         // get the sprites bounding rectangle
@@ -78,21 +93,6 @@ public class Player
 
         // check if the boundaries collided and return
         return boundaries.overlaps(entity.sprite.getBoundingRectangle());
-    }
-
-
-    public boolean isCollided(MapLayer collisionLayer) {
-        // get all objects out of the collision layer
-        MapObjects objects = collisionLayer.getObjects();
-        // get the sprites bounding rectangle
-        Rectangle boundaries = new Rectangle(sprite.getBoundingRectangle());
-
-        // iterate through all objects and check for collision
-        for (RectangleMapObject rectangleObject : objects.getByType(RectangleMapObject.class)) {
-            if (boundaries.overlaps(rectangleObject.getRectangle()))
-                return true;
-        }
-        return false;
     }
 }
 

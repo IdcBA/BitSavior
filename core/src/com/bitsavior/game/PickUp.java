@@ -5,8 +5,17 @@ import com.badlogic.gdx.graphics.Texture;
 
 public class PickUp extends Entity
 {
-    // public Members
-    boolean isAlive;
+    // static Members
+
+    /**
+     * counts the amount of existing pickups
+     */
+    static int pickUpCounter;
+
+    static {
+        pickUpCounter = 0;
+    }
+
 
     // public Methods
     public PickUp(Texture texture)
@@ -17,6 +26,8 @@ public class PickUp extends Entity
 
         // set size of the pickup
         sprite.setSize(10, 10);
+
+        pickUpCounter++;
     }
 
     /**

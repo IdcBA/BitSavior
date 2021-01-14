@@ -2,9 +2,6 @@ package com.bitsavior.game;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.maps.MapLayer;
-import com.badlogic.gdx.maps.MapObjects;
-import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.math.Rectangle;
 
 import java.util.Random;
@@ -90,21 +87,6 @@ public class Enemy
         return boundaries.overlaps(entity.sprite.getBoundingRectangle());
     }
 
-    public boolean isCollided(MapLayer collisionLayer)
-    {
-        // get all objects out of the collision layer
-        MapObjects objects = collisionLayer.getObjects();
-        // get the sprites bounding rectangle
-        Rectangle boundaries = new Rectangle(sprite.getBoundingRectangle());
-
-        // iterate through all objects and check for collision
-        for(RectangleMapObject rectangleObject : objects.getByType(RectangleMapObject.class))
-            if(boundaries.overlaps(rectangleObject.getRectangle()))
-                return true;
-
-        return false;
-    }
-
 
     // private Methods
     /**
@@ -121,19 +103,15 @@ public class Enemy
         {
             case 0:
                 this.direction = Enemy.Direction.LEFT;
-                System.out.println("left");
                 break;
             case 1:
                 this.direction = Enemy.Direction.RIGHT;
-                System.out.println("right");
                 break;
             case 2:
                 this.direction = Enemy.Direction.UP;
-                System.out.println("up");
                 break;
             case 3:
                 this.direction = Enemy.Direction.DOWN;
-                System.out.println("down");
                 break;
             default:
                 System.out.println("fail");
