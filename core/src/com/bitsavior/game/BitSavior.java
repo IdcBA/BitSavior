@@ -1,26 +1,25 @@
 package com.bitsavior.game;
 
-import com.badlogic.gdx.ApplicationAdapter;
+import com.badlogic.gdx.Game;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 
-public class BitSavior extends ApplicationAdapter
-{
-
-	Game game;
+public class BitSavior extends Game {
+	SpriteBatch batch;
+	BitmapFont font;
 
 	@Override
-	public void create () {	
-		game = new Game();
-		game.create();
+	public void create() {
+		batch = new SpriteBatch();
+		font = new BitmapFont();
+		setScreen(new TitleScreen(this));
 	}
 
 	@Override
-	public void render () {	
-		game.update();
-		game.render();
+	public void dispose() {
+		batch.dispose();
+		font.dispose();
 	}
-	
-	@Override
-	public void dispose () {
-		game.dispose();
-	}
+
 }

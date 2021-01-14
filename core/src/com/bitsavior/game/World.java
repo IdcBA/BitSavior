@@ -164,6 +164,9 @@ public class World
 	public void dispose()
 	{
 		assetHolder.dispose();
+		PickUp.pickUpCounter = 0;
+
+		System.out.println("disposed");
 	}
 	
 	// private methods
@@ -227,6 +230,7 @@ public class World
 			if(map.isCollided(Enemies.get(i)))
 				Enemies.get(i).move(-1);
 		}
+
 
 		// check pickup collision
 		for(int i = 0; i < PickUp.pickUpCounter; i++)
