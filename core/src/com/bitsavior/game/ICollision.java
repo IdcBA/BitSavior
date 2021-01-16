@@ -13,12 +13,4 @@ public interface ICollision
      * @return : returns true if a collision happened
      */
     boolean isCollided(Entity entity);
-
-    /**
-     *  check if the entity is collided with the environment
-     * @param collisionLayer : collision layer of the TiledMap
-     * @return : returns true if a collision happened
-     */
-    boolean isCollided(MapLayer collisionLayer);
-
 }

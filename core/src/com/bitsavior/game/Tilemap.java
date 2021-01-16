@@ -8,13 +8,19 @@ package com.bitsavior.game;
 
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.maps.MapLayer;
+import com.badlogic.gdx.maps.MapObjects;
+import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
+import com.badlogic.gdx.math.Rectangle;
+import sun.security.provider.certpath.IndexedCollectionCertStore;
 
 /**
  * represents the map of the game and all related data and renderer
  */
-public class Tilemap {
+public class Tilemap
+		implements ICollision
+{
 
 	//private Members
 	private TiledMap tiledMap;
@@ -59,9 +65,21 @@ public class Tilemap {
 
 	}
 
-	public MapLayer getLayer(int LayerID)
-	{
-		return tiledMap.getLayers().get(LayerID);
 
+	public boolean isCollided(Entity entity)
+	{
+		// get all objects out of the collision layer
+		MapObjects objects = tiledMap.getLayers().get(1).getObjects();
+		// get the sprites bounding rectangle
+		Rectangle boundaries = new Rectangle(entity.sprite.getBoundingRectangle());
+
+		// iterate through all objects and check for collision
+		for (RectangleMapObject rectangleObject : objects.getByType(RectangleMapObject.class)) {
+			if (boundaries.overlaps(rectangleObject.getRectangle()))
+				return true;
+		}
+		return false;
 	}
+
 }
+

@@ -12,6 +12,7 @@ import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.math.Vector2;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 /**
  * represents the world of the game
@@ -44,18 +45,26 @@ public class World
 	 */
 	private Player player;
 	/**
-	 * List of all enemies
+	 * contains all enemies
 	 */
 	private ArrayList<Enemy> Enemies;
 	/**
 	 * maximum Number of Enemies
 	 */
 	private final int MaxNumberOfEnemies;
-	// array of pickups
+	/**
+	 * contains all pickups
+	 */
+	private ArrayList<PickUp> pickUps;
+	/**
+	 * maximum Number of pickups
+	 */
+	private final int MaxNumberOfPickUps;
 
 	// public Members
 	/**
-	 * Worldbounds in worldunits
+	 * describes the bounds of the world
+	 * visible trough the camera in worldunits
 	 */
 	public final Vector2 WORLDBOUNDS;
 	
@@ -68,9 +77,12 @@ public class World
 
 		WORLDBOUNDS = new Vector2(1280.f, 960.f);
 
-		// testing
+
 		Enemies = new ArrayList<Enemy>();
-		MaxNumberOfEnemies = 1;
+		MaxNumberOfEnemies = 5;
+
+		pickUps = new ArrayList<PickUp>();
+		MaxNumberOfPickUps = 10;
 	}
 
 	/**
@@ -93,14 +105,11 @@ public class World
 		// distribute textures & create Entities
 		map = new Tilemap(assetHolder.get("map_1.tmx",TiledMap.class), camera);
 		player = new Player(assetHolder.get("pacman.png", Texture.class), 200.f);
-		// testing, create Enemies
-		for(int i = 0; i < MaxNumberOfEnemies ; i++)
-			Enemies.add(new Enemy(assetHolder.get("pacman.png", Texture.class), 10.f, 200.f));
+		player.setPosition(50.f, 50.f);
 
-		// testing, spawn Enemies
-		spawnEntities();
-
-
+		// spawn pickups & enemies
+		spawnEnemies();
+		spawnPickUps();
 
 
 	}
@@ -119,9 +128,13 @@ public class World
 		{
 			Enemies.get(i).update();
 		}
+		updatePickUps();
 		checkCollisions();
 	}
-	
+
+	/**
+	 * manages all render calls inside the world
+	 */
 	public void render()
 	{
 		// Clear the Screen
@@ -140,6 +153,8 @@ public class World
 		// testing/draw all enemies
 		for(Enemy enemy : Enemies)
 			enemy.draw(batch);
+		for(PickUp pickUp : pickUps)
+			pickUp.draw(batch);
 		batch.end();
 	}
 	
@@ -149,6 +164,9 @@ public class World
 	public void dispose()
 	{
 		assetHolder.dispose();
+		PickUp.pickUpCounter = 0;
+
+		System.out.println("disposed");
 	}
 	
 	// private methods
@@ -177,26 +195,19 @@ public class World
 	 */
 	private void handlePlayerInput()
 	{
-
-
 		// if a specific key is pressed, move the player
 		if(Gdx.input.isKeyPressed(Keys.A)) {
-			//player.move(Player.Direction.LEFT, 1);
 			player.direction = Player.Direction.LEFT;
 		}
 		else if(Gdx.input.isKeyPressed(Keys.D)) {
-			//player.move(Player.Direction.RIGHT, 1);
 			player.direction = Player.Direction.RIGHT;
 		}
 		else if(Gdx.input.isKeyPressed(Keys.W)) {
-			//player.move(Player.Direction.UP, 1);
 			player.direction = Player.Direction.UP;
 		}
 		else if(Gdx.input.isKeyPressed(Keys.S)) {
 			player.direction = Player.Direction.DOWN;
-			//player.move(Player.Direction.DOWN, 1);
 		}
-
 	}
 
 
@@ -206,7 +217,7 @@ public class World
 	private void checkCollisions()
 	{
 		// if collided with Environment, move back
-		if(player.isCollided(map.getLayer(1)))
+		if(map.isCollided(player))
 			player.move(-1);
 
 		// testing, check enemy collision
@@ -216,25 +227,73 @@ public class World
 			{
 				player.move(-1);
 			}
-			if(Enemies.get(i).isCollided(map.getLayer(1)))
+			if(map.isCollided(Enemies.get(i)))
 				Enemies.get(i).move(-1);
-
-
 		}
+
+
+		// check pickup collision
+		for(int i = 0; i < PickUp.pickUpCounter; i++)
+		{
+			if(player.isCollided(pickUps.get(i)))
+				player.collect(pickUps.get(i));
+		}
+
 		// reset current Direction for next update
 		player.direction = Player.Direction.UNMOVED;
 
 
 
 
+
+
 	}
 
-	// testing
-	void spawnEntities()
+	/**
+	 * spawn the maximum amount of enemies given by MaxNumberOfEnemies
+	 */
+	void spawnEnemies()
 	{
+		for(int i = 0; i < MaxNumberOfEnemies ; i++)
+			Enemies.add(new Enemy(assetHolder.get("pacman.png", Texture.class), 10.f, 200.f));
+
+
 		for(Enemy enemy : Enemies)
 			enemy.spawn(100, 100);
 	}
 
-	
+
+
+	/**
+	 * spawn the maximum amount of pickups given by MaxNumberOfPickUps
+	 */
+	private void spawnPickUps()
+	{
+
+		Random random = new Random();
+
+		for(int i = 0; i < MaxNumberOfPickUps; i++)
+		{
+			pickUps.add(new PickUp(assetHolder.get("pacman.png", Texture.class)));
+
+			// if a pickup is colliding with the map, repeat with new coordinates
+			do {
+				pickUps.get(i).spawn(random.nextInt((int)WORLDBOUNDS.x), random.nextInt((int)WORLDBOUNDS.y));
+			} while(map.isCollided(pickUps.get(i)));
+		}
+	}
+
+	/**
+	 * checks if pickups are collected and can be deleted
+	 */
+	private void updatePickUps()
+	{
+		for(int i = 0; i < PickUp.pickUpCounter; i++)
+		{
+			if(!pickUps.get(i).isAlive) {
+				pickUps.remove(i);
+				PickUp.pickUpCounter--;
+			}
+		}
+	}
 }
