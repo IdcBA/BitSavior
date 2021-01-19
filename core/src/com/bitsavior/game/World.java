@@ -44,6 +44,7 @@ public class World
 	 * Player class
 	 */
 	private Player player;
+	
 	/**
 	 * contains all enemies
 	 */
@@ -67,6 +68,8 @@ public class World
 	 * visible trough the camera in worldunits
 	 */
 	public final Vector2 WORLDBOUNDS;
+	
+	
 	
 	// public Methods
 	public World()
@@ -105,8 +108,8 @@ public class World
 		// distribute textures & create Entities
 		map = new Tilemap(assetHolder.get("map_1.tmx",TiledMap.class), camera);
 		player = new Player(assetHolder.get("pacman.png", Texture.class), 200.f);
-		player.setPosition(50.f, 50.f);
-
+		player.setPosition(40.f, 40.f);
+		
 		// spawn pickups & enemies
 		spawnEnemies();
 		spawnPickUps();
@@ -183,6 +186,7 @@ public class World
 		// loading all assets regarding the game world
 		assetHolder.load("map_1.tmx", TiledMap.class);
 		assetHolder.load("pacman.png", Texture.class);
+		assetHolder.load("memory-leaks.jpg", Texture.class);
 
 		// wait until everything is loaded
 		assetHolder.finishLoading();
@@ -274,7 +278,7 @@ public class World
 
 		for(int i = 0; i < MaxNumberOfPickUps; i++)
 		{
-			pickUps.add(new PickUp(assetHolder.get("pacman.png", Texture.class)));
+			pickUps.add(new PickUp(assetHolder.get("memory-leaks.jpg", Texture.class)));
 
 			// if a pickup is colliding with the map, repeat with new coordinates
 			do {

@@ -2,6 +2,9 @@ package com.bitsavior.game;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.MapObjects;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
@@ -24,7 +27,11 @@ public class Player
 
     // private Methods
     private int pickUpCounter;
-
+	
+    Animation<TextureRegion> playerAn;
+	float stateTime = 0f;
+	static final int COLUMS = 3, ROWS = 1;
+	
     /**
      * Constructor
      *
@@ -34,7 +41,6 @@ public class Player
         // call constructor of Entity and set texture
         super(texture, velocity);
 
-
         isAlive = true;
 
         direction = Direction.UNMOVED;
@@ -42,11 +48,30 @@ public class Player
         pickUpCounter = 0;
 
         // set player size
-        sprite.setSize(10, 10);
-
+        sprite.setSize(35, 35);
+        
+        TextureRegion[][] tmp = TextureRegion.split(texture,
+        		texture.getWidth() / COLUMS,
+        		texture.getHeight() / ROWS);
+        
+    	TextureRegion[] playerFrames = new TextureRegion[COLUMS * ROWS];
+		int index = 0;
+		for (int i = 0; i < ROWS; i++) {
+			for (int j = 0; j < COLUMS; j++) {
+				playerFrames[index++] = tmp[i][j];
+			}
     }
-
-
+		playerAn = new Animation<TextureRegion>(0.33f, playerFrames);
+		
+    }
+    
+    @Override
+	public void draw(SpriteBatch batch) {
+		stateTime += Gdx.graphics.getDeltaTime();
+		batch.draw(playerAn.getKeyFrame(stateTime, true), sprite.getX(), sprite.getY(), sprite.getWidth(), sprite.getHeight());
+		
+		}
+    
     public void update()
     {
         move(1);
@@ -94,6 +119,7 @@ public class Player
         // check if the boundaries collided and return
         return boundaries.overlaps(entity.sprite.getBoundingRectangle());
     }
+
 }
 
 

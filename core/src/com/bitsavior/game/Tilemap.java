@@ -13,7 +13,7 @@ import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Rectangle;
-import sun.security.provider.certpath.IndexedCollectionCertStore;
+//import sun.security.provider.certpath.IndexedCollectionCertStore;
 
 /**
  * represents the map of the game and all related data and renderer

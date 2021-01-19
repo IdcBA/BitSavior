@@ -25,7 +25,7 @@ public class PickUp extends Entity
         isAlive = false;
 
         // set size of the pickup
-        sprite.setSize(10, 10);
+        sprite.setSize(25, 25);
 
         pickUpCounter++;
     }
