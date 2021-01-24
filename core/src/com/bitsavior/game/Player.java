@@ -1,26 +1,15 @@
 package com.bitsavior.game;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.maps.MapLayer;
-import com.badlogic.gdx.maps.MapObjects;
-import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.math.Rectangle;
-
-import java.util.ArrayList;
 
 /**
  * represents the Player
  */
 public class Player
-        extends Entity
-        implements IMovement, ICollision
+        extends MovingEntity
+        implements ICollision
 {
-    // public Methods
-    /**
-     * move direction of the player
-     */
-    Direction direction;
 
     // private Methods
     private int pickUpCounter;
@@ -34,10 +23,10 @@ public class Player
         // call constructor of Entity and set texture
         super(texture, velocity);
 
+        setCurrentMovement(Movement.UNMOVED);
+
 
         isAlive = true;
-
-        direction = Direction.UNMOVED;
 
         pickUpCounter = 0;
 
@@ -47,35 +36,12 @@ public class Player
     }
 
 
-    public void update()
+    public void update(float Delta)
     {
-        move(1);
+        move(Delta);
+        setCurrentMovement(Movement.UNMOVED);
     }
 
-
-    public void move(int inversion) {
-        switch (direction) {
-            case LEFT:
-                setPosition(inversion * -velocity * Gdx.graphics.getDeltaTime(), 0);
-                this.direction = Player.Direction.LEFT;
-                break;
-            case RIGHT:
-                setPosition(inversion * velocity * Gdx.graphics.getDeltaTime(), 0);
-                this.direction = Player.Direction.RIGHT;
-                break;
-            case UP:
-                setPosition(0, inversion * velocity * Gdx.graphics.getDeltaTime());
-                this.direction = Player.Direction.UP;
-                break;
-            case DOWN:
-                setPosition(0, inversion * -velocity * Gdx.graphics.getDeltaTime());
-                this.direction = Player.Direction.DOWN;
-                break;
-            default:
-
-        }
-
-    }
 
     public void collect(PickUp pickUp)
     {

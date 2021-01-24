@@ -2,15 +2,21 @@ package com.bitsavior.game;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.math.Rectangle;
 
 import java.util.Random;
 
 public class Enemy
-        extends Entity
-        implements ICollision, IMovement
+        extends MovingEntity
+        implements ICollision
 {
     // private Members
+    /**
+     * responsible for steering behavior and general A.I
+     */
+    ArtificalIntelligence brain;
+
     /**
      * view range of the enemy in units
      */
@@ -19,7 +25,7 @@ public class Enemy
     /**
      * move direction of the enemy
      */
-    private Direction direction;
+    private Movement direction;
 
     /**
      * maximum walk distance before change of direction
@@ -32,16 +38,20 @@ public class Enemy
     private float walkDistance;
 
 
+    boolean collision;
     // public Methods
 
     /**
      * Constructor()
      * @param texture : texture of the enemy
      * @param viewRange : viewRange in worldunits
+     * @param collisionLayer : object layer of the map for the artifical intelligence
      */
-    public Enemy(Texture texture, float viewRange, float velocity)
+    public Enemy(Texture texture, float viewRange, float velocity, MapLayer collisionLayer)
     {
         super(texture, velocity);
+
+        brain = new ArtificalIntelligence(collisionLayer, viewRange);
 
         maxWalkingDistance = 100.f;
         isAlive = false;
@@ -50,6 +60,7 @@ public class Enemy
         walkDistance = 0.f;
 
 
+        collision = false;
         // set size
         sprite.setSize(25, 25);
     }
@@ -65,17 +76,25 @@ public class Enemy
         isAlive = true;
         sprite.setPosition(x, y);
         chooseDirection();
+        setCurrentMovement(Movement.RIGHT);
     }
 
     /**
      * update enemies game logic
      */
-    public void update()
+    public void update(float Delta)
     {
         // testing
-        if(walkDistance >= maxWalkingDistance)
+
+        move(Delta);
+        walkDistance += (velocity * Delta) / 2;
+
+          if(walkDistance >= maxWalkingDistance || collision == true) {
+            collision = false;
             chooseDirection();
-        move(1);
+        }
+
+
     }
 
     public boolean isCollided(Entity entity)
@@ -102,49 +121,21 @@ public class Enemy
         switch(random.nextInt(4))
         {
             case 0:
-                this.direction = Enemy.Direction.LEFT;
+                setCurrentMovement(Movement.LEFT);
                 break;
             case 1:
-                this.direction = Enemy.Direction.RIGHT;
+                setCurrentMovement(Movement.RIGHT);
                 break;
             case 2:
-                this.direction = Enemy.Direction.UP;
+                setCurrentMovement(Movement.UP);
                 break;
             case 3:
-                this.direction = Enemy.Direction.DOWN;
+                setCurrentMovement(Movement.DOWN);
                 break;
             default:
                 System.out.println("fail");
 
         }
-    }
-
-
-    /**
-     * move the enemy
-     */
-    public void move(int inversion)
-    {
-        switch(direction)
-        {
-            case LEFT:
-                setPosition(inversion * -velocity * Gdx.graphics.getDeltaTime(), 0);
-                break;
-            case RIGHT:
-                setPosition(inversion * velocity * Gdx.graphics.getDeltaTime(), 0);
-                break;
-            case UP:
-                setPosition(0,inversion * velocity * Gdx.graphics.getDeltaTime());
-                break;
-            case DOWN:
-                setPosition(0,inversion * -velocity * Gdx.graphics.getDeltaTime());
-                break;
-            default:
-        }
-
-        // add covered distance of the frame
-        walkDistance += velocity * Gdx.graphics.getDeltaTime();
-
     }
 
 }
