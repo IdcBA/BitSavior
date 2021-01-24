@@ -82,7 +82,7 @@ public class World
 
 
 		Enemies = new ArrayList<Enemy>();
-		MaxNumberOfEnemies = 5;
+		MaxNumberOfEnemies = 2;
 
 		pickUps = new ArrayList<PickUp>();
 		MaxNumberOfPickUps = 10;
@@ -107,7 +107,7 @@ public class World
 
 		// distribute textures & create Entities
 		map = new Tilemap(assetHolder.get("map_1.tmx",TiledMap.class), camera);
-		player = new Player(assetHolder.get("pacman.png", Texture.class), 200.f);
+		player = new Player(assetHolder.get("pacman.png", Texture.class), 50.f);
 		player.setPosition(40.f, 40.f);
 		
 		// spawn pickups & enemies
@@ -121,18 +121,18 @@ public class World
 	 * all update functions to be called
 	 * between handlePlayerInput() and checkCollisions()
 	 */
-	public void update()
+	public void update(float Delta)
 	{
 		handlePlayerInput();
-		player.update();
+		player.update(Delta);
 
 		// testing
 		for(int i = 0; i < MaxNumberOfEnemies; i++)
 		{
-			Enemies.get(i).update();
+			Enemies.get(i).update(Delta);
 		}
 		updatePickUps();
-		checkCollisions();
+		checkCollisions(Delta);
 	}
 
 	/**
@@ -201,16 +201,16 @@ public class World
 	{
 		// if a specific key is pressed, move the player
 		if(Gdx.input.isKeyPressed(Keys.A)) {
-			player.direction = Player.Direction.LEFT;
+			player.direction = Movement.LEFT;
 		}
 		else if(Gdx.input.isKeyPressed(Keys.D)) {
-			player.direction = Player.Direction.RIGHT;
+			player.direction = Movement.RIGHT;
 		}
 		else if(Gdx.input.isKeyPressed(Keys.W)) {
-			player.direction = Player.Direction.UP;
+			player.direction = Movement.UP;
 		}
 		else if(Gdx.input.isKeyPressed(Keys.S)) {
-			player.direction = Player.Direction.DOWN;
+			player.direction = Movement.DOWN;
 		}
 	}
 
@@ -218,23 +218,22 @@ public class World
 	/**
 	 * check alle Entities for collision
 	 */
-	private void checkCollisions()
+	private void checkCollisions(float Delta)
 	{
 		// if collided with Environment, move back
 		if(map.isCollided(player))
-			player.move(-1);
+			player.moveBack(Delta);
 
 		// testing, check enemy collision
 		for(int i = 0; i < MaxNumberOfEnemies; i++)
 		{
 			if(player.isCollided(Enemies.get(i)))
 			{
-				player.move(-1);
+				player.moveBack(Delta);
 			}
 			if(map.isCollided(Enemies.get(i)))
-				Enemies.get(i).move(-1);
+				Enemies.get(i).moveBack(Delta);
 		}
-
 
 		// check pickup collision
 		for(int i = 0; i < PickUp.pickUpCounter; i++)
@@ -244,7 +243,7 @@ public class World
 		}
 
 		// reset current Direction for next update
-		player.direction = Player.Direction.UNMOVED;
+		player.direction = Movement.UNMOVED;
 
 
 
@@ -259,7 +258,7 @@ public class World
 	void spawnEnemies()
 	{
 		for(int i = 0; i < MaxNumberOfEnemies ; i++)
-			Enemies.add(new Enemy(assetHolder.get("pacman.png", Texture.class), 10.f, 200.f));
+			Enemies.add(new Enemy(assetHolder.get("pacman.png", Texture.class), 10.f, 600.f));
 
 
 		for(Enemy enemy : Enemies)
