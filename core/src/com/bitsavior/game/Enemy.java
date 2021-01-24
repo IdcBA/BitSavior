@@ -7,8 +7,8 @@ import com.badlogic.gdx.math.Rectangle;
 import java.util.Random;
 
 public class Enemy
-        extends Entity
-        implements ICollision, IMovement
+        extends MovingEntity
+        implements ICollision
 {
     // private Members
     /**
@@ -16,10 +16,6 @@ public class Enemy
      */
     private float viewRange;
 
-    /**
-     * move direction of the enemy
-     */
-    private Direction direction;
 
     /**
      * maximum walk distance before change of direction
@@ -70,12 +66,15 @@ public class Enemy
     /**
      * update enemies game logic
      */
-    public void update()
+    public void update(float Delta)
     {
         // testing
         if(walkDistance >= maxWalkingDistance)
             chooseDirection();
-        move(1);
+        move(1, Delta);
+
+        // add covered distance of the frame
+        walkDistance += velocity * Delta;
     }
 
     public boolean isCollided(Entity entity)
@@ -102,49 +101,21 @@ public class Enemy
         switch(random.nextInt(4))
         {
             case 0:
-                this.direction = Enemy.Direction.LEFT;
+                this.direction = Movement.LEFT;
                 break;
             case 1:
-                this.direction = Enemy.Direction.RIGHT;
+                this.direction = Movement.RIGHT;
                 break;
             case 2:
-                this.direction = Enemy.Direction.UP;
+                this.direction = Movement.UP;
                 break;
             case 3:
-                this.direction = Enemy.Direction.DOWN;
+                this.direction = Movement.DOWN;
                 break;
             default:
                 System.out.println("fail");
 
         }
-    }
-
-
-    /**
-     * move the enemy
-     */
-    public void move(int inversion)
-    {
-        switch(direction)
-        {
-            case LEFT:
-                setPosition(inversion * -velocity * Gdx.graphics.getDeltaTime(), 0);
-                break;
-            case RIGHT:
-                setPosition(inversion * velocity * Gdx.graphics.getDeltaTime(), 0);
-                break;
-            case UP:
-                setPosition(0,inversion * velocity * Gdx.graphics.getDeltaTime());
-                break;
-            case DOWN:
-                setPosition(0,inversion * -velocity * Gdx.graphics.getDeltaTime());
-                break;
-            default:
-        }
-
-        // add covered distance of the frame
-        walkDistance += velocity * Gdx.graphics.getDeltaTime();
-
     }
 
 }
