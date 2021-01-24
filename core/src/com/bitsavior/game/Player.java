@@ -16,8 +16,6 @@ public class Player
         extends MovingEntity
         implements ICollision
 {
-    // public Methods
-
     // private Methods
     private int pickUpCounter;
 	
@@ -27,8 +25,8 @@ public class Player
 	
     /**
      * Constructor
-     *
      * @param texture : players texture
+     * @param velocity : velocity of the player
      */
     public Player(Texture texture, float velocity) {
         // call constructor of Entity and set texture
@@ -78,6 +76,7 @@ public class Player
 
 
     }
+
 
 
     public boolean isCollided(Entity entity) {

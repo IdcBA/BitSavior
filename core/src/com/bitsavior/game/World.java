@@ -44,7 +44,6 @@ public class World
 	 * Player class
 	 */
 	private Player player;
-	
 	/**
 	 * contains all enemies
 	 */
@@ -62,6 +61,7 @@ public class World
 	 */
 	private final int MaxNumberOfPickUps;
 
+
 	// public Members
 	/**
 	 * describes the bounds of the world
@@ -72,6 +72,10 @@ public class World
 	
 	
 	// public Methods
+
+	/**
+	 * initialise required data for the creation of the world
+	 */
 	public World()
 	{
 		assetHolder = new AssetManager();
@@ -82,7 +86,7 @@ public class World
 
 
 		Enemies = new ArrayList<Enemy>();
-		MaxNumberOfEnemies = 2;
+		MaxNumberOfEnemies = 1;
 
 		pickUps = new ArrayList<PickUp>();
 		MaxNumberOfPickUps = 10;
@@ -120,6 +124,7 @@ public class World
 	 * update the game logic
 	 * all update functions to be called
 	 * between handlePlayerInput() and checkCollisions()
+	 * @param Delta : elapsed time since last frame
 	 */
 	public void update(float Delta)
 	{
@@ -129,7 +134,7 @@ public class World
 		// testing
 		for(int i = 0; i < MaxNumberOfEnemies; i++)
 		{
-			Enemies.get(i).update(Delta);
+			Enemies.get(i).update(Delta, player, map);
 		}
 		updatePickUps();
 		checkCollisions(Delta);
@@ -216,7 +221,8 @@ public class World
 
 
 	/**
-	 * check alle Entities for collision
+	 * check all entities for collision
+	 * @param Delta : elapsed time since last frame
 	 */
 	private void checkCollisions(float Delta)
 	{
@@ -244,12 +250,6 @@ public class World
 
 		// reset current Direction for next update
 		player.direction = Movement.UNMOVED;
-
-
-
-
-
-
 	}
 
 	/**
@@ -258,14 +258,12 @@ public class World
 	void spawnEnemies()
 	{
 		for(int i = 0; i < MaxNumberOfEnemies ; i++)
-			Enemies.add(new Enemy(assetHolder.get("pacman.png", Texture.class), 10.f, 600.f));
+			Enemies.add(new Enemy(assetHolder.get("pacman.png", Texture.class), 200, 50.f));
 
 
 		for(Enemy enemy : Enemies)
 			enemy.spawn(100, 100);
 	}
-
-
 
 	/**
 	 * spawn the maximum amount of pickups given by MaxNumberOfPickUps

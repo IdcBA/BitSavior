@@ -16,6 +16,10 @@ public class Enemy
      */
     private float viewRange;
 
+    /**
+     * controls the enemies behaviour
+     */
+    private EnemyAI brain;
 
     /**
      * maximum walk distance before change of direction
@@ -29,11 +33,11 @@ public class Enemy
 
 
     // public Methods
-
     /**
      * Constructor()
      * @param texture : texture of the enemy
      * @param viewRange : viewRange in worldunits
+     * @param velocity : velocity of the enemy
      */
     public Enemy(Texture texture, float viewRange, float velocity)
     {
@@ -48,6 +52,8 @@ public class Enemy
 
         // set size
         sprite.setSize(25, 25);
+
+        brain = new EnemyAI(sprite.getBoundingRectangle(), viewRange);
     }
 
     /**
@@ -64,9 +70,12 @@ public class Enemy
     }
 
     /**
-     * update enemies game logic
+     * updates position, direction and artifical intelligence
+     * @param Delta : elapsed time since last frame
+     * @param player : player data for the artifical intelligence
+     * @param map : map data for the artifical intelligence
      */
-    public void update(float Delta)
+    public void update(float Delta, Entity player, Tilemap map)
     {
         // testing
         if(walkDistance >= maxWalkingDistance)
@@ -75,8 +84,23 @@ public class Enemy
 
         // add covered distance of the frame
         walkDistance += velocity * Delta;
+
+        brain.update(sprite.getBoundingRectangle());
+        if(brain.isEntityInRange(player))
+        {
+            System.out.println("saw");
+        }
+        else
+        {
+            System.out.println("dont saw");
+        }
     }
 
+    /**
+     * check if enemy collided with the given entity
+     * @param entity : collision to be checked with
+     * @return : returns true if a collision happened
+     */
     public boolean isCollided(Entity entity)
     {
         // get the sprites bounding rectangle

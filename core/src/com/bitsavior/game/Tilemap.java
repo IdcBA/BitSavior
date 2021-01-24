@@ -27,7 +27,6 @@ public class Tilemap
 	private OrthogonalTiledMapRenderer renderer;
 
 	//public Methods
-
 	/**
 	 * Constructor()
 	 * @param tiledMap : reference to the asset
@@ -40,22 +39,18 @@ public class Tilemap
 		renderer = new OrthogonalTiledMapRenderer(tiledMap);
 
 		renderer.setView(camera);
-
-
 	}
 
 	/**
 	 * - loads map properties
 	 */
 	public void create() { }
-
 	/**
 	 * does nothing yet
 	 */
 	public void update() {
 
 	}
-
 	/**
 	 * render the tiled map
 	 */
@@ -66,6 +61,11 @@ public class Tilemap
 	}
 
 
+	/**
+	 * check object layer of the map if a collision happened
+	 * @param entity : collision to be checked with
+	 * @return : returns true if a collision happened
+	 */
 	public boolean isCollided(Entity entity)
 	{
 		// get all objects out of the collision layer
@@ -79,6 +79,16 @@ public class Tilemap
 				return true;
 		}
 		return false;
+	}
+
+	/**
+	 * get back the required layer
+	 * @param layer : layerindex
+	 * @return : required layer
+	 */
+	public MapLayer getLayer(int layer)
+	{
+		return tiledMap.getLayers().get(layer);
 	}
 
 }
