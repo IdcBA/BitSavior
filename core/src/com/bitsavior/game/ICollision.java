@@ -1,6 +1,6 @@
 package com.bitsavior.game;
 
-import com.badlogic.gdx.maps.MapLayer;
+import com.bitsavior.entity.Entity;
 
 /**
  * Interface for collision detection between two Entities

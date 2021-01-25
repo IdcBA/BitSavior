@@ -3,36 +3,42 @@ package com.bitsavior.game;
 import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.bitsavior.entity.Entity;
 
 public class EnemyAI
 {
     public boolean isActive;
-    private Rectangle rectangle;
-    private Vector2 rectCenter;
+    private Entity owner;
+    private Vector2 ownersCenter;
     float viewRange;
 
-    public EnemyAI(Rectangle boundings, float viewRange)
+    public EnemyAI(Entity owner, float viewRange)
     {
         isActive = false;
-        rectCenter = new Vector2();
+        ownersCenter = new Vector2();
 
-        rectangle = boundings;
-        boundings.getCenter(rectCenter);
+        this.owner = owner;
+        owner.getBoundings().getCenter(ownersCenter);
 
         this.viewRange = viewRange;
     }
 
-    public void update(Rectangle boundings)
+    public void update()
     {
-        rectangle = boundings;
-        boundings.getCenter(rectCenter);
+        owner.getBoundings().getCenter(ownersCenter);
     }
 
-    public boolean isEntityInRange(Entity entity)
+    public boolean isEntityInRange(final Entity entity)
     {
-        Circle view = new Circle(rectangle.getX(), rectangle.getY(), viewRange);
+        Circle view = new Circle(ownersCenter.x, ownersCenter.y, viewRange);
 
         return view.contains(entity.getPosition());
+    }
 
+    private Movement follow(final Entity entity)
+    {
+        Vector2 entityPosition = new Vector2(entity.getPosition());
+
+        return Movement.DOWN;
     }
 }

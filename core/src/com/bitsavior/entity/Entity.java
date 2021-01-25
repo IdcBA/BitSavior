@@ -1,8 +1,9 @@
-package com.bitsavior.game;
+package com.bitsavior.entity;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 
 public class Entity
@@ -12,7 +13,7 @@ public class Entity
     /**
      * Velocity of the Entity
      */
-    public final float velocity;
+    protected float velocity;
 
     // protected Members
     /**
@@ -22,7 +23,7 @@ public class Entity
     /**
      * lifestate of the entity
      */
-    protected boolean isAlive;
+    public boolean isAlive;
 
     /**
      * Constructor()
@@ -54,6 +55,12 @@ public class Entity
      * @return : size of the Object(Width, Height)
      */
     public Vector2 getSize() { return new Vector2(sprite.getWidth(), sprite.getHeight()); }
+
+    /**
+     *
+     * @return
+     */
+    public Rectangle getBoundings() { return new Rectangle(sprite.getBoundingRectangle()); }
 
     /**
      * draw()

@@ -1,6 +1,7 @@
 package com.bitsavior.game;
 
 import com.badlogic.gdx.graphics.Texture;
+import com.bitsavior.entity.Entity;
 
 
 public class PickUp extends Entity

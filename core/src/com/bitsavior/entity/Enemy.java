@@ -1,8 +1,8 @@
-package com.bitsavior.game;
+package com.bitsavior.entity;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Rectangle;
+import com.bitsavior.game.*;
 
 import java.util.Random;
 
@@ -15,7 +15,10 @@ public class Enemy
      * view range of the enemy in units
      */
     private float viewRange;
-
+    /**
+     * normal velocity
+     */
+    final float nVelocity;
     /**
      * controls the enemies behaviour
      */
@@ -43,6 +46,8 @@ public class Enemy
     {
         super(texture, velocity);
 
+        nVelocity = velocity;
+
         maxWalkingDistance = 100.f;
         isAlive = false;
         this.viewRange = viewRange;
@@ -53,7 +58,7 @@ public class Enemy
         // set size
         sprite.setSize(25, 25);
 
-        brain = new EnemyAI(sprite.getBoundingRectangle(), viewRange);
+        brain = new EnemyAI(this, viewRange);
     }
 
     /**
@@ -77,6 +82,14 @@ public class Enemy
      */
     public void update(float Delta, Entity player, Tilemap map)
     {
+        brain.update();
+        if(brain.isEntityInRange(player)) {
+            System.out.println("inRange");
+            velocity = nVelocity * 2.f;
+        }
+        else
+           velocity = nVelocity;
+
         // testing
         if(walkDistance >= maxWalkingDistance)
             chooseDirection();
@@ -85,31 +98,9 @@ public class Enemy
         // add covered distance of the frame
         walkDistance += velocity * Delta;
 
-        brain.update(sprite.getBoundingRectangle());
-        if(brain.isEntityInRange(player))
-        {
-            System.out.println("saw");
-        }
-        else
-        {
-            System.out.println("dont saw");
-        }
     }
 
-    /**
-     * check if enemy collided with the given entity
-     * @param entity : collision to be checked with
-     * @return : returns true if a collision happened
-     */
-    public boolean isCollided(Entity entity)
-    {
-        // get the sprites bounding rectangle
-        Rectangle boundaries = new Rectangle(sprite.getBoundingRectangle());
-
-        // check if the boundaries collided and return
-        return boundaries.overlaps(entity.sprite.getBoundingRectangle());
-    }
-
+    public float getViewRange() { return viewRange; }
 
     // private Methods
     /**
