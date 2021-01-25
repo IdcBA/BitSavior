@@ -1,8 +1,8 @@
-package com.bitsavior.game;
+package com.bitsavior.entity;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Rectangle;
+import com.bitsavior.game.*;
 
 import java.util.Random;
 
@@ -15,7 +15,14 @@ public class Enemy
      * view range of the enemy in units
      */
     private float viewRange;
-
+    /**
+     * normal velocity
+     */
+    final float nVelocity;
+    /**
+     * controls the enemies behaviour
+     */
+    private EnemyAI brain;
 
     /**
      * maximum walk distance before change of direction
@@ -29,15 +36,17 @@ public class Enemy
 
 
     // public Methods
-
     /**
      * Constructor()
      * @param texture : texture of the enemy
      * @param viewRange : viewRange in worldunits
+     * @param velocity : velocity of the enemy
      */
     public Enemy(Texture texture, float viewRange, float velocity)
     {
         super(texture, velocity);
+
+        nVelocity = velocity;
 
         maxWalkingDistance = 100.f;
         isAlive = false;
@@ -48,6 +57,8 @@ public class Enemy
 
         // set size
         sprite.setSize(25, 25);
+
+        brain = new EnemyAI(this, viewRange);
     }
 
     /**
@@ -64,10 +75,21 @@ public class Enemy
     }
 
     /**
-     * update enemies game logic
+     * updates position, direction and artifical intelligence
+     * @param Delta : elapsed time since last frame
+     * @param player : player data for the artifical intelligence
+     * @param map : map data for the artifical intelligence
      */
-    public void update(float Delta)
+    public void update(float Delta, Entity player, Tilemap map)
     {
+        brain.update();
+        if(brain.isEntityInRange(player)) {
+            System.out.println("inRange");
+            velocity = nVelocity * 2.f;
+        }
+        else
+           velocity = nVelocity;
+
         // testing
         if(walkDistance >= maxWalkingDistance)
             chooseDirection();
@@ -75,17 +97,10 @@ public class Enemy
 
         // add covered distance of the frame
         walkDistance += velocity * Delta;
+
     }
 
-    public boolean isCollided(Entity entity)
-    {
-        // get the sprites bounding rectangle
-        Rectangle boundaries = new Rectangle(sprite.getBoundingRectangle());
-
-        // check if the boundaries collided and return
-        return boundaries.overlaps(entity.sprite.getBoundingRectangle());
-    }
-
+    public float getViewRange() { return viewRange; }
 
     // private Methods
     /**

@@ -6,6 +6,7 @@
 
 package com.bitsavior.game;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.MapObjects;
@@ -13,13 +14,13 @@ import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Rectangle;
+import com.bitsavior.entity.Entity;
 //import sun.security.provider.certpath.IndexedCollectionCertStore;
 
 /**
  * represents the map of the game and all related data and renderer
  */
-public class Tilemap
-		implements ICollision
+public class Tilemap implements ICollision
 {
 
 	//private Members
@@ -27,7 +28,6 @@ public class Tilemap
 	private OrthogonalTiledMapRenderer renderer;
 
 	//public Methods
-
 	/**
 	 * Constructor()
 	 * @param tiledMap : reference to the asset
@@ -40,22 +40,18 @@ public class Tilemap
 		renderer = new OrthogonalTiledMapRenderer(tiledMap);
 
 		renderer.setView(camera);
-
-
 	}
 
 	/**
 	 * - loads map properties
 	 */
 	public void create() { }
-
 	/**
 	 * does nothing yet
 	 */
 	public void update() {
 
 	}
-
 	/**
 	 * render the tiled map
 	 */
@@ -64,14 +60,22 @@ public class Tilemap
 		renderer.render();
 
 	}
-
+	/**
+	 * get back the required layer
+	 * @param layer : layerindex
+	 * @return : required layer
+	 */
+	public MapLayer getLayer(int layer)
+	{
+		return tiledMap.getLayers().get(layer);
+	}
 
 	public boolean isCollided(Entity entity)
 	{
 		// get all objects out of the collision layer
 		MapObjects objects = tiledMap.getLayers().get(1).getObjects();
 		// get the sprites bounding rectangle
-		Rectangle boundaries = new Rectangle(entity.sprite.getBoundingRectangle());
+		Rectangle boundaries = new Rectangle(entity.getBoundings());
 
 		// iterate through all objects and check for collision
 		for (RectangleMapObject rectangleObject : objects.getByType(RectangleMapObject.class)) {

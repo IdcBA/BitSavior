@@ -10,6 +10,8 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.math.Vector2;
+import com.bitsavior.entity.Enemy;
+import com.bitsavior.entity.Player;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -44,7 +46,6 @@ public class World
 	 * Player class
 	 */
 	private Player player;
-	
 	/**
 	 * contains all enemies
 	 */
@@ -54,13 +55,20 @@ public class World
 	 */
 	private final int MaxNumberOfEnemies;
 	/**
-	 * contains all pickups
-	 */
-	private ArrayList<PickUp> pickUps;
-	/**
 	 * maximum Number of pickups
 	 */
 	private final int MaxNumberOfPickUps;
+
+	private final float velocityPlayer;
+	private final float velocityEnemy;
+	private final float viewRange;
+
+
+
+	/**
+	 * contains all pickups
+	 */
+	private ArrayList<PickUp> pickUps;
 
 	// public Members
 	/**
@@ -72,6 +80,10 @@ public class World
 	
 	
 	// public Methods
+
+	/**
+	 * initialise required data for the creation of the world
+	 */
 	public World()
 	{
 		assetHolder = new AssetManager();
@@ -80,12 +92,17 @@ public class World
 
 		WORLDBOUNDS = new Vector2(1280.f, 960.f);
 
+		// setup numbers
+		MaxNumberOfEnemies = 1;
+		MaxNumberOfPickUps = 10;
+		velocityEnemy  = 100.f;
+		velocityPlayer = 100.f;
+		viewRange = 200.f;
+
 
 		Enemies = new ArrayList<Enemy>();
-		MaxNumberOfEnemies = 2;
-
 		pickUps = new ArrayList<PickUp>();
-		MaxNumberOfPickUps = 10;
+
 	}
 
 	/**
@@ -107,7 +124,7 @@ public class World
 
 		// distribute textures & create Entities
 		map = new Tilemap(assetHolder.get("map_1.tmx",TiledMap.class), camera);
-		player = new Player(assetHolder.get("pacman.png", Texture.class), 50.f);
+		player = new Player(assetHolder.get("pacman.png", Texture.class), velocityPlayer);
 		player.setPosition(40.f, 40.f);
 		
 		// spawn pickups & enemies
@@ -120,6 +137,7 @@ public class World
 	 * update the game logic
 	 * all update functions to be called
 	 * between handlePlayerInput() and checkCollisions()
+	 * @param Delta : elapsed time since last frame
 	 */
 	public void update(float Delta)
 	{
@@ -129,7 +147,7 @@ public class World
 		// testing
 		for(int i = 0; i < MaxNumberOfEnemies; i++)
 		{
-			Enemies.get(i).update(Delta);
+			Enemies.get(i).update(Delta, player, map);
 		}
 		updatePickUps();
 		checkCollisions(Delta);
@@ -212,44 +230,32 @@ public class World
 		else if(Gdx.input.isKeyPressed(Keys.S)) {
 			player.direction = Movement.DOWN;
 		}
+		else
+			player.direction = Movement.UNMOVED;
 	}
 
 
 	/**
-	 * check alle Entities for collision
+	 * check all entities for collision
+	 * @param Delta : elapsed time since last frame
 	 */
 	private void checkCollisions(float Delta)
 	{
-		// if collided with Environment, move back
-		if(map.isCollided(player))
-			player.moveBack(Delta);
+		// check collision with environment
+		player.isCollided(map);
 
-		// testing, check enemy collision
+		// check enemy collision
 		for(int i = 0; i < MaxNumberOfEnemies; i++)
 		{
+			Enemies.get(i).isCollided(map);
 			if(player.isCollided(Enemies.get(i)))
-			{
-				player.moveBack(Delta);
-			}
-			if(map.isCollided(Enemies.get(i)))
-				Enemies.get(i).moveBack(Delta);
+				player.isAlive = false;
 		}
 
 		// check pickup collision
 		for(int i = 0; i < PickUp.pickUpCounter; i++)
-		{
 			if(player.isCollided(pickUps.get(i)))
 				player.collect(pickUps.get(i));
-		}
-
-		// reset current Direction for next update
-		player.direction = Movement.UNMOVED;
-
-
-
-
-
-
 	}
 
 	/**
@@ -258,18 +264,17 @@ public class World
 	void spawnEnemies()
 	{
 		for(int i = 0; i < MaxNumberOfEnemies ; i++)
-			Enemies.add(new Enemy(assetHolder.get("pacman.png", Texture.class), 10.f, 600.f));
+			Enemies.add(new Enemy(assetHolder.get("pacman.png", Texture.class), viewRange, velocityEnemy));
 
 
 		for(Enemy enemy : Enemies)
 			enemy.spawn(100, 100);
 	}
 
-
-
 	/**
 	 * spawn the maximum amount of pickups given by MaxNumberOfPickUps
 	 */
+
 	private void spawnPickUps()
 	{
 
@@ -289,6 +294,7 @@ public class World
 	/**
 	 * checks if pickups are collected and can be deleted
 	 */
+
 	private void updatePickUps()
 	{
 		for(int i = 0; i < PickUp.pickUpCounter; i++)
