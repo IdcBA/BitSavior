@@ -1,6 +1,10 @@
 package com.bitsavior.entity;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.bitsavior.game.*;
 
@@ -34,6 +38,10 @@ public class Enemy
      */
     private float walkDistance;
 
+    Animation<TextureRegion> enemyAn;
+   	float stateTime = 0f;
+   	static final int COLUMS_ENEMY = 2, ROWS_ENEMY = 1;
+	
 
     // public Methods
     /**
@@ -59,6 +67,20 @@ public class Enemy
         sprite.setSize(25, 25);
 
         brain = new EnemyAI(this, viewRange);
+        
+        // Animation
+        TextureRegion[][] tmp = TextureRegion.split(texture,
+        		texture.getWidth() / COLUMS_ENEMY,
+        		texture.getHeight() / ROWS_ENEMY);
+        
+    	TextureRegion[] enemyFrames = new TextureRegion[COLUMS_ENEMY * ROWS_ENEMY];
+		int index = 0;
+		for (int i = 0; i < ROWS_ENEMY; i++) {
+			for (int j = 0; j < COLUMS_ENEMY; j++) {
+				enemyFrames[index++] = tmp[i][j];
+			}
+    }
+		enemyAn = new Animation<TextureRegion>(0.1f, enemyFrames);
     }
 
     /**
@@ -130,6 +152,16 @@ public class Enemy
             default:
                 System.out.println("fail");
 
+        }
+    }
+    
+    @Override
+	public void draw(SpriteBatch batch)
+    {
+        if(isAlive)
+        {
+            stateTime += Gdx.graphics.getDeltaTime();
+            batch.draw(enemyAn.getKeyFrame(stateTime, true), sprite.getX(), sprite.getY(), sprite.getWidth(), sprite.getHeight());
         }
     }
 
