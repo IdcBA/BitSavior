@@ -1,21 +1,15 @@
 package com.bitsavior.entity;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
-
-import com.badlogic.gdx.graphics.g2d.Animation;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.math.Rectangle;
-import com.bitsavior.game.*;
-
 import com.bitsavior.ai.EnemyAI;
 import com.bitsavior.collision.ICollision;
 import com.bitsavior.map.Tilemap;
 
-
 import java.util.Random;
 
+/**
+ * represents an enemy including A.I
+ */
 public class Enemy
         extends MovingEntity
         implements ICollision
@@ -26,27 +20,21 @@ public class Enemy
      */
     private float viewRange;
     /**
-     * normal velocity
+     * normal velocity that is used if nothing is in viewrange
      */
-    final float nVelocity;
+    private final float nVelocity;
     /**
      * controls the enemies behaviour
      */
     private EnemyAI brain;
-
     /**
      * maximum walk distance before change of direction
      */
-    private final float maxWalkingDistance;
-
+    private final float maxWalkingDistance = 100.f;
     /**
      * walked worldunits before direction change
      */
-    private float walkDistance;
-
-    Animation<TextureRegion> enemyAn;
-   	float stateTime = 0f;
-   	static final int COLUMS_ENEMY = 2, ROWS_ENEMY = 1;
+    private float walkDistance = 0.f;
 	
 
     // public Methods
@@ -58,35 +46,19 @@ public class Enemy
      */
     public Enemy(Texture texture, float viewRange, float velocity)
     {
-        super(texture, velocity);
+        super(texture, velocity, 2, 1, 0.1f);
 
         nVelocity = velocity;
 
-        maxWalkingDistance = 100.f;
         isAlive = false;
         this.viewRange = viewRange;
-
-        walkDistance = 0.f;
-
 
         // set size
         sprite.setSize(25, 25);
 
+        // create the brain for the enemy
         brain = new EnemyAI(this, viewRange);
-        
-        // Animation
-        TextureRegion[][] tmp = TextureRegion.split(texture,
-        		texture.getWidth() / COLUMS_ENEMY,
-        		texture.getHeight() / ROWS_ENEMY);
-        
-    	TextureRegion[] enemyFrames = new TextureRegion[COLUMS_ENEMY * ROWS_ENEMY];
-		int index = 0;
-		for (int i = 0; i < ROWS_ENEMY; i++) {
-			for (int j = 0; j < COLUMS_ENEMY; j++) {
-				enemyFrames[index++] = tmp[i][j];
-			}
-    }
-		enemyAn = new Animation<TextureRegion>(0.1f, enemyFrames);
+
     }
 
     /**
@@ -106,11 +78,12 @@ public class Enemy
      * updates position, direction and artifical intelligence
      * @param Delta : elapsed time since last frame
      * @param player : player data for the artifical intelligence
-     * @param map : map data for the artifical intelligence
      */
-    public void update(float Delta, Entity player, Tilemap map)
+    public void update(float Delta, Entity player)
     {
         brain.update();
+
+        // if player is in range, double the velocity
         if(brain.isEntityInRange(player)) {
             System.out.println("inRange");
             velocity = nVelocity * 2.f;
@@ -118,7 +91,7 @@ public class Enemy
         else
            velocity = nVelocity;
 
-        // testing
+        // change enemies direction if moved enough
         if(walkDistance >= maxWalkingDistance)
             chooseDirection();
         move(1, Delta);
@@ -128,6 +101,11 @@ public class Enemy
 
     }
 
+
+    /**
+     * return the viewrange of the enemy
+     * @return : viewrange of the enemy
+     */
     public float getViewRange() { return viewRange; }
 
     // private Methods
@@ -160,15 +138,4 @@ public class Enemy
 
         }
     }
-    
-    @Override
-	public void draw(SpriteBatch batch)
-    {
-        if(isAlive)
-        {
-            stateTime += Gdx.graphics.getDeltaTime();
-            batch.draw(enemyAn.getKeyFrame(stateTime, true), sprite.getX(), sprite.getY(), sprite.getWidth(), sprite.getHeight());
-        }
-    }
-
 }

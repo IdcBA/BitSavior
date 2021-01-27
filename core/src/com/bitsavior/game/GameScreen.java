@@ -21,8 +21,8 @@ public class GameScreen extends ScreenAdapter {
 	// public methods
 	/**
 	 * Constructor:
-	 * @param BitSavior game
-	 * @param TitelScreen to "jump back"
+	 * @param game game
+	 * @param tScreen to "jump back"
 	 */
 	public GameScreen(BitSavior game, TitleScreen tScreen)
 	{
@@ -58,7 +58,7 @@ public class GameScreen extends ScreenAdapter {
 	public void render(float Delta)
 	{
 		world.update(Delta);
-		world.render();
+		world.render(Delta);
 	}
 
 	@Override
