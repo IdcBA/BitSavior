@@ -1,4 +1,4 @@
-package com.bitsavior.game;
+package com.bitsavior.entity;
 
 public enum Movement
 {

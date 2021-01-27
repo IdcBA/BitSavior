@@ -11,7 +11,10 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.math.Vector2;
 import com.bitsavior.entity.Enemy;
+import com.bitsavior.entity.Movement;
+import com.bitsavior.entity.PickUp;
 import com.bitsavior.entity.Player;
+import com.bitsavior.map.Tilemap;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -63,6 +66,8 @@ public class World
 	private final float velocityEnemy;
 	private final float viewRange;
 
+	private ArrayList<Float> levelData;
+
 
 
 	/**
@@ -93,7 +98,7 @@ public class World
 		WORLDBOUNDS = new Vector2(1280.f, 960.f);
 
 		// setup numbers
-		MaxNumberOfEnemies = 1;
+		MaxNumberOfEnemies = 2;
 		MaxNumberOfPickUps = 10;
 		velocityEnemy  = 100.f;
 		velocityPlayer = 100.f;
@@ -108,8 +113,7 @@ public class World
 	/**
 	 * setup the game session
 	 */
-	public void create()
-	{
+	public void create() {
 		// sets the camera to the world bounds
 		camera.viewportWidth  = WORLDBOUNDS.x;
 		camera.viewportHeight = WORLDBOUNDS.y;
@@ -131,7 +135,6 @@ public class World
 		spawnEnemies();
 		spawnPickUps();
 
-
 	}
 	/**
 	 * update the game logic
@@ -150,7 +153,7 @@ public class World
 			Enemies.get(i).update(Delta, player, map);
 		}
 		updatePickUps();
-		checkCollisions(Delta);
+		checkCollisions();
 	}
 
 	/**
@@ -238,9 +241,8 @@ public class World
 
 	/**
 	 * check all entities for collision
-	 * @param Delta : elapsed time since last frame
 	 */
-	private void checkCollisions(float Delta)
+	private void checkCollisions()
 	{
 		// check collision with environment
 		player.isCollided(map);

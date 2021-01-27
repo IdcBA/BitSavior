@@ -1,4 +1,4 @@
-package com.bitsavior.game;
+package com.bitsavior.entity;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.bitsavior.entity.Entity;
@@ -11,7 +11,7 @@ public class PickUp extends Entity
     /**
      * counts the amount of existing pickups
      */
-    static int pickUpCounter;
+    public static int pickUpCounter;
 
     static {
         pickUpCounter = 0;
