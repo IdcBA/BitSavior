@@ -1,4 +1,4 @@
-package com.bitsavior.game;
+package com.bitsavior.collision;
 
 import com.bitsavior.entity.Entity;
 

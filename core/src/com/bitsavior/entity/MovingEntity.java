@@ -5,10 +5,8 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.maps.MapObjects;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.math.Rectangle;
-import com.bitsavior.entity.Entity;
-import com.bitsavior.game.ICollision;
-import com.bitsavior.game.Movement;
-import com.bitsavior.game.Tilemap;
+import com.bitsavior.collision.ICollision;
+import com.bitsavior.map.Tilemap;
 
 /**
  * specifies the moving functionality for moving entities
