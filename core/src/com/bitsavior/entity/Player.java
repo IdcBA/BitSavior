@@ -1,23 +1,19 @@
 package com.bitsavior.entity;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Animation;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 /**
  * represents the Player
+ * including functionality for collecting of pickups
  */
 public class Player
         extends MovingEntity
 {
     // private Methods
+    /**
+     * counts the collected pickups
+     */
     private int pickUpCounter;
-	
-    Animation<TextureRegion> playerAn;
-	float stateTime = 0f;
-	static final int COLUMS = 4, ROWS = 4;
 	
     /**
      * Constructor
@@ -25,8 +21,8 @@ public class Player
      * @param velocity : velocity of the player
      */
     public Player(Texture texture, float velocity) {
-        // call constructor of Entity and set texture
-        super(texture, velocity);
+
+        super(texture, velocity, 4, 4, 0.05f);
 
         isAlive = true;
 
@@ -36,34 +32,13 @@ public class Player
 
         // set player size
         sprite.setSize(35, 35);
-        
-        
-     // Animation
-        TextureRegion[][] tmp = TextureRegion.split(texture,
-        		texture.getWidth() / COLUMS,
-        		texture.getHeight() / ROWS);
-        
-    	TextureRegion[] playerFrames = new TextureRegion[COLUMS * ROWS];
-		int index = 0;
-		for (int i = 0; i < ROWS; i++) {
-			for (int j = 0; j < COLUMS; j++) {
-				playerFrames[index++] = tmp[i][j];
-			}
-    }
-		playerAn = new Animation<TextureRegion>(0.05f, playerFrames);
 		
     }
-    
-    @Override
-	public void draw(SpriteBatch batch)
-    {
-        if(isAlive)
-        {
-            stateTime += Gdx.graphics.getDeltaTime();
-            batch.draw(playerAn.getKeyFrame(stateTime, true), sprite.getX(), sprite.getY(), sprite.getWidth(), sprite.getHeight());
-        }
-    }
-    
+
+    /**
+     * updates players position on the screen
+     * @param Delta : elapsed time since last frame
+     */
     public void update(float Delta)
     {
         if(!this.isAlive)
@@ -71,15 +46,16 @@ public class Player
         move(1, Delta);
     }
 
+    /**
+     * collect the given pickup
+     * @param pickUp : pickup that should be collected from the player
+     */
     public void collect(PickUp pickUp)
     {
         pickUp.isAlive = false;
         pickUpCounter++;
         System.out.println(pickUpCounter);
-
-
     }
-
 }
 
 

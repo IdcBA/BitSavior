@@ -2,14 +2,11 @@ package com.bitsavior.game;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
-import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.maps.tiled.TiledMap;
-import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.math.Vector2;
+import com.bitsavior.asset.Assets;
 import com.bitsavior.entity.Enemy;
 import com.bitsavior.entity.Movement;
 import com.bitsavior.entity.PickUp;
@@ -26,15 +23,14 @@ public class World
 {
 	// private Members
 	/**
-	 * Manage all game-assets
+	 * manages all game-assets
 	 */
-	private AssetManager assetHolder;
+	private Assets assets;
 	/**
 	 * Orthographic Camera:
 	 * Shows what we see in the world.
 	 * Works with WorldUnits instead of Pixels,
 	 * makes it easier to handle different screensizes
-	 * and use Box2D
 	 */
 	private OrthographicCamera camera;
 	/**
@@ -65,11 +61,6 @@ public class World
 	private final float velocityPlayer;
 	private final float velocityEnemy;
 	private final float viewRange;
-
-	private ArrayList<Float> levelData;
-
-
-
 	/**
 	 * contains all pickups
 	 */
@@ -81,9 +72,7 @@ public class World
 	 * visible trough the camera in worldunits
 	 */
 	public final Vector2 WORLDBOUNDS;
-	
-	
-	
+
 	// public Methods
 
 	/**
@@ -91,7 +80,7 @@ public class World
 	 */
 	public World()
 	{
-		assetHolder = new AssetManager();
+		assets = new Assets();
 		batch = new SpriteBatch();
 		camera = new OrthographicCamera();
 
@@ -123,12 +112,11 @@ public class World
 
 
 		// load assets
-		loadAssets();
-
+		assets.load();
 
 		// distribute textures & create Entities
-		map = new Tilemap(assetHolder.get("map_1.tmx",TiledMap.class), camera);
-		player = new Player(assetHolder.get("spritesheet_test3.png", Texture.class), velocityPlayer);
+		map = new Tilemap(assets.holder.get(Assets.currentMap), camera);
+		player = new Player(assets.holder.get(Assets.player), velocityPlayer);
 		player.setPosition(40.f, 40.f);
 		
 		// spawn pickups & enemies
@@ -150,7 +138,7 @@ public class World
 		// testing
 		for(int i = 0; i < MaxNumberOfEnemies; i++)
 		{
-			Enemies.get(i).update(Delta, player, map);
+			Enemies.get(i).update(Delta, player);
 		}
 		updatePickUps();
 		checkCollisions();
@@ -159,7 +147,7 @@ public class World
 	/**
 	 * manages all render calls inside the world
 	 */
-	public void render()
+	public void render(float Delta)
 	{
 		// Clear the Screen
 		Gdx.gl.glClearColor(0, 0, 0, 0);
@@ -173,12 +161,12 @@ public class World
 		// set the projection matrix of the ScreenBatch to camera's size
 		batch.setProjectionMatrix(camera.combined);
 		batch.begin();
-		player.draw(batch);
+		player.draw(batch, Delta);
 		// testing/draw all enemies
 		for(Enemy enemy : Enemies)
-			enemy.draw(batch);
+			enemy.draw(batch, Delta);
 		for(PickUp pickUp : pickUps)
-			pickUp.draw(batch);
+			pickUp.draw(batch, Delta);
 		batch.end();
 	}
 	
@@ -187,35 +175,13 @@ public class World
 	 */
 	public void dispose()
 	{
-		assetHolder.dispose();
+		assets.dispose();
 		PickUp.pickUpCounter = 0;
 
 		System.out.println("disposed");
 	}
 	
 	// private methods
-
-	/**
-	 * loadAssets()
-	 * - loads all assets
-	 */
-	private void loadAssets()
-	{
-		// set the loader for tmx maps
-		assetHolder.setLoader(TiledMap.class, new TmxMapLoader());
-
-		// loading all assets regarding the game world
-		assetHolder.load("map_1.tmx", TiledMap.class);
-		assetHolder.load("spritesheet_test3.png", Texture.class);
-		assetHolder.load("spritesheet_enemy.png", Texture.class);
-		assetHolder.load("memory-leaks.jpg", Texture.class);
-
-		// wait until everything is loaded
-		assetHolder.finishLoading();
-
-	}
-
-
 	/**
 	 * manages the player input
 	 */
@@ -237,8 +203,6 @@ public class World
 		else
 			player.direction = Movement.UNMOVED;
 	}
-
-
 	/**
 	 * check all entities for collision
 	 */
@@ -260,24 +224,21 @@ public class World
 			if(player.isCollided(pickUps.get(i)))
 				player.collect(pickUps.get(i));
 	}
-
 	/**
 	 * spawn the maximum amount of enemies given by MaxNumberOfEnemies
 	 */
 	void spawnEnemies()
 	{
 		for(int i = 0; i < MaxNumberOfEnemies ; i++)
-			Enemies.add(new Enemy(assetHolder.get("spritesheet_enemy.png", Texture.class), viewRange, velocityEnemy));
+			Enemies.add(new Enemy(assets.holder.get(Assets.enemy), viewRange, velocityEnemy));
 		
 
 		for(Enemy enemy : Enemies)
 			enemy.spawn(100, 100);
 	}
-
 	/**
 	 * spawn the maximum amount of pickups given by MaxNumberOfPickUps
 	 */
-
 	private void spawnPickUps()
 	{
 
@@ -285,7 +246,7 @@ public class World
 
 		for(int i = 0; i < MaxNumberOfPickUps; i++)
 		{
-			pickUps.add(new PickUp(assetHolder.get("memory-leaks.jpg", Texture.class)));
+			pickUps.add(new PickUp(assets.holder.get(Assets.pickUp)));
 
 			// if a pickup is colliding with the map, repeat with new coordinates
 			do {
@@ -293,11 +254,9 @@ public class World
 			} while(map.isCollided(pickUps.get(i)));
 		}
 	}
-
 	/**
 	 * checks if pickups are collected and can be deleted
 	 */
-
 	private void updatePickUps()
 	{
 		for(int i = 0; i < PickUp.pickUpCounter; i++)

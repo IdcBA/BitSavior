@@ -9,7 +9,7 @@ import com.badlogic.gdx.math.Vector2;
 public class Entity
 {
 
-    // public Members
+    // protected Members
     /**
      * Velocity of the Entity
      */
@@ -17,7 +17,7 @@ public class Entity
 
     // protected Members
     /**
-     * holds the players texture
+     * holds the entity's texture
      */
     protected Sprite sprite;
     /**
@@ -57,16 +57,17 @@ public class Entity
     public Vector2 getSize() { return new Vector2(sprite.getWidth(), sprite.getHeight()); }
 
     /**
-     *
-     * @return
+     * get the bounding rectangle of the entity
+     * @return : bounding rectangle
      */
     public Rectangle getBoundings() { return new Rectangle(sprite.getBoundingRectangle()); }
 
     /**
      * draw()
      * @param batch : current SpriteBatch for drawing
+     * @param Delta : elapsed time since last frame
      */
-    public void draw(SpriteBatch batch)
+    public void draw(SpriteBatch batch, float Delta)
     {
         batch.draw(sprite,sprite.getX(), sprite.getY(), sprite.getWidth(), sprite.getHeight());
     }
