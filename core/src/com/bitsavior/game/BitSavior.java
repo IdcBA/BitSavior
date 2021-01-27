@@ -7,19 +7,22 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 
 public class BitSavior extends Game {
 	SpriteBatch batch;
-	BitmapFont font;
+	BitmapFont fontTitle;
+	BitmapFont fontText1;
 
 	@Override
 	public void create() {
 		batch = new SpriteBatch();
-		font = new BitmapFont();
+		fontTitle = new BitmapFont();
+		fontText1 = new BitmapFont();
 		setScreen(new TitleScreen(this));
 	}
 
 	@Override
 	public void dispose() {
 		batch.dispose();
-		font.dispose();
+		fontTitle.dispose();
+		fontText1.dispose();
 	}
 
 }
