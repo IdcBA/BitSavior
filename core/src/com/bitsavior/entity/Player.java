@@ -17,7 +17,7 @@ public class Player
 	
     Animation<TextureRegion> playerAn;
 	float stateTime = 0f;
-	static final int COLUMS = 3, ROWS = 1;
+	static final int COLUMS = 4, ROWS = 4;
 	
     /**
      * Constructor
@@ -37,6 +37,8 @@ public class Player
         // set player size
         sprite.setSize(35, 35);
         
+        
+     // Animation
         TextureRegion[][] tmp = TextureRegion.split(texture,
         		texture.getWidth() / COLUMS,
         		texture.getHeight() / ROWS);
@@ -48,7 +50,7 @@ public class Player
 				playerFrames[index++] = tmp[i][j];
 			}
     }
-		playerAn = new Animation<TextureRegion>(0.33f, playerFrames);
+		playerAn = new Animation<TextureRegion>(0.05f, playerFrames);
 		
     }
     

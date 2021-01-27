@@ -128,7 +128,7 @@ public class World
 
 		// distribute textures & create Entities
 		map = new Tilemap(assetHolder.get("map_1.tmx",TiledMap.class), camera);
-		player = new Player(assetHolder.get("pacman.png", Texture.class), velocityPlayer);
+		player = new Player(assetHolder.get("spritesheet_test3.png", Texture.class), velocityPlayer);
 		player.setPosition(40.f, 40.f);
 		
 		// spawn pickups & enemies
@@ -206,7 +206,8 @@ public class World
 
 		// loading all assets regarding the game world
 		assetHolder.load("map_1.tmx", TiledMap.class);
-		assetHolder.load("pacman.png", Texture.class);
+		assetHolder.load("spritesheet_test3.png", Texture.class);
+		assetHolder.load("spritesheet_enemy.png", Texture.class);
 		assetHolder.load("memory-leaks.jpg", Texture.class);
 
 		// wait until everything is loaded
@@ -266,8 +267,8 @@ public class World
 	void spawnEnemies()
 	{
 		for(int i = 0; i < MaxNumberOfEnemies ; i++)
-			Enemies.add(new Enemy(assetHolder.get("pacman.png", Texture.class), viewRange, velocityEnemy));
-
+			Enemies.add(new Enemy(assetHolder.get("spritesheet_enemy.png", Texture.class), viewRange, velocityEnemy));
+		
 
 		for(Enemy enemy : Enemies)
 			enemy.spawn(100, 100);
