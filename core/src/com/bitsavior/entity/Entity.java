@@ -62,6 +62,7 @@ public class Entity
      */
     public Rectangle getBoundings() { return new Rectangle(sprite.getBoundingRectangle()); }
 
+
     /**
      * draw()
      * @param batch : current SpriteBatch for drawing

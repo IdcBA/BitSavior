@@ -1,6 +1,10 @@
 package com.bitsavior.entity;
 
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.bitsavior.asset.Assets;
 
 /**
  * represents the Player
@@ -14,15 +18,19 @@ public class Player
      * counts the collected pickups
      */
     private int pickUpCounter;
+
+    private Sprite flashlight;
 	
     /**
      * Constructor
      * @param texture : players texture
      * @param velocity : velocity of the player
      */
-    public Player(Texture texture, float velocity) {
+    public Player(AssetManager manager, float velocity) {
 
-        super(texture, velocity, 4, 4, 0.05f);
+        super(manager.get(Assets.player), velocity, 4, 4, 0.05f);
+
+        flashlight = new Sprite(manager.get(Assets.flashlight));
 
         isAlive = true;
 
@@ -44,6 +52,10 @@ public class Player
         if(!this.isAlive)
             System.out.println("Hit");
         move(1, Delta);
+
+
+        flashlight.setPosition((getPosition().x + (getSize().x / 2)) - (flashlight.getWidth() / 2),
+                (getPosition().y + (getSize().y / 2)) - (flashlight.getHeight() / 2));
     }
 
     /**
@@ -55,6 +67,14 @@ public class Player
         pickUp.isAlive = false;
         pickUpCounter++;
         System.out.println(pickUpCounter);
+    }
+
+    public void drawFlashlight(SpriteBatch batch, float Delta)
+    {
+        // set the color for the flashlight cone
+        batch.setColor(0.7f, 0.7f, 0.8f, 0.99f);
+        if(isAlive)
+            batch.draw(flashlight,flashlight.getX(),flashlight.getY(), flashlight.getWidth() , flashlight.getHeight() );
     }
 }
 
