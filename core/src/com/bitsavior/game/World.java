@@ -4,7 +4,12 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.math.Vector2;
 import com.bitsavior.asset.Assets;
 import com.bitsavior.entity.Enemy;
@@ -73,6 +78,13 @@ public class World
 	 */
 	public final Vector2 WORLDBOUNDS;
 
+
+	/**
+	 * handles the blending of the scene
+	 */
+	private FrameBuffer lightBuffer;
+	private TextureRegion lightBufferRegion;
+
 	// public Methods
 
 	/**
@@ -97,6 +109,7 @@ public class World
 		Enemies = new ArrayList<Enemy>();
 		pickUps = new ArrayList<PickUp>();
 
+
 	}
 
 	/**
@@ -116,12 +129,24 @@ public class World
 
 		// distribute textures & create Entities
 		map = new Tilemap(assets.holder.get(Assets.currentMap), camera);
-		player = new Player(assets.holder.get(Assets.player), velocityPlayer);
+		player = new Player(assets.holder, velocityPlayer);
 		player.setPosition(40.f, 40.f);
 		
 		// spawn pickups & enemies
 		spawnEnemies();
 		spawnPickUps();
+
+		// if there is already a lightBuffer, reset
+		if(lightBuffer != null)
+			lightBuffer.dispose();
+		// create FrameBuffer with width/height of the screen
+		lightBuffer = new FrameBuffer(Pixmap.Format.RGBA8888, (int)WORLDBOUNDS.x, (int)WORLDBOUNDS.y, false);
+		lightBuffer.getColorBufferTexture().setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
+
+		lightBufferRegion = new TextureRegion(lightBuffer.getColorBufferTexture(), 0, 0, 1280, 960);
+		lightBufferRegion.flip(false, true);
+
+
 
 	}
 	/**
@@ -149,6 +174,7 @@ public class World
 	 */
 	public void render(float Delta)
 	{
+
 		// Clear the Screen
 		Gdx.gl.glClearColor(0, 0, 0, 0);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
@@ -160,14 +186,42 @@ public class World
 
 		// set the projection matrix of the ScreenBatch to camera's size
 		batch.setProjectionMatrix(camera.combined);
+		// draw objects
 		batch.begin();
-		player.draw(batch, Delta);
-		// testing/draw all enemies
-		for(Enemy enemy : Enemies)
-			enemy.draw(batch, Delta);
+
 		for(PickUp pickUp : pickUps)
 			pickUp.draw(batch, Delta);
+		for(Enemy enemy : Enemies)
+			enemy.draw(batch, Delta);
+
 		batch.end();
+
+
+		// render blending and lightcone into the second FrameBuffer
+		lightBuffer.begin();
+
+		// set blending functions
+		Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE);
+		Gdx.gl.glEnable(GL20.GL_BLEND);
+
+		// clear the second bufferscreen
+		Gdx.gl.glClearColor(0.f, 0.f, 0.f, 1.f);
+		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
+		// draw the flashlight
+		batch.begin();
+		player.drawFlashlight(batch, Delta);
+		batch.end();
+
+		lightBuffer.end();
+
+		// draw second buffer and player on top
+		Gdx.gl.glBlendFunc(GL20.GL_DST_COLOR, GL20.GL_ZERO);
+		batch.begin();
+		batch.draw(lightBufferRegion, 0, 0, 1280, 960);
+		player.draw(batch, Delta);
+		batch.end();
+
 	}
 	
 	/**

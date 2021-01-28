@@ -15,7 +15,6 @@ import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.bitsavior.collision.ICollision;
 import com.bitsavior.entity.Entity;
-//import sun.security.provider.certpath.IndexedCollectionCertStore;
 
 /**
  * represents the map of the game and all related data and renderer
@@ -58,7 +57,6 @@ public class Tilemap implements ICollision
 	public void render() {
 
 		renderer.render();
-
 	}
 	/**
 	 * get back the required layer

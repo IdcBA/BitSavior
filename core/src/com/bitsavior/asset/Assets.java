@@ -25,6 +25,8 @@ public class Assets
 
     public static final AssetDescriptor<Texture> pickUp =
             new AssetDescriptor<Texture>("memory-leaks.jpg", Texture.class);
+    public static final AssetDescriptor<Texture> flashlight =
+            new AssetDescriptor<Texture>("lightcone3.png", Texture.class);
 
 
 
@@ -43,7 +45,9 @@ public class Assets
         holder.load(enemy);
         holder.load(player);
         holder.load(pickUp);
+        holder.load(flashlight);
         holder.load(currentMap);
+
 
         holder.finishLoading();
     }
