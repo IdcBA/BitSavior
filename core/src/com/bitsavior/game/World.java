@@ -6,16 +6,12 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.math.Vector2;
 import com.bitsavior.asset.Assets;
-import com.bitsavior.entity.Enemy;
-import com.bitsavior.entity.Movement;
-import com.bitsavior.entity.PickUp;
-import com.bitsavior.entity.Player;
+import com.bitsavior.entity.*;
 import com.bitsavior.map.Tilemap;
 
 import java.util.ArrayList;
@@ -27,6 +23,15 @@ import java.util.Random;
 public class World
 {
 	// private Members
+	/**
+	 * holds user interface elements as
+	 * fonts and buttons
+	 */
+	private UserInterface userInterface;
+	/**
+	 * hold timer data for the time limit
+	 */
+	Watch timer;
 	/**
 	 * manages all game-assets
 	 */
@@ -50,10 +55,12 @@ public class World
 	 * Player class
 	 */
 	private Player player;
+
+	private AntiBug debugger;
 	/**
 	 * contains all enemies
 	 */
-	private ArrayList<Enemy> Enemies;
+	private ArrayList<Bug> Enemies;
 	/**
 	 * maximum Number of Enemies
 	 */
@@ -62,10 +69,6 @@ public class World
 	 * maximum Number of pickups
 	 */
 	private final int MaxNumberOfPickUps;
-
-	private final float velocityPlayer;
-	private final float velocityEnemy;
-	private final float viewRange;
 	/**
 	 * contains all pickups
 	 */
@@ -85,6 +88,7 @@ public class World
 	private FrameBuffer lightBuffer;
 	private TextureRegion lightBufferRegion;
 
+
 	// public Methods
 
 	/**
@@ -92,6 +96,7 @@ public class World
 	 */
 	public World()
 	{
+		timer = new Watch(100);
 		assets = new Assets();
 		batch = new SpriteBatch();
 		camera = new OrthographicCamera();
@@ -101,12 +106,9 @@ public class World
 		// setup numbers
 		MaxNumberOfEnemies = 2;
 		MaxNumberOfPickUps = 10;
-		velocityEnemy  = 100.f;
-		velocityPlayer = 100.f;
-		viewRange = 200.f;
 
 
-		Enemies = new ArrayList<Enemy>();
+		Enemies = new ArrayList<Bug>();
 		pickUps = new ArrayList<PickUp>();
 
 
@@ -127,9 +129,16 @@ public class World
 		// load assets
 		assets.load();
 
+		userInterface = new UserInterface(assets.holder, timer);
+
+
+		debugger = new AntiBug(assets.holder);
+		debugger.spawn(40, 40);
+
+
 		// distribute textures & create Entities
 		map = new Tilemap(assets.holder.get(Assets.currentMap), camera);
-		player = new Player(assets.holder, velocityPlayer);
+		player = new Player(assets.holder);
 		player.setPosition(40.f, 40.f);
 		
 		// spawn pickups & enemies
@@ -146,6 +155,8 @@ public class World
 		lightBufferRegion = new TextureRegion(lightBuffer.getColorBufferTexture(), 0, 0, 1280, 960);
 		lightBufferRegion.flip(false, true);
 
+		timer.startWatch();
+
 
 
 	}
@@ -155,10 +166,11 @@ public class World
 	 * between handlePlayerInput() and checkCollisions()
 	 * @param Delta : elapsed time since last frame
 	 */
-	public void update(float Delta)
+	public boolean update(float Delta)
 	{
 		handlePlayerInput();
 		player.update(Delta);
+		debugger.update(Delta);
 
 		// testing
 		for(int i = 0; i < MaxNumberOfEnemies; i++)
@@ -166,7 +178,11 @@ public class World
 			Enemies.get(i).update(Delta, player);
 		}
 		updatePickUps();
+		userInterface.update(player.getPickUpCounter());
+
 		checkCollisions();
+
+		return (timer.update() && player.isAlive);
 	}
 
 	/**
@@ -191,8 +207,8 @@ public class World
 
 		for(PickUp pickUp : pickUps)
 			pickUp.draw(batch, Delta);
-		for(Enemy enemy : Enemies)
-			enemy.draw(batch, Delta);
+		for(Bug bug : Enemies)
+			bug.draw(batch, Delta);
 
 		batch.end();
 
@@ -208,9 +224,10 @@ public class World
 		Gdx.gl.glClearColor(0.f, 0.f, 0.f, 1.f);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-		// draw the flashlight
+		// draw the lightsources
 		batch.begin();
 		player.drawFlashlight(batch, Delta);
+		debugger.drawFlashlight(batch,Delta);
 		batch.end();
 
 		lightBuffer.end();
@@ -219,8 +236,17 @@ public class World
 		Gdx.gl.glBlendFunc(GL20.GL_DST_COLOR, GL20.GL_ZERO);
 		batch.begin();
 		batch.draw(lightBufferRegion, 0, 0, 1280, 960);
+
+
 		player.draw(batch, Delta);
+		debugger.draw(batch, Delta);
+		userInterface.draw(batch);
+
+
+
+
 		batch.end();
+
 
 	}
 	
@@ -230,6 +256,7 @@ public class World
 	public void dispose()
 	{
 		assets.dispose();
+		userInterface.dispose();
 		PickUp.pickUpCounter = 0;
 
 		System.out.println("disposed");
@@ -273,6 +300,9 @@ public class World
 				player.isAlive = false;
 		}
 
+		// check debugger collision
+		debugger.isCollided(map);
+
 		// check pickup collision
 		for(int i = 0; i < PickUp.pickUpCounter; i++)
 			if(player.isCollided(pickUps.get(i)))
@@ -284,11 +314,11 @@ public class World
 	void spawnEnemies()
 	{
 		for(int i = 0; i < MaxNumberOfEnemies ; i++)
-			Enemies.add(new Enemy(assets.holder.get(Assets.enemy), viewRange, velocityEnemy));
+			Enemies.add(new Bug(assets.holder.get(Assets.enemy)));
 		
 
-		for(Enemy enemy : Enemies)
-			enemy.spawn(100, 100);
+		for(Bug bug : Enemies)
+			bug.spawn(100, 100);
 	}
 	/**
 	 * spawn the maximum amount of pickups given by MaxNumberOfPickUps

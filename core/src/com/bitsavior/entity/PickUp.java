@@ -21,7 +21,7 @@ public class PickUp extends Entity
     // public Methods
     public PickUp(Texture texture)
     {
-        super(texture, 0.f);
+        super(texture);
 
         isAlive = false;
 

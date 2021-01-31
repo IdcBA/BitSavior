@@ -79,19 +79,19 @@ public class MovingEntity extends Entity implements ICollision
     protected void move(int inversion, float Delta) {
         switch (direction) {
             case LEFT:
-                setPosition(inversion * -velocity * Delta, 0);
+                updatePosition(inversion * -velocity * Delta, 0);
                 rotation = 270.f;
                 break;
             case RIGHT:
-                setPosition(inversion * velocity * Delta, 0);
+                updatePosition(inversion * velocity * Delta, 0);
                 rotation = 90.f;
                 break;
             case UP:
-                setPosition(0, inversion * velocity * Delta);
+                updatePosition(0, inversion * velocity * Delta);
                 rotation = 180.f;
                 break;
             case DOWN:
-                setPosition(0, inversion * -velocity * Delta);
+                updatePosition(0, inversion * -velocity * Delta);
                 rotation = 0.f;
                 break;
             default:
