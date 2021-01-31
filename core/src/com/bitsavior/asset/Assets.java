@@ -16,6 +16,8 @@ public class Assets
     // add all needed asset descriptors
     public static final AssetDescriptor<Texture> enemy =
             new AssetDescriptor<Texture>("spritesheet_enemy.png", Texture.class);
+    public static final AssetDescriptor<Texture> antibug =
+            new AssetDescriptor<Texture>("spritesheet_antibug.png", Texture.class);
 
     public static final AssetDescriptor<TiledMap> currentMap =
             new AssetDescriptor<TiledMap>("map_1.tmx", TiledMap.class);
@@ -25,8 +27,10 @@ public class Assets
 
     public static final AssetDescriptor<Texture> pickUp =
             new AssetDescriptor<Texture>("memory-leaks.jpg", Texture.class);
-    public static final AssetDescriptor<Texture> flashlight =
+    public static final AssetDescriptor<Texture> light =
             new AssetDescriptor<Texture>("lightcone3.png", Texture.class);
+    public static final AssetDescriptor<Texture> uiRect =
+            new AssetDescriptor<Texture>("ui_rect_2.png", Texture.class);
 
 
 
@@ -43,10 +47,12 @@ public class Assets
     public void load()
     {
         holder.load(enemy);
+        holder.load(antibug);
         holder.load(player);
         holder.load(pickUp);
-        holder.load(flashlight);
+        holder.load(light);
         holder.load(currentMap);
+        holder.load(uiRect);
 
 
         holder.finishLoading();

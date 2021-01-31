@@ -12,6 +12,7 @@ public class GameScreen extends ScreenAdapter {
 	BitSavior game;
 	TitleScreen tScreen;
 	private World world;
+
 	
 	/**
      * 0: no messages; 1: send messages
@@ -51,13 +52,15 @@ public class GameScreen extends ScreenAdapter {
 		});
 
 
+
 	}
 
 
 	@Override
 	public void render(float Delta)
 	{
-		world.update(Delta);
+		if(!world.update(Delta))
+			game.setScreen(tScreen);
 		world.render(Delta);
 	}
 

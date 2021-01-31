@@ -10,7 +10,7 @@ import java.util.Random;
 /**
  * represents an enemy including A.I
  */
-public class Enemy
+public class Bug
         extends MovingEntity
         implements ICollision
 {
@@ -41,17 +41,15 @@ public class Enemy
     /**
      * Constructor()
      * @param texture : texture of the enemy
-     * @param viewRange : viewRange in worldunits
-     * @param velocity : velocity of the enemy
      */
-    public Enemy(Texture texture, float viewRange, float velocity)
+    public Bug(Texture texture)
     {
-        super(texture, velocity, 2, 1, 0.1f);
+        super(texture, 100.f, 2, 1, 0.1f);
 
         nVelocity = velocity;
 
         isAlive = false;
-        this.viewRange = viewRange;
+        this.viewRange = 200.f;
 
         // set size
         sprite.setSize(25, 25);
@@ -107,6 +105,12 @@ public class Enemy
      * @return : viewrange of the enemy
      */
     public float getViewRange() { return viewRange; }
+
+    /**
+     * sets the current viewrange of the enemy
+     * @param viewRange : describes how far the enemy can see
+     */
+    public void setViewRange(float viewRange) { this.viewRange = viewRange; }
 
     // private Methods
     /**

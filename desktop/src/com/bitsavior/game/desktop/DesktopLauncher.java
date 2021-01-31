@@ -7,8 +7,9 @@ import com.bitsavior.game.BitSavior;
 public class DesktopLauncher {
 	public static void main (String[] arg) {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
-		config.width = 1920;
-		config.height = 1280;
+		config.width = 1280;
+		config.height = 960;
+		config.fullscreen = true;
 		new LwjglApplication(new BitSavior(), config);
 	}
 }
