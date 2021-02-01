@@ -12,41 +12,41 @@ import com.bitsavior.collision.ICollision;
 import com.bitsavior.map.Tilemap;
 
 /**
- * specifies the moving functionality for moving entities
+ * A class that specifies the moving functionality for moving entities
  * and takes care of the moving animations
+ * @author Valentin Zirngibl
+ * @author Samreet
  */
 public class MovingEntity extends Entity implements ICollision
 {
-
     /**
-     * represents the animation of the moving entity
+     * The animation of the entity
      */
     private Animation<TextureRegion> entityAn;
     /**
-     * the time spend in the current animation frame
+     * The time spend in the current animation frame
      */
     private float stateTime = 0f;
     /**
-     * displays how long a animation should be played
+     * Displays how long an animation should be played
      */
     private float frameDuration;
     /**
-     * rotation angle of the sprite in degrees
+     * Rotation angle of the sprite in degrees
      */
     private float rotation = 0.f;
-
     // public members
     /**
-     * contains the actual movement direction
+     * Contains the actual movement direction
      */
     public Movement direction;
     /**
-     * constructor
-     * @param texture : texture of the entity
-     * @param velocity : velocity of the entity
-     * @param colums : colums of the used spritesheet(for animation)
-     * @param rows : rows of the used spritesheet(for animation)
-     * @param frameDuration : sets the duration of one animation frame
+     * Constructor
+     * @param texture : Texture of the entity
+     * @param velocity : Velocity of the entity
+     * @param colums : Colums of the used spritesheet(for animation)
+     * @param rows : Rows of the used spritesheet(for animation)
+     * @param frameDuration : Sets the duration of one animation frame
      */
     public MovingEntity(Texture texture, float velocity, int colums, int rows, float frameDuration)
     {
@@ -70,9 +70,8 @@ public class MovingEntity extends Entity implements ICollision
         entityAn = new Animation<TextureRegion>(this.frameDuration, entityFrames);
 
     }
-
     /**
-     * sets the coordinates of the entity accordingly to the given direction
+     * Sets the coordinates of the entity accordingly to the given direction
      * @param inversion : 1 for the normal direction, -1 for the inverse direction
      * @param Delta : elapsed time since last frame
      */
@@ -98,9 +97,9 @@ public class MovingEntity extends Entity implements ICollision
         }
     }
     /**
-     * check if enemy collided with the given entity
-     * @param entity : collision to be checked with
-     * @return : returns true if a collision happened
+     * Checks if enemy collided with the given entity
+     * @param entity : Collision to be checked with
+     * @return : Returns true if a collision happened
      */
     public boolean isCollided(Entity entity)
     {
@@ -110,10 +109,9 @@ public class MovingEntity extends Entity implements ICollision
         // check if the boundaries collided and return
         return boundaries.overlaps(entity.sprite.getBoundingRectangle());
     }
-
     /**
-     * check object layer of the map if a collision happened
-     * @param map : map with the collideable objects to check
+     * Checks object layer of the map if a collision happened
+     * @param map : Map with the collidable objects to check
      */
     public void isCollided(Tilemap map)
     {
@@ -132,9 +130,10 @@ public class MovingEntity extends Entity implements ICollision
             }
         }
     }
-
     /**
-     * draw the current animation with the given rotation
+     * Draws the current animation with the given rotation
+     * Note that this function needs to be called either after the first batch.begin after the drawing of the map
+     * or after the drawing of the lightBuffer
      * @param batch : current SpriteBatch for drawing
      * @param Delta : elapsed time since last frame
      */

@@ -7,24 +7,22 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 
 /**
- * maintains the assets
+ * A Class that maintains storing, loading and disposing of the worlds assets
+ * @author Valentin Zirngibl
  */
 public class Assets
 {
     public AssetManager holder;
 
-    // add all needed asset descriptors
+    // add all needed asset descriptors for easy access
     public static final AssetDescriptor<Texture> enemy =
             new AssetDescriptor<Texture>("spritesheet_enemy.png", Texture.class);
     public static final AssetDescriptor<Texture> antibug =
             new AssetDescriptor<Texture>("spritesheet_antibug.png", Texture.class);
-
-    public static final AssetDescriptor<TiledMap> currentMap =
+    public static final AssetDescriptor<TiledMap> map1 =
             new AssetDescriptor<TiledMap>("map_1.tmx", TiledMap.class);
-
     public static final AssetDescriptor<Texture> player =
             new AssetDescriptor<Texture>("spritesheet_test3.png", Texture.class);
-
     public static final AssetDescriptor<Texture> pickUp =
             new AssetDescriptor<Texture>("memory-leaks.jpg", Texture.class);
     public static final AssetDescriptor<Texture> light =
@@ -32,8 +30,9 @@ public class Assets
     public static final AssetDescriptor<Texture> uiRect =
             new AssetDescriptor<Texture>("ui_rect_2.png", Texture.class);
 
-
-
+    /**
+     * Constructor that creates the assetmanager and adds1 a loader for tmx maps
+     */
     public Assets()
     {
         holder = new AssetManager();
@@ -42,7 +41,7 @@ public class Assets
     }
 
     /**
-     * load all described assets into the assetholder
+     * Load all described assets into the assetholder
      */
     public void load()
     {
@@ -51,16 +50,14 @@ public class Assets
         holder.load(player);
         holder.load(pickUp);
         holder.load(light);
-        holder.load(currentMap);
+        holder.load(map1);
         holder.load(uiRect);
 
 
         holder.finishLoading();
     }
-
-
     /**
-     * dispose all resources
+     * Dispose of all resources
      */
     public void dispose()
     {

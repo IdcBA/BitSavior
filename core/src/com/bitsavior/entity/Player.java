@@ -6,24 +6,31 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.bitsavior.asset.Assets;
 
 /**
- * represents the Player
- * including functionality for collecting of pickups
+ * A Class that represents the player
+ * including functionality for collecting pickups
+ * @author Valentin Zirngibl
+ * @author Samreet
  */
 public class Player
         extends MovingEntity
 {
     // private Methods
     /**
-     * counts the collected pickups
+     * Counts the collected pickups
      */
     private int pickUpCounter;
-
-
-    private LightSource flashlight;
-	
     /**
-     * Constructor
-     * @param manager : assetHolder for player and flashlight assets
+     * adds a lightcone around the player, so he can see in the darkness
+     */
+    private LightSource flashlight;
+    /**
+     * constructor
+     * <p><ul>
+     *     <li>passes the texture of this entity to the base class</li>
+     *     <li>passes animation data to the base class</li>
+     *     <li>creates a lightsource and attaches it to this entity</li>
+     * </ul><p>
+     * @param manager : contains textures for antibug and the lightsource
      */
     public Player(AssetManager manager) {
 
@@ -43,9 +50,8 @@ public class Player
         sprite.setSize(35, 35);
 		
     }
-
     /**
-     * updates players position on the screen
+     * Updates players position on the screen
      * @param Delta : elapsed time since last frame
      */
     public void update(float Delta)
@@ -57,10 +63,9 @@ public class Player
         flashlight.update();
 
     }
-
     /**
-     * collect the given pickup
-     * @param pickUp : pickup that should be collected from the player
+     * Collects the given pickup
+     * @param pickUp : Pickup that should be collected from the player
      */
     public void collect(PickUp pickUp)
     {
@@ -68,15 +73,25 @@ public class Player
         pickUpCounter++;
         System.out.println(pickUpCounter);
     }
-
+    /**
+     * responsible for drawing the flashlight
+     * This additional draw method is necessary because of
+     * the special lightsource mechanic.&nbsp;
+     * This function needs to be called between lightbuffer.begin()
+     * and lightbuffer.end
+     * @param batch : the current spritebatch
+     * @param Delta : elapsed time since last frame
+     */
     public void drawFlashlight(SpriteBatch batch, float Delta)
     {
         if(isAlive)
             flashlight.draw(batch, Delta);
     }
-
+    /**
+     * Gets the current amount of collected pickups
+      * @return : Amount of currently collected pickups
+     */
     public int getPickUpCounter() { return pickUpCounter; }
-
 }
 
 

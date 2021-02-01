@@ -2,24 +2,40 @@ package com.bitsavior.entity;
 
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.bitsavior.ai.EnemyAI;
 import com.bitsavior.asset.Assets;
 
 import java.util.Random;
 
+/**
+ * a class to represent a friendly bug that adds a moving lightsource
+ * to help the player navigate through the level
+ * @author Valentin Zirngibl
+ */
 public class AntiBug extends MovingEntity
 {
-    private LightSource flashlight;
 
+    /**
+     * the lightcone of this bug, lightens the surrounding area
+     */
+    private LightSource flashlight;
     /**
      * maximum walk distance before change of direction
      */
     private final float maxWalkingDistance = 100.f;
     /**
-     * walked worldunits before direction change
+     * currently moved distance in worldunits, resets after direction change
      */
     private float walkDistance = 0.f;
 
+    /**
+     * constructor
+     * <p><ul>
+     *     <li>passes the texture of this entity to the base class</li>
+     *     <li>passes animation data to the base class</li>
+     *     <li>creates a lightsource and attaches it to this entity</li>
+     * </ul><p>
+     * @param manager : contains textures for antibug and the lightsource
+     */
     public AntiBug(AssetManager manager)
     {
         super(manager.get(Assets.antibug), 100.f, 2, 1, 0.1f);
@@ -28,13 +44,14 @@ public class AntiBug extends MovingEntity
 
         flashlight = new LightSource(manager.get(Assets.light));
         flashlight.attach(this);
+        flashlight.setColor(LightSource.TYPE.WARM);
 
         // set size
         sprite.setSize(25, 25);
     }
 
     /**
-     * set the enemy alive and spawn it at the given position
+     * spawn the entity at the given position
      * @param x : x-coordinate(spawn)
      * @param y : y-coordinate(spawn)
      */
@@ -47,7 +64,8 @@ public class AntiBug extends MovingEntity
     }
 
     /**
-     * updates position, direction and artifical intelligence
+     * updates position of entity, attached lightsource and chooses a new
+     * direction if the entity moved a given distance
      * @param Delta : elapsed time since last frame
      */
     public void update(float Delta)
@@ -64,17 +82,23 @@ public class AntiBug extends MovingEntity
 
     }
 
+    /**
+     * responsible for drawing the flashlight
+     * This additional draw method is necessary because of
+     * the special lightsource mechanic.&nbsp;
+     * This function needs to be called between lightbuffer.begin()
+     * and lightbuffer.end
+     * @param batch : the current spritebatch
+     * @param Delta : elapsed time since last frame
+     */
     public void drawFlashlight(SpriteBatch batch, float Delta)
     {
         if(isAlive)
             flashlight.draw(batch, Delta);
     }
-
-
-
     // private Methods
     /**
-     * set move direction of the enemy randomly
+     * sets the move direction randomly out of 4 possible directions
      */
     private void chooseDirection()
     {

@@ -8,7 +8,8 @@ import com.bitsavior.map.Tilemap;
 import java.util.Random;
 
 /**
- * represents an enemy including A.I
+ * A class that represents the basic enemy of the player
+ * @author Valentin Zirngibl
  */
 public class Bug
         extends MovingEntity
@@ -16,30 +17,29 @@ public class Bug
 {
     // private Members
     /**
-     * view range of the enemy in units
+     * View range of the enemy in units
      */
     private float viewRange;
     /**
-     * normal velocity that is used if nothing is in viewrange
+     * Velocity of the enemy used if nothing is in viewrange
      */
     private final float nVelocity;
     /**
-     * controls the enemies behaviour
+     * Controls the enemies behaviour
      */
     private EnemyAI brain;
     /**
-     * maximum walk distance before change of direction
+     * Maximum walk distance before change of direction
      */
     private final float maxWalkingDistance = 100.f;
     /**
-     * walked worldunits before direction change
+     * Currently moved distance in worldunits, resets after direction change
      */
     private float walkDistance = 0.f;
-	
-
     // public Methods
     /**
-     * Constructor()
+     * Constructor passes the enemies texture to the base class and
+     * attaches the artifical intelligence to this entity
      * @param texture : texture of the enemy
      */
     public Bug(Texture texture)
@@ -58,9 +58,8 @@ public class Bug
         brain = new EnemyAI(this, viewRange);
 
     }
-
     /**
-     * set the enemy alive and spawn it at the given position
+     * Spawns the entity at the given position
      * @param x : x-coordinate(spawn)
      * @param y : y-coordinate(spawn)
      */
@@ -71,9 +70,8 @@ public class Bug
         sprite.setPosition(x, y);
         chooseDirection();
     }
-
     /**
-     * updates position, direction and artifical intelligence
+     * Updates position, direction and artifical intelligence
      * @param Delta : elapsed time since last frame
      * @param player : player data for the artifical intelligence
      */
@@ -98,23 +96,19 @@ public class Bug
         walkDistance += velocity * Delta;
 
     }
-
-
     /**
-     * return the viewrange of the enemy
-     * @return : viewrange of the enemy
+     * Returns the viewranges radius of this enemy
+     * @return : viewranges radius
      */
     public float getViewRange() { return viewRange; }
-
     /**
-     * sets the current viewrange of the enemy
-     * @param viewRange : describes how far the enemy can see
+     * Sets the current viewranges radius
+     * @param viewRange : radius of the viewrange
      */
     public void setViewRange(float viewRange) { this.viewRange = viewRange; }
-
     // private Methods
     /**
-     * set move direction of the enemy randomly
+     * Sets the move direction randomly out of 4 possible directions
      */
     private void chooseDirection()
     {

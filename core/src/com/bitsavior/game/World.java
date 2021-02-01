@@ -18,7 +18,13 @@ import java.util.ArrayList;
 import java.util.Random;
 
 /**
- * represents the world of the game
+ * A class that represents the world of the game
+ * <p><ul>
+ *     <li>Creates the actual level</li>
+ *     <li>Computes the game logic</li>
+ *     <li>Render the scene</li>
+ * </ul><p>
+ * @author Valentin Zirngibl
  */
 public class World
 {
@@ -56,6 +62,9 @@ public class World
 	 */
 	private Player player;
 
+	/**
+	 * friendly bug with a lightsource attached
+	 */
 	private AntiBug debugger;
 	/**
 	 * contains all enemies
@@ -73,15 +82,12 @@ public class World
 	 * contains all pickups
 	 */
 	private ArrayList<PickUp> pickUps;
-
 	// public Members
 	/**
 	 * describes the bounds of the world
 	 * visible trough the camera in worldunits
 	 */
 	public final Vector2 WORLDBOUNDS;
-
-
 	/**
 	 * handles the blending of the scene
 	 */
@@ -137,7 +143,7 @@ public class World
 
 
 		// distribute textures & create Entities
-		map = new Tilemap(assets.holder.get(Assets.currentMap), camera);
+		map = new Tilemap(assets.holder.get(Assets.map1), camera);
 		player = new Player(assets.holder);
 		player.setPosition(40.f, 40.f);
 		
