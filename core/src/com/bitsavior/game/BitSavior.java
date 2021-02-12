@@ -1,6 +1,7 @@
 package com.bitsavior.game;
 
 import com.badlogic.gdx.Game;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
@@ -11,7 +12,7 @@ public class BitSavior extends Game {
 	@Override
 	public void create() {
 		batch = new SpriteBatch();
-		font = new BitmapFont();
+		font = new BitmapFont(Gdx.files.internal("s64verdana_blue.fnt"));
 		setScreen(new TitleScreen(this));
 	}
 
