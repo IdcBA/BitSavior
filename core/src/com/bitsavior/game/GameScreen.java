@@ -3,7 +3,6 @@ package com.bitsavior.game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputAdapter;
-import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.ScreenAdapter;
 
 public class GameScreen extends ScreenAdapter {
@@ -37,7 +36,8 @@ public class GameScreen extends ScreenAdapter {
 
 
 	@Override
-	public void show(){
+	public void show()
+	{
 		Gdx.input.setInputProcessor(new InputAdapter() {
 			@Override
 			public boolean keyDown(int keyCode) {
@@ -50,9 +50,6 @@ public class GameScreen extends ScreenAdapter {
 				return true;
 			}
 		});
-
-
-
 	}
 
 
@@ -69,6 +66,13 @@ public class GameScreen extends ScreenAdapter {
 	{
 		world.dispose();
 	}
+	
+	@Override
+	public void hide()
+	{
+		Gdx.input.setInputProcessor(null);
+	}
+	
 	// private methods
 	private void processEvents() {}
 }
