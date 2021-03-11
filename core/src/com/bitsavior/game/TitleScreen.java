@@ -4,6 +4,8 @@ package com.bitsavior.game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -15,29 +17,28 @@ public class TitleScreen extends ScreenAdapter
 {
     //variables for testing
 	/** 0: no messages; 1: send messages; 2: --- */
-    int aScreenTestMode=0;
+    private int aScreenTestMode=0;
     /** 0: no messages<p>1: send messages for Buttons*/
-    int aButtonTestMode=1;
+    private int aButtonTestMode=0;
     
     //the game and its screens
-    BitSavior game;
-    GameScreen gScreen;
-    /** the TitleScreen itself, as a "jump back" for the GameScreen */
-    TitleScreen tScreen;
+    private BitSavior game;
     
     /** Stage to store Buttons, fonts, etc
      * <p>
      * TODO: integrate fonts, +buttons, etc (also from BitSavior AND delete batch)
      */
     private Stage stage;
+	private SpriteBatch batch;
+	private BitmapFont font;
     
     //Button properties
     /** Skin for the Buttons */
     private Skin bSkin1;
-    /** Button 1 */
+    /** Button 1: New Game */
     private TextButton button1;
-    /** Button 2 */
-    private TextButton button2;
+    /** Button 9: continue */
+    private TextButton button9;
     /** norm X size for Buttons */
     private int bSizeX = 300;
     /** norm Y size for Buttons */
@@ -50,10 +51,11 @@ public class TitleScreen extends ScreenAdapter
     public TitleScreen(final BitSavior game) {
     	//for the game
     	this.game = game;
-        tScreen = this;
         
-        //add Stage to display objects
+        //add Stage and batch&font to display objects
         stage = new Stage(new ScreenViewport());
+        batch = new SpriteBatch();
+		font = new BitmapFont(Gdx.files.internal("s64verdana_blue.fnt"));
         
         //load Skin for Buttons
         bSkin1 = new Skin(Gdx.files.internal("skin/glassy-ui.json"));
@@ -63,17 +65,15 @@ public class TitleScreen extends ScreenAdapter
         button1.setSize(bSizeX, bSizeY);
         button1.setPosition(Gdx.graphics.getWidth()*0.5f - bSizeX / 2,
         		Gdx.graphics.getHeight()*0.5f - bSizeY / 2 );
-        //actions for Button 1 in show()
         stage.addActor(button1);
         
-        //initialize Button 2
-        button2 = new TextButton("Continue Game", bSkin1, "small");
-        button2.setSize(bSizeX, bSizeY);
-        button2.setPosition(Gdx.graphics.getWidth()*0.5f  - bSizeX / 2,
+        //initialize continue Button 9
+        button9 = new TextButton(" ", bSkin1, "small"); //edit name in show()
+        button9.setSize(bSizeX, bSizeY);
+        button9.setPosition(Gdx.graphics.getWidth()*0.5f  - bSizeX / 2,
         		Gdx.graphics.getHeight() / 2f - bSizeY * 2.5f );
-        //actions for Button 2 in show()
         if(aButtonTestMode==1) System.out.println("Button2 x:"+ (Gdx.graphics.getWidth()*0.5f  - bSizeX / 2) + ", y:" + (Gdx.graphics.getHeight() / 2f - bSizeY * 2.5f ));
-        stage.addActor(button2);
+        stage.addActor(button9);
     }
     
     @Override
@@ -82,40 +82,40 @@ public class TitleScreen extends ScreenAdapter
     	Gdx.input.setInputProcessor(stage);
     	
     	//reset "continue" button
-    	button2.setText("Continue Game");
+    	button9.setText("Continue paused Game");
     	
     	//actions for button 1
     	button1.addListener(new InputListener() {
+    		//touchDown returning true is necessary as precondition for touchUp
     		@Override
     		public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
-    			//if no game is started/paused
-    			if(gScreen==null) {
-    				if(aScreenTestMode==1) System.out.println("no gScreen");
-                	gScreen = new GameScreen(game, tScreen);
-                	game.setScreen(gScreen);
-                }
-    			else {
-            		System.out.println("existing game gets replaced");
-            		gScreen.dispose();
-            		gScreen = new GameScreen(game, tScreen);
-                	game.setScreen(gScreen);
-            	}
     			return true;
+    		}
+    		@Override
+    		public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
+    			
+                game.manager.setGameLevel(1);
+                game.manager.showScreen(Screens.GAME);
             }
        	} );
     	
-    	//actions for button 2
-    	button2.addListener(new InputListener() {
+    	//actions for continue button 9
+    	button9.addListener(new InputListener() {
+    		//touchDown returning true is necessary as precondition for touchUp
+    		@Override
+    		public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
+    			return true;
+    		}
         	@Override
-            public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
-	     		if(gScreen!=null) {
+            public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
+	     		//continue paused game
+        		if(game.manager.gameIsRunning()) {
 	     			if(aScreenTestMode==1) System.out.println("last gScreen gets loaded");
-	     			game.setScreen(gScreen);
+	     			game.manager.showScreen(Screens.GAME);
 	     		}
 	     		else {
-	     			button2.setText("No game in progress.");
+	     			button9.setText("No game in progress.");
 	     		}
-				return true;
         	}
         } );
     	
@@ -129,15 +129,21 @@ public class TitleScreen extends ScreenAdapter
         stage.act();
         stage.draw();
         
-        game.batch.begin();
-        game.font.draw(game.batch, "Welcome to Bitsavior!", Gdx.graphics.getWidth() * .25f - 30f, Gdx.graphics.getHeight() * .75f);
+        batch.begin();
+        font.draw(batch, "Welcome to Bitsavior!", Gdx.graphics.getWidth() * .25f - 30f, Gdx.graphics.getHeight() * .75f);
         //game.font.draw(game.batch, "Press space to play.", Gdx.graphics.getWidth() * .25f, Gdx.graphics.getHeight() * .25f);
-        game.batch.end();
+        batch.end();
     }
 
     @Override
     public void hide()
     {
         Gdx.input.setInputProcessor(null);
+    }
+    
+    public void dispose() {
+    	stage.dispose();
+    	batch.dispose();
+		font.dispose();
     }
 }

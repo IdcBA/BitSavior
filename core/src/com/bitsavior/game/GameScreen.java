@@ -8,15 +8,14 @@ import com.badlogic.gdx.ScreenAdapter;
 public class GameScreen extends ScreenAdapter {
 
 	// private Members
-	BitSavior game;
-	TitleScreen tScreen;
+	private BitSavior game;
 	private World world;
 
 	
 	/**
      * 0: no messages; 1: send messages
      */
-    int aTestMode=1;
+    int aTestMode=0;
 
 	// public methods
 	/**
@@ -24,11 +23,11 @@ public class GameScreen extends ScreenAdapter {
 	 * @param game game
 	 * @param tScreen to "jump back"
 	 */
-	public GameScreen(BitSavior game, TitleScreen tScreen)
+	public GameScreen(BitSavior game, int level)
 	{
 		this.game = game;
-		if(tScreen==null) System.out.println("tScreen beim erstellen von GameScreen leer");
-		this.tScreen = tScreen;
+		//if(tScreen==null) System.out.println("tScreen beim erstellen von GameScreen leer");
+		//this.tScreen = tScreen;
 		world = new World();    // creating the World
 		world.create();
 		if(aTestMode==1) System.out.println("creates new world");
@@ -43,8 +42,7 @@ public class GameScreen extends ScreenAdapter {
 			public boolean keyDown(int keyCode) {
 				if (keyCode == Input.Keys.ESCAPE) {
 					
-					if(tScreen==null) if(aTestMode==1) System.out.println("tScreen leer");
-					game.setScreen(tScreen);
+					game.manager.showScreen(Screens.TITLE);
 					
 				}
 				return true;
@@ -57,7 +55,7 @@ public class GameScreen extends ScreenAdapter {
 	public void render(float Delta)
 	{
 		if(!world.update(Delta))
-			game.setScreen(tScreen);
+			game.manager.showScreen(Screens.TITLE);
 		world.render(Delta);
 	}
 

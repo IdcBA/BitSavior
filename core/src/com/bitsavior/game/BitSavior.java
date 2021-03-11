@@ -6,20 +6,20 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public class BitSavior extends Game {
-	SpriteBatch batch;
-	BitmapFont font;
+	public ScreenManager manager;
 
 	@Override
 	public void create() {
-		batch = new SpriteBatch();
-		font = new BitmapFont(Gdx.files.internal("s64verdana_blue.fnt"));
 		setScreen(new TitleScreen(this));
+		
+		//with ScreenManager
+		manager = new ScreenManager(this);
+		manager.showScreen(Screens.TITLE);
 	}
 
 	@Override
 	public void dispose() {
-		batch.dispose();
-		font.dispose();
+		manager.dispose();
 	}
 
 }
