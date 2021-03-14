@@ -13,7 +13,6 @@ import com.badlogic.gdx.math.Vector2;
 import com.bitsavior.asset.Assets;
 import com.bitsavior.entity.*;
 import com.bitsavior.map.Tilemap;
-
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -87,6 +86,7 @@ public class World
 	 */
 	private FrameBuffer lightBuffer;
 	private TextureRegion lightBufferRegion;
+	private BackgroundMusic music;
 
 
 	// public Methods
@@ -145,6 +145,12 @@ public class World
 		spawnEnemies();
 		spawnPickUps();
 
+		music = new BackgroundMusic(assets.holder.get(Assets.background));
+		music.setloop(true);
+		music.setVolume(0.5f);
+		music.play();
+		
+		
 		// if there is already a lightBuffer, reset
 		if(lightBuffer != null)
 			lightBuffer.dispose();
@@ -296,8 +302,11 @@ public class World
 		for(int i = 0; i < MaxNumberOfEnemies; i++)
 		{
 			Enemies.get(i).isCollided(map);
-			if(player.isCollided(Enemies.get(i)))
+			if(player.isCollided(Enemies.get(i)) && !(player.isSaved())) {
 				player.isAlive = false;
+				player.stopMusic(music);
+				player.playSound(assets.holder.get(Assets.lose), false);
+			}
 		}
 
 		// check debugger collision
@@ -305,8 +314,16 @@ public class World
 
 		// check pickup collision
 		for(int i = 0; i < PickUp.pickUpCounter; i++)
-			if(player.isCollided(pickUps.get(i)))
+			if(player.isCollided(pickUps.get(i))) {
 				player.collect(pickUps.get(i));
+				player.playSound(assets.holder.get(Assets.blop), false);
+			}
+		
+		// check debugger collision 
+		if (player.isCollided(debugger)) {
+			player.Save();
+			player.playSound(assets.holder.get(Assets.save), true);
+		}
 	}
 	/**
 	 * spawn the maximum amount of enemies given by MaxNumberOfEnemies

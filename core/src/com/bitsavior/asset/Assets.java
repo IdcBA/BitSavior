@@ -2,6 +2,8 @@ package com.bitsavior.asset;
 
 import com.badlogic.gdx.assets.AssetDescriptor;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
@@ -31,9 +33,18 @@ public class Assets
             new AssetDescriptor<Texture>("lightcone3.png", Texture.class);
     public static final AssetDescriptor<Texture> uiRect =
             new AssetDescriptor<Texture>("ui_rect_2.png", Texture.class);
+    public static final AssetDescriptor<Music> background =
+            new AssetDescriptor<Music>("backgroundmusic.mp3", Music.class);
+    public static final AssetDescriptor<Sound> blop =
+    		new AssetDescriptor<>("blop.wav", Sound.class);
+    public static final AssetDescriptor<Sound> lose =
+    		new AssetDescriptor<>("lose.wav", Sound.class);
+    public static final AssetDescriptor<Sound> save =
+    		new AssetDescriptor<>("save.wav", Sound.class);
 
 
 
+    
     public Assets()
     {
         holder = new AssetManager();
@@ -53,6 +64,12 @@ public class Assets
         holder.load(light);
         holder.load(currentMap);
         holder.load(uiRect);
+
+        holder.load(background);
+        holder.load(blop);
+        holder.load(lose);
+        holder.load(save);
+
 
 
         holder.finishLoading();
