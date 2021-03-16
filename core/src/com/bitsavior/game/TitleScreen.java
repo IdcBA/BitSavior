@@ -21,15 +21,14 @@ public class TitleScreen extends ScreenAdapter
     /** 0: no messages<p>1: send messages for Buttons*/
     private int aButtonTestMode=0;
     
-    //the game and its screens
+    //the game and visuals
+    /** the game for screen management */
     private BitSavior game;
-    
-    /** Stage to store Buttons, fonts, etc
-     * <p>
-     * TODO: integrate fonts, +buttons, etc (also from BitSavior AND delete batch)
-     */
+    /** Stage to store Buttons, fonts, etc */
     private Stage stage;
+    /** Batch for title */
 	private SpriteBatch batch;
+	/** Font for title */
 	private BitmapFont font;
     
     //Button properties
@@ -37,8 +36,8 @@ public class TitleScreen extends ScreenAdapter
     private Skin bSkin1;
     /** Button 1: New Game */
     private TextButton button1;
-    /** Button 9: continue */
-    private TextButton button9;
+    /** Button (former 9): continue */
+    private TextButton buttonContinue;
     /** norm X size for Buttons */
     private int bSizeX = 300;
     /** norm Y size for Buttons */
@@ -67,13 +66,13 @@ public class TitleScreen extends ScreenAdapter
         		Gdx.graphics.getHeight()*0.5f - bSizeY / 2 );
         stage.addActor(button1);
         
-        //initialize continue Button 9
-        button9 = new TextButton(" ", bSkin1, "small"); //edit name in show()
-        button9.setSize(bSizeX, bSizeY);
-        button9.setPosition(Gdx.graphics.getWidth()*0.5f  - bSizeX / 2,
-        		Gdx.graphics.getHeight() / 2f - bSizeY * 2.5f );
+        //initialize continue Button
+        buttonContinue = new TextButton(" ", bSkin1, "small"); //edit name in show()
+        buttonContinue.setSize(bSizeX, bSizeY);
+        buttonContinue.setPosition(Gdx.graphics.getWidth()*0.5f  - bSizeX / 2,
+        		Gdx.graphics.getHeight() / 2f - bSizeY * 2.5f ); //
         if(aButtonTestMode==1) System.out.println("Button2 x:"+ (Gdx.graphics.getWidth()*0.5f  - bSizeX / 2) + ", y:" + (Gdx.graphics.getHeight() / 2f - bSizeY * 2.5f ));
-        stage.addActor(button9);
+        stage.addActor(buttonContinue);
     }
     
     @Override
@@ -82,7 +81,7 @@ public class TitleScreen extends ScreenAdapter
     	Gdx.input.setInputProcessor(stage);
     	
     	//reset "continue" button
-    	button9.setText("Continue paused Game");
+    	buttonContinue.setText("Continue paused Game");
     	
     	//actions for button 1
     	button1.addListener(new InputListener() {
@@ -93,14 +92,13 @@ public class TitleScreen extends ScreenAdapter
     		}
     		@Override
     		public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
-    			
                 game.manager.setGameLevel(1);
                 game.manager.showScreen(Screens.GAME);
             }
        	} );
     	
-    	//actions for continue button 9
-    	button9.addListener(new InputListener() {
+    	//actions for continue button
+    	buttonContinue.addListener(new InputListener() {
     		//touchDown returning true is necessary as precondition for touchUp
     		@Override
     		public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
@@ -114,7 +112,7 @@ public class TitleScreen extends ScreenAdapter
 	     			game.manager.showScreen(Screens.GAME);
 	     		}
 	     		else {
-	     			button9.setText("No game in progress.");
+	     			buttonContinue.setText("No game in progress.");
 	     		}
         	}
         } );
@@ -126,12 +124,13 @@ public class TitleScreen extends ScreenAdapter
         Gdx.gl.glClearColor(0, 0.25f, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         
+        //draw stage(buttons, etc.)
         stage.act();
         stage.draw();
         
+        //draw texts: e.g.: title
         batch.begin();
         font.draw(batch, "Welcome to Bitsavior!", Gdx.graphics.getWidth() * .25f - 30f, Gdx.graphics.getHeight() * .75f);
-        //game.font.draw(game.batch, "Press space to play.", Gdx.graphics.getWidth() * .25f, Gdx.graphics.getHeight() * .25f);
         batch.end();
     }
 

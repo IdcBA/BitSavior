@@ -1,10 +1,8 @@
 package com.bitsavior.game;
 
-import com.badlogic.gdx.ApplicationListener;
-
 /**
  * This Class holds the Screens: TitleScreen, GameScreen, (Lose/Win)
- * <p> TODO: edit " initialize, show, dispose" of win-/lose-screens
+ * <p> TODO: edit "initialize, show, dispose" of win-/lose-screens
  * <p> TODO: for other Screens: add them extra in Screens.java
  */
 public class ScreenManager {
@@ -18,37 +16,54 @@ public class ScreenManager {
 	/** The GameScreen */
 	private GameScreen gScreen;
 	/** The WinScreen after winning the game */
-	//TODO ... win
+	private WinScreen winScreen;
 	/** The LoseScreen after losing the game */
-	//TODO ... lose
+	private LoseScreen loseScreen;
 	
-	/** initializes all Screens except the GameScreen */
+	/** 
+	 * Constructor
+	 * <p>initializes (only?) title Screen
+	 */
 	public ScreenManager(BitSavior game) {
 		this.game = game;
 		tScreen = new TitleScreen(game);
+		winScreen = new WinScreen(game);
+		loseScreen = new LoseScreen(game);
 		//TODO  ... win/lose
 	}
 	
-	/** @param screenName one of these: TITLE,GAME,(WIN,LOSE) */
+	/**
+	 * Level has to be set before: 
+	 * @see {@link setGameLevel}
+	 * @param screenName one of these: TITLE,GAME,WIN,LOSE
+	 */
 	public void showScreen(Screens screenName) {
 		switch(screenName) {
 			case TITLE : 
-				if(tScreen==null) System.out.println("tScreen is null");
+				if(tScreen==null) System.out.println("TitleScreen is null");
 				else game.setScreen(tScreen);
 				break;
 			case GAME :
-				if(gameIsRunning()) {
-					game.setScreen(gScreen);
-				}
-				else System.out.println("gScreen is null");
+				if(!gameIsRunning()) System.out.println("GameScreen is null");
+				else game.setScreen(gScreen);
 				break;
 			case WIN :
-				System.out.println("WinScreen not in ScreenManager implemented yet.");
-				//TODO ... win
+				if(winScreen==null) System.out.println("WinScreen is null");
+				else {
+					//deletes last GameScreen
+					gScreen.dispose();
+					gScreen = null;
+					game.setScreen(winScreen);
+				}
 				break;
 			case LOSE :
-				System.out.println("LoseScreen not in ScreenManager implemented yet.");
-				//TODO ... lose
+				if(loseScreen==null) System.out.println("LoseScreen is null");
+				else {
+					//deletes last GameScreen
+					gScreen.dispose();
+					gScreen = null;
+					game.setScreen(loseScreen);
+				}
 				break;
 			default : System.out.println("try \"TITLE, GAME, WIN, LOSE\"");
 		}
@@ -60,7 +75,8 @@ public class ScreenManager {
 		else return true;
 	}
 	
-	/** sets the GameScreen or replaces the existing one 
+	/** sets the GameScreen or replaces the existing one
+	 * <p> has to be set before the GameScreen can be shown
 	 * @param level currently only 1
 	 */
 	public void setGameLevel(int level) {
@@ -72,10 +88,15 @@ public class ScreenManager {
 			gScreen = new GameScreen(game, level);
 		}
 	}
+	/** returns current Level of the GameScreen */
+	public int getGameLevel() {
+		return gScreen.getGameLevel();
+	}
 
 	public void dispose() {
-		tScreen.dispose();
-		gScreen.dispose();
-		//TODO ... win/lose
+		if(tScreen != null) tScreen.dispose();
+		if(gScreen != null) gScreen.dispose();
+		if(winScreen != null) winScreen.dispose();
+		if(loseScreen != null) loseScreen.dispose();
 	}
 }
