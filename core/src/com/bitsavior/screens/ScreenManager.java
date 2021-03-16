@@ -1,8 +1,10 @@
-package com.bitsavior.game;
+package com.bitsavior.screens;
+
+//import com.bitsavior.game.TitleScreen;
 
 /**
  * This Class holds the Screens: TitleScreen, GameScreen, (Lose/Win)
- * <p> TODO: edit "initialize, show, dispose" of win-/lose-screens
+ * <p> TODO: edit "initialize, show, dispose" of win-/lose-com.bitsavior.screens
  * <p> TODO: for other Screens: add them extra in Screens.java
  */
 public class ScreenManager {

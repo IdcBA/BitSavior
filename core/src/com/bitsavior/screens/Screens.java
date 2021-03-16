@@ -1,4 +1,4 @@
-package com.bitsavior.game;
+package com.bitsavior.screens;
 
 /**
  * for easier Screen switching
