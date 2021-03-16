@@ -1,9 +1,7 @@
-package screens;
+package com.bitsavior.screens;
 
 import com.badlogic.gdx.Game;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+//import com.bitsavior.game.TitleScreen;
 
 public class BitSavior extends Game {
 	public ScreenManager manager;

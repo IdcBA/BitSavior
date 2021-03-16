@@ -1,4 +1,4 @@
-package com.bitsavior.game;
+package com.bitsavior.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;

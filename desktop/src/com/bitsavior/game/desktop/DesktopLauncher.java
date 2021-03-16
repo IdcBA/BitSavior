@@ -2,7 +2,7 @@ package com.bitsavior.game.desktop;
 
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
-import screens.BitSavior;
+import com.bitsavior.screens.BitSavior;
 
 public class DesktopLauncher {
 	public static void main (String[] arg) {
