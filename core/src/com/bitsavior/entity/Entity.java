@@ -49,7 +49,7 @@ public class Entity
     }
 
     /**
-     * add the position of the entity
+     * add a new position to the current position
      * @param x : horizontal position of the Player
      * @param y : vertical position of the Player
      */

@@ -1,4 +1,4 @@
-package com.bitsavior.game;
+package screens;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;

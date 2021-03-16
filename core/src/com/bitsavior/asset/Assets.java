@@ -29,8 +29,13 @@ public class Assets
 
     public static final AssetDescriptor<Texture> pickUp =
             new AssetDescriptor<Texture>("memory-leaks.jpg", Texture.class);
+    public static final AssetDescriptor<Texture> breakpoint =
+            new AssetDescriptor<Texture>("breakpoint.png", Texture.class);
+
     public static final AssetDescriptor<Texture> light =
             new AssetDescriptor<Texture>("lightcone3.png", Texture.class);
+    public static final AssetDescriptor<Texture> redLight =
+            new AssetDescriptor<Texture>("redLight_1.png", Texture.class);
     public static final AssetDescriptor<Texture> uiRect =
             new AssetDescriptor<Texture>("ui_rect_2.png", Texture.class);
     public static final AssetDescriptor<Music> background =
@@ -62,7 +67,9 @@ public class Assets
         holder.load(player);
         holder.load(pickUp);
         holder.load(light);
+        holder.load(redLight);
         holder.load(currentMap);
+        holder.load(breakpoint);
         holder.load(uiRect);
 
         holder.load(background);

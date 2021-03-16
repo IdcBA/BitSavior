@@ -34,20 +34,20 @@ public class Player
      */
     public Player(AssetManager manager) {
 
+        // call constructor of parent class and pass parameters for animation
         super(manager.get(Assets.player), 200.f, 4, 4, 0.05f);
 
 
         flashlight = new LightSource(manager.get(Assets.light));
         flashlight.attach(this);
 
-        isAlive = true;
 
         direction = Movement.UNMOVED;
 
         pickUpCounter = 0;
 
         // set player size
-        sprite.setSize(35, 35);
+        sprite.setSize(30, 30);
 		
     }
 

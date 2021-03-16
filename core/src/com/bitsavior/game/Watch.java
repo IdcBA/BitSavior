@@ -23,17 +23,20 @@ public class Watch
         isActive = true;
     }
 
-    public boolean update()
+    public void update()
     {
+        if(isActive) {
             elapsedTime = System.currentTimeMillis() - startTime;
 
-            if(elapsedTime >= timeLimit) {
+            if (elapsedTime >= timeLimit) {
                 isActive = false;
             }
-            return isActive;
+        }
     }
 
     public int getRemainingSeconds() { return (int)((timeLimit - elapsedTime) / 1000); }
+
+    public long getRemainingMilliSeconds() { return timeLimit - elapsedTime; }
 
     public int getTimeLimit(){ return (int)(timeLimit / 1000); }
 

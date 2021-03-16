@@ -1,9 +1,11 @@
-package com.bitsavior.game;
+package screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.ScreenAdapter;
+import com.bitsavior.game.GameState;
+import com.bitsavior.game.World;
 
 public class GameScreen extends ScreenAdapter {
 
@@ -29,7 +31,7 @@ public class GameScreen extends ScreenAdapter {
 		this.game = game;
 		if(tScreen==null) System.out.println("tScreen beim erstellen von GameScreen leer");
 		this.tScreen = tScreen;
-		world = new World();    // creating the World
+		world = new World(GameState.INITIALIZE);    // creating the World
 		world.create();
 		if(aTestMode==1) System.out.println("creates new world");
 	}
@@ -56,8 +58,15 @@ public class GameScreen extends ScreenAdapter {
 	@Override
 	public void render(float Delta)
 	{
-		if(!world.update(Delta))
-			game.setScreen(tScreen);
+
+		switch(world.update(Delta))
+		{
+			case LOOSE_CAUGHT:
+			case LOOSE_TIMEOUT:
+				game.setScreen(tScreen);
+				break;
+			default:
+		}
 		world.render(Delta);
 	}
 
