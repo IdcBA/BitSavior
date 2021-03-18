@@ -1,12 +1,9 @@
 package com.bitsavior.entity;
 
 import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.bitsavior.asset.Assets;
-import com.bitsavior.game.BackgroundMusic;
-import com.bitsavior.game.Soundeffect;
 import com.bitsavior.game.Watch;
 
 /**
@@ -24,9 +21,7 @@ public class Player
 
 
     private LightSource flashlight;
-    private Soundeffect sound;
-    private Watch save_time;
-    private Watch waiting_time;
+    private Watch saveTime;
 	
     /**
      * Constructor
@@ -86,58 +81,22 @@ public class Player
 
     public int getPickUpCounter() { return pickUpCounter; }
 
-
+    
     /**
-     * @param effect : Sound, that should be played
-     * @param waiting : waiting time needed before the sound should be played again
+     * saves player for 10 seconds after collision with debugger
      */
-    public void playSound(Sound effect, boolean waiting) {
-    	
-    	if(!waiting) {
-    	sound = new Soundeffect(effect);
-    	sound.play();
-    	}
-
-    	else if(waiting_time==null) { 
-    			waiting_time = new Watch(1);
-    			waiting_time.startWatch();
-    			sound = new Soundeffect(effect);
-    	    	sound.play();
-    	}
-    	else {
-    		waiting_time.update();
-    		if(!waiting_time.isActive()) {
-    		sound = new Soundeffect(effect);
-	    	sound.play();
-	    	waiting_time = new Watch(1);
-			waiting_time.startWatch();
-    		}
-    		else return;
-    	}
-    }    
-
-
-	public void stopMusic(BackgroundMusic music) {
-		if(!this.isAlive) {
-			music.stop();
-		}
-		
-	}
-
 	public void Save() {
 		
-		save_time = new Watch(10);
-		save_time.startWatch();
-		System.out.println("Timer set");
+		saveTime = new Watch(10);
+		saveTime.startWatch();
 		
 	}
 	
 	public boolean isSaved() {
-		save_time.update();
-		if(save_time.isActive())
-		return true;
-		else
-		return false;
+		if(saveTime == null) 
+			return false;
+		saveTime.update();
+		return saveTime.isActive();
 	}
 }
 

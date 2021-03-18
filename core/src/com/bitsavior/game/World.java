@@ -66,6 +66,10 @@ public class World
 	 */
 	private BackgroundMusic music;
 	/**
+	 * holds the sound effect currently needed
+	 */
+	private Soundeffect sound;
+	/**
 	 * class contains the Tiled Map, additional renderer and related data
 	 */
 	private Tilemap map;
@@ -434,11 +438,11 @@ public class World
 		{
 			Enemies.get(i).isCollided(map);
 
-			// !!! buggy !!!
 			if(player.isCollided(Enemies.get(i)) && !player.isSaved()) {
 				player.isAlive = false;
-				player.stopMusic(music);
-				player.playSound(assets.holder.get(Assets.lose), false);
+				music.stop();
+				sound = new Soundeffect(assets.holder.get(Assets.lose));
+				sound.play();
 			}
 		}
 
@@ -449,14 +453,16 @@ public class World
 		for(int i = 0; i < PickUp.pickUpCounter; i++)
 			if(player.isCollided(pickUps.get(i))) {
 				player.collect(pickUps.get(i));
-				player.playSound(assets.holder.get(Assets.blop), false);
+				sound = new Soundeffect(assets.holder.get(Assets.blop));
+				sound.play();
 			}
 		
 		// check debugger collision 
 		if (player.isCollided(debugger)) {
 			player.Save();
-			player.playSound(assets.holder.get(Assets.save), true);
-		}
+			sound = new Soundeffect(assets.holder.get(Assets.save));
+			debugger.playSound(sound);	
+			}
 	}
 	/**
 	 * spawn the maximum amount of enemies given by MaxNumberOfEnemies
