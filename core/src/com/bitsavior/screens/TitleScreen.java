@@ -39,10 +39,12 @@ public class TitleScreen extends ScreenAdapter
     private Skin bSkin1;
     /** Button 1: New Game */
     private TextButton button1;
-    /** Button 9: continue */
+    /** Button 9: continues if there is a paused game */
     private TextButton button9;
     /** Button Exit: exits the game */
     private TextButton buttonExit;
+    /** Button Settings: opens settings menu*/
+    private TextButton buttonSettings; 
     /** norm X size for Buttons */
     private float bSizeX = 300;
     /** norm Y size for Buttons */
@@ -85,6 +87,13 @@ public class TitleScreen extends ScreenAdapter
         buttonExit.setPosition(Gdx.graphics.getWidth() * 0.25f - bSizeX / 2,
                 Gdx.graphics.getHeight() * 0.5f - (bSizeY * 4.0f) );
         stage.addActor(buttonExit);
+        
+        //initializes settings Button
+        buttonSettings = new TextButton("Settings", bSkin1, "small");
+        buttonSettings.setSize(bSizeX, bSizeY);
+        buttonSettings.setPosition(Gdx.graphics.getWidth() * 0.75f - bSizeX / 2,
+        		Gdx.graphics.getHeight() * 0.5f - (bSizeY * 4.0f) );
+        stage.addActor(buttonSettings);
     }
 
     @Override
@@ -143,6 +152,19 @@ public class TitleScreen extends ScreenAdapter
             	//game.manager.dispose();
             }
         } );
+        
+        //actions for settings button
+        buttonSettings.addListener(new InputListener() {
+        	//touchDown returning true is necessary as precondition for touchUp
+            @Override
+            public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
+                return true;
+            }
+            @Override
+            public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
+            	game.manager.showScreen(Screens.SETTINGS);
+            }
+        });
 
     }
 
@@ -156,7 +178,6 @@ public class TitleScreen extends ScreenAdapter
 
         batch.begin();
         font.draw(batch, "Welcome to Bitsavior!", Gdx.graphics.getWidth() * .25f - 30f, Gdx.graphics.getHeight() * .75f);
-        //game.font.draw(game.batch, "Press space to play.", Gdx.graphics.getWidth() * .25f, Gdx.graphics.getHeight() * .25f);
         batch.end();
     }
 

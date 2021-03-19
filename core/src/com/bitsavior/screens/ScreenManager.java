@@ -21,6 +21,8 @@ public class ScreenManager {
 	private WinScreen winScreen;
 	/** The LoseScreen after losing the game */
 	private LoseScreen loseScreen;
+	/** The Settings for the game */
+	private SettingsScreen settingsScreen;
 	
 	/** 
 	 * Constructor
@@ -31,6 +33,7 @@ public class ScreenManager {
 		tScreen = new TitleScreen(game);
 		winScreen = new WinScreen(game);
 		loseScreen = new LoseScreen(game);
+		settingsScreen = new SettingsScreen(game);
 		//TODO  ... win/lose
 	}
 	
@@ -67,7 +70,11 @@ public class ScreenManager {
 					game.setScreen(loseScreen);
 				}
 				break;
-			default : System.out.println("try \"TITLE, GAME, WIN, LOSE\"");
+			case SETTINGS :
+				if(settingsScreen==null) System.out.println("settingsScreen is null");
+				else game.setScreen(settingsScreen);
+				break;
+			default : System.out.println("try \"TITLE, GAME, WIN, LOSE, SETTINGS\"");
 		}
 	}
 	

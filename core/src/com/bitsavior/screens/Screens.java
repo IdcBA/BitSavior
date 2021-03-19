@@ -7,5 +7,6 @@ public enum Screens {
 	TITLE,
 	GAME,
 	WIN,
-	LOSE
+	LOSE,
+	SETTINGS
 }
