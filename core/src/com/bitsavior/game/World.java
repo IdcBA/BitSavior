@@ -13,6 +13,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.bitsavior.asset.Assets;
 import com.bitsavior.entity.*;
+import com.bitsavior.map.Environment;
 import com.bitsavior.map.Tilemap;
 import java.util.ArrayList;
 import java.util.Random;
@@ -36,26 +37,26 @@ public class World
 	/**
 	 * hold timer data for the time limit
 	 */
-	private Watch timer;
+	private final Watch timer;
 	/**
 	 * holds the time required for starting a game and animate the entrysequence
 	 */
-	private Watch startTimer;
+	private final Watch startTimer;
 	/**
 	 * manages all game-assets
 	 */
-	private Assets assets;
+	private final Assets assets;
 	/**
 	 * Orthographic Camera:
 	 * Shows what we see in the world.
 	 * Works with WorldUnits instead of Pixels,
 	 * makes it easier to handle different screensizes
 	 */
-	private OrthographicCamera camera;
+	private final OrthographicCamera camera;
 	/**
 	 * collecting drawable objects
 	 */
-	private SpriteBatch batch;
+	private final SpriteBatch batch;
 	/**
 	 * handles the blending of the scene
 	 */
@@ -78,7 +79,7 @@ public class World
 	/**
 	 * contains all enemies
 	 */
-	private ArrayList<Bug> Enemies;
+	private final ArrayList<Bug> Enemies;
 	/**
 	 * maximum Number of Enemies
 	 */
@@ -90,7 +91,7 @@ public class World
 	/**
 	 * contains all pickups
 	 */
-	private ArrayList<PickUp> pickUps;
+	private final ArrayList<PickUp> pickUps;
 	/**
 	 * describes the bounds of the world
 	 * visible trough the camera in worldunits
@@ -99,7 +100,7 @@ public class World
 	/**
 	 * shape renderer for the fading effects
 	 */
-	private ShapeRenderer shapeRenderer;
+	private final ShapeRenderer shapeRenderer;
 	/**
 	 * alpha value used for the fading effect
 	 */
@@ -108,6 +109,10 @@ public class World
 	 * value for coordinating the speed of the fading effect
 	 */
 	private long fadeTimer;
+	/**
+	 * maintains environmental objects and effects
+	 */
+	private Environment lights;
 	/**
 	 * initialise required data for the creation of the world
 	 * @param gameState : initialises the gamestate once, to ensure the correct behaviour
@@ -129,12 +134,13 @@ public class World
 		MaxNumberOfEnemies = 10;
 		MaxNumberOfPickUps = 10;
 		fadeAlpha = 1.0f;
-		fadeTimer = 0l;
+		fadeTimer = 0L;
 
 		this.gameState = gameState;
 
 		Enemies = new ArrayList<Bug>();
 		pickUps = new ArrayList<PickUp>();
+
 	}
 	/**
 	 * config camera, map, player and load assets
@@ -163,6 +169,10 @@ public class World
 
 		music = new BackgroundMusic(assets.holder.get(Assets.background));
 
+
+		lights = new Environment(assets.holder);
+
+
 		// if there is already a lightBuffer, reset
 		if(lightBuffer != null)
 			lightBuffer.dispose();
@@ -189,6 +199,8 @@ public class World
 
 		spawnEnemies();
 		spawnPickUps();
+
+		lights.create();
 
 		music.setloop(true);
 		music.setVolume(0.5f);
@@ -228,7 +240,7 @@ public class World
 		// change the alphablending over the first 5 seconds
 		if(startTimer.isActive && startTimer.getRemainingSeconds() > 5 && fadeAlpha > 0.f)
 		{
-			if(fadeTimer >= (startTimer.getRemainingMilliSeconds() + 50l))
+			if(fadeTimer >= (startTimer.getRemainingMilliSeconds() + 50L))
 			{
 				fadeTimer = startTimer.getRemainingMilliSeconds();
 				fadeAlpha -= 0.01;
@@ -258,6 +270,9 @@ public class World
 		player.update(Delta);
 		debugger.update(Delta);
 
+		lights.update();
+
+
 
 		for(int i = 0; i < MaxNumberOfEnemies; i++)
 		{
@@ -277,7 +292,7 @@ public class World
 	/**
 	 * manages all render calls inside the world
 	 */
-	public void render(float Delta)
+	public void render(final float Delta)
 	{
 
 		switch(gameState)
@@ -293,6 +308,8 @@ public class World
 	}
 	/**
 	 * handles the drawing of the entry animation
+	 * takes over when GameState = START
+	 * Notice: lights must be rendered inside the lightbuffer
 	 * @param Delta : elapsed time since last frame
 	 */
 	private void startRender(float Delta)
@@ -322,6 +339,13 @@ public class World
 		batch.end();
 
 	}
+
+	/**
+	 * handles the drawing of the scene in a running game
+	 * takes over when GameState = RUN
+	 * Notice: lights must be rendered inside the lightbuffer
+	 * @param Delta : elapsed time since last frame
+	 */
 	private void runRender(float Delta)
 	{
 		// Clear the Screen
@@ -345,6 +369,7 @@ public class World
 		for(Bug bug : Enemies)
 			bug.draw(batch, Delta);
 
+
 		batch.end();
 
 
@@ -361,8 +386,13 @@ public class World
 
 		// draw the lightsources
 		batch.begin();
+		lights.drawLight(batch, Delta);
 		player.drawFlashlight(batch, Delta);
 		debugger.drawFlashlight(batch,Delta);
+
+
+
+
 		batch.end();
 
 
@@ -376,6 +406,7 @@ public class World
 
 		player.draw(batch, Delta);
 		debugger.draw(batch, Delta);
+		lights.draw(batch, Delta);
 		userInterface.draw(batch);
 
 
@@ -389,17 +420,16 @@ public class World
 	 */
 	public void dispose()
 	{
-		assets.dispose();
 		userInterface.dispose();
 		lightBuffer.dispose();
 		shapeRenderer.dispose();
 		batch.dispose();
+		assets.dispose();
+
 		PickUp.pickUpCounter = 0;
 
 		System.out.println("disposed");
 	}
-	
-	// private methods
 	/**
 	 * manages the player input
 	 */
@@ -476,6 +506,7 @@ public class World
 					Enemies.get(i).spawn((int)(WORLDBOUNDS.x / 3 * 2) + random.nextInt((int)(WORLDBOUNDS.x / 3)), random.nextInt((int)WORLDBOUNDS.y) );
 			} while(map.isCollided(Enemies.get(i)));
 		}
+
 	}
 	/**
 	 * spawn the maximum amount of pickups given by MaxNumberOfPickUps

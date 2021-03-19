@@ -1,7 +1,6 @@
 package com.bitsavior.entity;
 
 import com.badlogic.gdx.graphics.Texture;
-import com.bitsavior.entity.Entity;
 
 
 public class PickUp extends Entity
@@ -19,14 +18,14 @@ public class PickUp extends Entity
 
 
     // public Methods
-    public PickUp(Texture texture)
+    public PickUp(final Texture texture)
     {
         super(texture);
 
         isAlive = false;
 
         // set size of the pickup
-        sprite.setSize(25, 25);
+        setSize(25, 25);
 
         pickUpCounter++;
     }
@@ -39,6 +38,6 @@ public class PickUp extends Entity
     public void spawn(float x, float y)
     {
         isAlive = true;
-        sprite.setPosition(x, y);
+        setPosition(x, y);
     }
 }

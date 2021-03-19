@@ -24,7 +24,7 @@ public class Tilemap implements ICollision
 
 	//private Members
 	private TiledMap tiledMap;
-	private OrthogonalTiledMapRenderer renderer;
+	private final OrthogonalTiledMapRenderer renderer;
 
 	//public Methods
 	/**
@@ -32,24 +32,13 @@ public class Tilemap implements ICollision
 	 * @param tiledMap : reference to the asset
 	 * @param camera : actual camera
 	 */
-	public Tilemap(TiledMap tiledMap, OrthographicCamera camera) {
+	public Tilemap(final TiledMap tiledMap, final OrthographicCamera camera) {
 		this.tiledMap = new TiledMap();
 		this.tiledMap = tiledMap;
 
 		renderer = new OrthogonalTiledMapRenderer(tiledMap);
 
 		renderer.setView(camera);
-	}
-
-	/**
-	 * - loads map properties
-	 */
-	public void create() { }
-	/**
-	 * does nothing yet
-	 */
-	public void update() {
-
 	}
 	/**
 	 * render the tiled map
@@ -68,7 +57,7 @@ public class Tilemap implements ICollision
 		return tiledMap.getLayers().get(layer);
 	}
 
-	public boolean isCollided(Entity entity)
+	public boolean isCollided(final Entity entity)
 	{
 		// get all objects out of the collision layer
 		MapObjects objects = tiledMap.getLayers().get(1).getObjects();

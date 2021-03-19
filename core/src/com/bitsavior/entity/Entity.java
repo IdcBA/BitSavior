@@ -19,7 +19,7 @@ public class Entity
     /**
      * holds the entity's texture
      */
-    protected Sprite sprite;
+    private Sprite sprite;
     /**
      * lifestate of the entity
      */
@@ -30,24 +30,23 @@ public class Entity
      * @param texture : texture for the entity
      */
     // public Methods
-    public Entity(Texture texture)
+    public Entity(final Texture texture)
     {
         sprite = new Sprite(texture);
 
     }
-    public Entity(Texture texture, float velocity)
+    public Entity(final Texture texture, float velocity)
     {
         this.velocity = velocity;
         sprite = new Sprite(texture);
     }
 
-    public Entity(Entity entity)
+    public Entity(final Entity entity)
     {
         this.velocity = entity.velocity;
         this.sprite = new Sprite(entity.sprite);
         isAlive = false;
     }
-
     /**
      * add a new position to the current position
      * @param x : horizontal position of the Player
@@ -60,13 +59,21 @@ public class Entity
      * @param x : horizontal position of the Player
      * @param y : vertical position of the Player
      */
-    public void setPosition(float x, float y) { sprite.setPosition(x, y); }
+    public void setPosition(float x, float y)
+    {
+        sprite.setPosition(x, y);
+    }
     /**
      * sets the size of the sprite
      * @param width : width of the sprite
      * @param height : height of the sprite
      */
-    public void setSize(float width, float height) { sprite.setSize(width, height); }
+    public void setSize(float width, float height)
+    {
+        if(width < 0.f || height < 0.f)
+            throw new IllegalArgumentException("Error: size must be greater then zero!");
+        sprite.setSize(width, height);
+    }
 
     /**
      * sets the current velocity
@@ -93,11 +100,11 @@ public class Entity
 
 
     /**
-     * draw()
+     * draws the entity
      * @param batch : current SpriteBatch for drawing
      * @param Delta : elapsed time since last frame
      */
-    public void draw(SpriteBatch batch, float Delta)
+    public void draw(final SpriteBatch batch, float Delta)
     {
         batch.draw(sprite,sprite.getX(), sprite.getY(), sprite.getWidth(), sprite.getHeight());
     }

@@ -2,9 +2,9 @@ package com.bitsavior.game;
 
 public class Watch
 {
-    public long startTime = 0l;
-    public long elapsedTime = 0l;
-    public long timeLimit = 0l;
+    public long startTime = 0L;
+    public long elapsedTime = 0L;
+    public long timeLimit;
 
     boolean isActive = false;
 
@@ -14,7 +14,7 @@ public class Watch
      */
     public Watch(int timeLimit)
     {
-        this.timeLimit = timeLimit * 1000;
+        this.timeLimit = timeLimit * 1000L;
 
     }
     public void startWatch()
@@ -30,6 +30,8 @@ public class Watch
 
             if (elapsedTime >= timeLimit) {
                 isActive = false;
+                elapsedTime = timeLimit;
+                startTime = 0L;
             }
         }
     }
