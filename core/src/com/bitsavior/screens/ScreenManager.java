@@ -101,6 +101,15 @@ public class ScreenManager {
 	public int getGameLevel() {
 		return gScreen.getGameLevel();
 	}
+	
+	/** returns the volume of the music [0,1] */
+    public float getMusicVolume() {
+    	return settingsScreen.getMusicVolume();
+    }
+	/** returns the volume of the sound [0,1] */
+	public float getSoundVolume() {
+		return settingsScreen.getSoundVolume();
+	}
 
 	public void dispose() {
 		if(tScreen != null) tScreen.dispose();
