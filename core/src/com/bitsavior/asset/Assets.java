@@ -62,27 +62,26 @@ public class Assets
      */
     public void load()
     {
-        holder.load(enemy);
-        holder.load(antibug);
-        holder.load(player);
-        holder.load(pickUp);
-        holder.load(light);
-        holder.load(redLight);
-        holder.load(currentMap);
-        holder.load(breakpoint);
-        holder.load(uiRect);
+            holder.load(enemy);
+            holder.load(antibug);
+            holder.load(player);
+            holder.load(pickUp);
+            holder.load(light);
+            holder.load(redLight);
+            holder.load(currentMap);
+            holder.load(breakpoint);
+            holder.load(uiRect);
 
-        holder.load(background);
-        holder.load(blop);
-        holder.load(lose);
-        holder.load(save);
+            holder.load(background);
+            holder.load(blop);
+            holder.load(lose);
+            holder.load(save);
+
+            holder.finishLoading();
 
 
 
-        holder.finishLoading();
     }
-
-
     /**
      * dispose all resources
      */

@@ -18,7 +18,7 @@ public class UserInterface {
     int pickUpsLeft = 0;
 
 
-    public UserInterface(AssetManager holder, Watch timer) {
+    public UserInterface(final AssetManager holder, final Watch timer) {
         this.timer = timer;
         font = new BitmapFont();
         uiRect = new Entity(holder.get(Assets.uiRect), 0.f);
@@ -39,7 +39,7 @@ public class UserInterface {
             this.pickUpsLeft = pickUpsLeft;
     }
 
-    public void draw(SpriteBatch batch) {
+    public void draw(final SpriteBatch batch) {
 
 
 

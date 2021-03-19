@@ -2,15 +2,12 @@ package com.bitsavior.entity;
 
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.bitsavior.ai.EnemyAI;
 import com.bitsavior.asset.Assets;
-
 import java.util.Random;
 
 public class AntiBug extends MovingEntity
 {
     private LightSource flashlight;
-
     /**
      * maximum walk distance before change of direction
      */
@@ -20,7 +17,7 @@ public class AntiBug extends MovingEntity
      */
     private float walkDistance = 0.f;
 
-    public AntiBug(AssetManager manager)
+    public AntiBug(final AssetManager manager)
     {
         super(manager.get(Assets.antibug), 100.f, 2, 1, 0.1f);
 
@@ -30,7 +27,7 @@ public class AntiBug extends MovingEntity
         flashlight.attach(this);
 
         // set size
-        sprite.setSize(25, 25);
+        setSize(25, 25);
     }
 
     /**
@@ -40,9 +37,8 @@ public class AntiBug extends MovingEntity
      */
     public void spawn(float x, float y)
     {
-        // testing
         isAlive = true;
-        sprite.setPosition(x, y);
+        setPosition(x, y);
         chooseDirection();
     }
 
@@ -64,12 +60,11 @@ public class AntiBug extends MovingEntity
 
     }
 
-    public void drawFlashlight(SpriteBatch batch, float Delta)
+    public void drawFlashlight(final SpriteBatch batch, float Delta)
     {
         if(isAlive)
             flashlight.draw(batch, Delta);
     }
-
 
 
     // private Methods

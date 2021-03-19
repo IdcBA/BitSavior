@@ -18,8 +18,12 @@ public class LightSource extends Entity
     /**
      * hue of the lightsource
      */
-    private Color color;
-
+    private final Color color;
+    /**
+     * alpha value of the color
+     * adjusts the intensity of the light
+     */
+    private float intensityFactor = 0.99f;
     /**
      * represents the huetype of the lightsource
      */
@@ -33,7 +37,7 @@ public class LightSource extends Entity
      * sets a cold hue and attach the texture
      * @param texture : lightsource texture that is used to create the lightningeffect
      */
-    public LightSource(Texture texture)
+    public LightSource(final Texture texture)
     {
         super(texture);
         parent = null;
@@ -46,8 +50,12 @@ public class LightSource extends Entity
      * entity
      * @param entity : entity that should hold this light
      */
-    public void attach(Entity entity)
+    public void attach(final Entity entity)
     {
+        if(entity == null)
+        {
+            throw new IllegalArgumentException("passed entity is null!");
+        }
         parent = entity;
     }
     /**
@@ -61,6 +69,7 @@ public class LightSource extends Entity
             setPosition((parent.getPosition().x + (parent.getSize().x / 2)) - (getSize().x / 2),
                     (parent.getPosition().y + (parent.getSize().y / 2)) - (getSize().y / 2));
         }
+        color.a = intensityFactor;
     }
     /**
      * sets the hue of the lightsource
@@ -71,14 +80,41 @@ public class LightSource extends Entity
         switch(colorType)
         {
             case COLD:
-                color.set(0.7f, 0.7f, 0.8f, 0.99f);
+                color.set(0.7f, 0.7f, 0.8f, intensityFactor);
                 break;
             case WARM:
-                color.set(0.83f, 0.76f, 0.65f, 0.99f);
+                color.set(0.83f, 0.76f, 0.65f, intensityFactor);
                 break;
             default:
         }
+    }
 
+    /**
+     * sets the Intensity of the light via the alpha value
+     * @param intensityFactor : must be between 0 to 1, 0 = invisible, 1 = full intensity
+     */
+    public void setIntensity(float intensityFactor)
+    {
+        if(intensityFactor < 0.f)
+            intensityFactor = 0.f;
+        if(intensityFactor > 1.f)
+            intensityFactor = 1.f;
+
+        this.intensityFactor = intensityFactor;
+    }
+    /**
+     *
+     * @return : intensity value of the light, 0 = invisible, 1 = full intensity
+     */
+    public float getIntensityFactor(){ return intensityFactor; }
+
+    /**
+     * set the radius of the lightsource
+     * @param radius : radius of the lightsource
+     */
+    public void setRadius(float radius)
+    {
+        setSize(radius * 5.f, radius * 5.f);
     }
     /**
      * draws the lightsource
@@ -86,7 +122,7 @@ public class LightSource extends Entity
      * @param batch : current SpriteBatch for drawing
      * @param Delta : elapsed time since last frame
      */
-    public void draw(SpriteBatch batch, float Delta)
+    public void draw(final SpriteBatch batch, float Delta)
     {
         batch.setColor(color);
 
