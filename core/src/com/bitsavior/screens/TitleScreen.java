@@ -41,10 +41,12 @@ public class TitleScreen extends ScreenAdapter
     private TextButton button1;
     /** Button 9: continue */
     private TextButton button9;
+    /** Button Exit: exits the game */
+    private TextButton buttonExit;
     /** norm X size for Buttons */
-    private int bSizeX = 300;
+    private float bSizeX = 300;
     /** norm Y size for Buttons */
-    private int bSizeY = 100;
+    private float bSizeY = 100;
 
     /**
      * Constructor
@@ -65,17 +67,24 @@ public class TitleScreen extends ScreenAdapter
         //initialize Button 1
         button1 = new TextButton("Start new Game", bSkin1, "small");
         button1.setSize(bSizeX, bSizeY);
-        button1.setPosition(Gdx.graphics.getWidth()*0.5f - bSizeX / 2,
-                Gdx.graphics.getHeight()*0.5f - bSizeY / 2 );
+        button1.setPosition(Gdx.graphics.getWidth() * 0.5f - bSizeX / 2,
+                Gdx.graphics.getHeight() * 0.5f - (bSizeY * 0.5f) );
         stage.addActor(button1);
 
         //initialize continue Button 9
         button9 = new TextButton(" ", bSkin1, "small"); //edit name in show()
         button9.setSize(bSizeX, bSizeY);
-        button9.setPosition(Gdx.graphics.getWidth()*0.5f  - bSizeX / 2,
-                Gdx.graphics.getHeight() / 2f - bSizeY * 2.5f );
-        if(aButtonTestMode==1) System.out.println("Button2 x:"+ (Gdx.graphics.getWidth()*0.5f  - bSizeX / 2) + ", y:" + (Gdx.graphics.getHeight() / 2f - bSizeY * 2.5f ));
+        button9.setPosition(Gdx.graphics.getWidth() * 0.5f  - bSizeX / 2,
+                Gdx.graphics.getHeight() * 0.5f - (bSizeY * 2.0f) );
+        if(aButtonTestMode==1) System.out.println("Button9 x:"+ (Gdx.graphics.getWidth()*0.5f  - bSizeX / 2) + ", y:" + (Gdx.graphics.getHeight() / 2f - bSizeY * 2.5f ));
         stage.addActor(button9);
+        
+        //initialize exit Button
+        buttonExit = new TextButton("Exit the game", bSkin1, "small");
+        buttonExit.setSize(bSizeX, bSizeY);
+        buttonExit.setPosition(Gdx.graphics.getWidth() * 0.25f - bSizeX / 2,
+                Gdx.graphics.getHeight() * 0.5f - (bSizeY * 4.0f) );
+        stage.addActor(buttonExit);
     }
 
     @Override
@@ -118,6 +127,20 @@ public class TitleScreen extends ScreenAdapter
                 else {
                     button9.setText("No game in progress.");
                 }
+            }
+        } );
+        
+        //actions for exit button
+        buttonExit.addListener(new InputListener() {
+            //touchDown returning true is necessary as precondition for touchUp
+            @Override
+            public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
+                return true;
+            }
+            @Override
+            public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
+        		Gdx.app.exit();
+            	//game.manager.dispose();
             }
         } );
 
