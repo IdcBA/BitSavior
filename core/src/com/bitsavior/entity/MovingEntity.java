@@ -21,7 +21,7 @@ public class MovingEntity extends Entity implements ICollision
     /**
      * represents the animation of the moving entity
      */
-    private Animation<TextureRegion> entityAn;
+    private final Animation<TextureRegion> entityAnimation;
     /**
      * the time spend in the current animation frame
      */
@@ -48,7 +48,7 @@ public class MovingEntity extends Entity implements ICollision
      * @param rows : rows of the used spritesheet(for animation)
      * @param frameDuration : sets the duration of one animation frame
      */
-    public MovingEntity(Texture texture, float velocity, int colums, int rows, float frameDuration)
+    public MovingEntity(final Texture texture, float velocity, int colums, int rows, float frameDuration)
     {
         super(texture, velocity);
         direction = Movement.UNMOVED;
@@ -67,7 +67,7 @@ public class MovingEntity extends Entity implements ICollision
                 entityFrames[index++] = tmp[i][j];
             }
         }
-        entityAn = new Animation<TextureRegion>(this.frameDuration, entityFrames);
+        entityAnimation = new Animation<TextureRegion>(this.frameDuration, entityFrames);
 
     }
 
@@ -76,7 +76,11 @@ public class MovingEntity extends Entity implements ICollision
      * @param inversion : 1 for the normal direction, -1 for the inverse direction
      * @param Delta : elapsed time since last frame
      */
-    protected void move(int inversion, float Delta) {
+    protected void move(int inversion, float Delta)
+    {
+        if(inversion != 1 && inversion != -1)
+            throw new IllegalArgumentException("Error: Inversion must be 1 or -1!");
+
         switch (direction) {
             case LEFT:
                 updatePosition(inversion * -velocity * Delta, 0);
@@ -102,20 +106,20 @@ public class MovingEntity extends Entity implements ICollision
      * @param entity : collision to be checked with
      * @return : returns true if a collision happened
      */
-    public boolean isCollided(Entity entity)
+    public boolean isCollided(final Entity entity)
     {
         // get the sprites bounding rectangle
-        Rectangle boundaries = new Rectangle(sprite.getBoundingRectangle());
+        Rectangle boundaries = new Rectangle(getBoundings());
 
         // check if the boundaries collided and return
-        return boundaries.overlaps(entity.sprite.getBoundingRectangle());
+        return boundaries.overlaps(entity.getBoundings());
     }
 
     /**
      * check object layer of the map if a collision happened
      * @param map : map with the collideable objects to check
      */
-    public void isCollided(Tilemap map)
+    public void isCollided(final Tilemap map)
     {
         // get all objects out of the collision layer
         MapObjects objects = map.getLayer(1).getObjects();
@@ -139,16 +143,16 @@ public class MovingEntity extends Entity implements ICollision
      * @param Delta : elapsed time since last frame
      */
     @Override
-    public void draw(SpriteBatch batch, float Delta)
+    public void draw(final SpriteBatch batch, float Delta)
     {
         if(isAlive)
         {
             stateTime += Delta;
 
-            batch.draw(entityAn.getKeyFrame(stateTime, true), sprite.getX(), sprite.getY(),
-                    sprite.getWidth() / 2.f,
-                    sprite.getHeight() / 2.f,
-                    sprite.getWidth(), sprite.getHeight(),1.f, 1.f, rotation);
+            batch.draw(entityAnimation.getKeyFrame(stateTime, true), getPosition().x, getPosition().y,
+                    getSize().x / 2.f,
+                    getSize().y / 2.f,
+                    getSize().x, getSize().y,1.f, 1.f, rotation);
         }
     }
 }

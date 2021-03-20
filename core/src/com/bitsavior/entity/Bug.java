@@ -3,7 +3,6 @@ package com.bitsavior.entity;
 import com.badlogic.gdx.graphics.Texture;
 import com.bitsavior.ai.EnemyAI;
 import com.bitsavior.collision.ICollision;
-import com.bitsavior.map.Tilemap;
 
 import java.util.Random;
 
@@ -26,7 +25,7 @@ public class Bug
     /**
      * controls the enemies behaviour
      */
-    private EnemyAI brain;
+    private final EnemyAI brain;
     /**
      * maximum walk distance before change of direction
      */
@@ -52,7 +51,7 @@ public class Bug
         this.viewRange = 200.f;
 
         // set size
-        sprite.setSize(25, 25);
+        setSize(25, 25);
 
         // create the brain for the enemy
         brain = new EnemyAI(this, viewRange);
@@ -68,7 +67,7 @@ public class Bug
     {
         // testing
         isAlive = true;
-        sprite.setPosition(x, y);
+        setPosition(x, y);
         chooseDirection();
     }
 
@@ -77,13 +76,12 @@ public class Bug
      * @param Delta : elapsed time since last frame
      * @param player : player data for the artifical intelligence
      */
-    public void update(float Delta, Entity player)
+    public void update(float Delta, final Entity player)
     {
         brain.update();
 
         // if player is in range, double the velocity
         if(brain.isEntityInRange(player)) {
-            System.out.println("inRange");
             velocity = nVelocity * 2.f;
         }
         else
@@ -96,7 +94,6 @@ public class Bug
 
         // add covered distance of the frame
         walkDistance += velocity * Delta;
-
     }
 
 

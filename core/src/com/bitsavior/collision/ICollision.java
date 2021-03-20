@@ -12,5 +12,5 @@ public interface ICollision
      * @param entity : collision to be checked with
      * @return : returns true if a collision happened
      */
-    boolean isCollided(Entity entity);
+    boolean isCollided(final Entity entity);
 }

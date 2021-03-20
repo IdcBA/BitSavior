@@ -4,7 +4,7 @@ import com.badlogic.gdx.audio.Sound;
 
 public class Soundeffect{
 	// private methods
-	private Sound sound;
+	private final Sound sound;
 	
 	
 	public Soundeffect(Sound sound) {

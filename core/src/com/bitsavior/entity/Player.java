@@ -1,7 +1,6 @@
 package com.bitsavior.entity;
 
 import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.bitsavior.asset.Assets;
 import com.bitsavior.game.Watch;
@@ -13,7 +12,6 @@ import com.bitsavior.game.Watch;
 public class Player
         extends MovingEntity
 {
-    // private Methods
     /**
      * counts the collected pickups
      */
@@ -27,7 +25,7 @@ public class Player
      * Constructor
      * @param manager : assetHolder for player and flashlight assets
      */
-    public Player(AssetManager manager) {
+    public Player(final AssetManager manager) {
 
         // call constructor of parent class and pass parameters for animation
         super(manager.get(Assets.player), 200.f, 4, 4, 0.05f);
@@ -42,7 +40,7 @@ public class Player
         pickUpCounter = 0;
 
         // set player size
-        sprite.setSize(30, 30);
+        setSize(30, 30);
 		
     }
 
@@ -69,11 +67,9 @@ public class Player
     {
         pickUp.isAlive = false;
         pickUpCounter++;
-        System.out.println(pickUpCounter);
-        
     }
 
-    public void drawFlashlight(SpriteBatch batch, float Delta)
+    public void drawFlashlight(final SpriteBatch batch, float Delta)
     {
         if(isAlive)
             flashlight.draw(batch, Delta);
@@ -81,15 +77,10 @@ public class Player
 
     public int getPickUpCounter() { return pickUpCounter; }
 
-    
-    /**
-     * saves player for 10 seconds after collision with debugger
-     */
+
 	public void Save() {
-		
 		saveTime = new Watch(10);
 		saveTime.startWatch();
-		
 	}
 	
 	public boolean isSaved() {
