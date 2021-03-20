@@ -15,9 +15,7 @@ public class LoseScreen extends ScreenAdapter{
 	//variables for testing
 	/** ... */
 	
-	//the game and visuals(e.g. stage, batch, font)
-	/** the game for screen management */
-	private BitSavior game;
+	//visuals e.g. stage, batch, font
 	/** Stage to store Buttons, fonts, etc */
     private Stage stage;
     
@@ -35,9 +33,7 @@ public class LoseScreen extends ScreenAdapter{
 	 * Constructor
 	 * @param the game
 	 */
-    public LoseScreen(BitSavior game) {
-    	//for the game
-    	this.game = game;
+    public LoseScreen(final BitSavior game) {
         
         //add Stage and batch&font to display objects
         stage = new Stage(new ScreenViewport());
@@ -49,16 +45,8 @@ public class LoseScreen extends ScreenAdapter{
         buttonMenu = new TextButton("Back to main menu", bSkin1, "small");
         buttonMenu.setSize(bSizeX, bSizeY);
         buttonMenu.setPosition(Gdx.graphics.getWidth()*0.5f - bSizeX / 2,
-        		Gdx.graphics.getHeight()*0.25f - bSizeY / 2 );
-        stage.addActor(buttonMenu);
-    }
-    
-    @Override
-    public void show() {
-    	//set Input to stage
-    	Gdx.input.setInputProcessor(stage);
-    	
-    	//actions for button
+        		Gdx.graphics.getHeight()*0.25f - bSizeY / 2 ); //height()*... from bottom
+        //add listener to manage input -> add actions
     	buttonMenu.addListener(new InputListener() {
     		//touchDown returning true is necessary as precondition for touchUp
     		@Override
@@ -70,6 +58,13 @@ public class LoseScreen extends ScreenAdapter{
                 game.manager.showScreen(Screens.TITLE);
             }
        	} );
+        stage.addActor(buttonMenu);
+    }
+    
+    @Override
+    public void show() {
+    	//set Input to stage
+    	Gdx.input.setInputProcessor(stage);
     }
     
     @Override

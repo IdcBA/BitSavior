@@ -17,16 +17,15 @@ public class SettingsScreen extends ScreenAdapter {
 	
 	//variables for testing
 	/** for testing the Volume adjustments */
-	private int aStaticTest = 0;
+	private int aStaticTest = 1;
 	
 	//settings
 	private static final String PREF_MUSIC_VOLUME = "musicVolume";
 	private static final String PREF_SOUND_VOLUME = "soundVolume";
 	private static final String PREFS_NAME = "b2dtut";
+	private float changeInterval = 0.0625f;
 	
-	//the game and visuals(e.g. stage, batch, font)
-	/** the game for screen management */
-	private BitSavior game;
+	//visuals e.g. stage, batch, font
 	/** Stage to store Buttons, fonts, etc */
     private Stage stage;
     private SpriteBatch batch;
@@ -34,15 +33,15 @@ public class SettingsScreen extends ScreenAdapter {
     private BitmapFont fontMusic;
     private BitmapFont fontSound;
     
-    //Button properties
-    /** Skin for the Buttons */
-    private Skin bSkin1;
+    //Buttons and button properties
     /** Button: to return to main menu */
     private TextButton buttonMenu;
     private TextButton buttonMusicPlus;
     private TextButton buttonMusicMinus;
     private TextButton buttonSoundPlus;
     private TextButton buttonSoundMinus;
+    /** Skin for the Buttons */
+    private Skin bSkin1;
     /** norm X size for Buttons */
     private int bSizeX = 300;
     /** norm Y size for Buttons */
@@ -54,9 +53,7 @@ public class SettingsScreen extends ScreenAdapter {
 	 * Constructor
 	 * @param the game
 	 */
-    public SettingsScreen(BitSavior game) {
-    	//for the game
-    	this.game = game;
+    public SettingsScreen(final BitSavior game) {
         
         //add Stage and batch&font to display objects
         stage = new Stage(new ScreenViewport());
@@ -64,55 +61,19 @@ public class SettingsScreen extends ScreenAdapter {
         font = new BitmapFont(Gdx.files.internal("s32verdana_blue.fnt"));
         fontMusic = new BitmapFont(Gdx.files.internal("s32verdana_blue.fnt"));
         fontSound = new BitmapFont(Gdx.files.internal("s32verdana_blue.fnt"));
-        
-        
+
         //load Skin for Buttons
         bSkin1 = new Skin(Gdx.files.internal("skin/glassy-ui.json"));
+        
         
         //initialize Button 1
         buttonMenu = new TextButton("Back to main menu", bSkin1, "small");
         buttonMenu.setSize(bSizeX, bSizeY);
         buttonMenu.setPosition(Gdx.graphics.getWidth()*0.5f - bSizeX / 2,
         		Gdx.graphics.getHeight()*0.25f - bSizeY * 0.5f ); //height()*... from bottom
-        stage.addActor(buttonMenu);
-        
-        //initialize Button Music+
-        buttonMusicPlus = new TextButton("+M", bSkin1, "small");
-        buttonMusicPlus.setSize(bSizeXY, bSizeXY);
-        buttonMusicPlus.setPosition(Gdx.graphics.getWidth()*0.625f + bSizeXY * 1.5f,
-        		Gdx.graphics.getHeight()*0.5f - bSizeXY * 0.5f );
-        stage.addActor(buttonMusicPlus);
-        
-        //initialize Button Music-
-        buttonMusicMinus = new TextButton("-M", bSkin1, "small");
-        buttonMusicMinus.setSize(bSizeXY, bSizeXY);
-        buttonMusicMinus.setPosition(Gdx.graphics.getWidth()*0.625f - bSizeXY * 0.5f,
-        		Gdx.graphics.getHeight()*0.5f - bSizeXY * 0.5f );
-        stage.addActor(buttonMusicMinus);
-        
-        //initialize Button Sound+
-        buttonSoundPlus = new TextButton("+S", bSkin1, "small");
-        buttonSoundPlus.setSize(bSizeXY, bSizeXY);
-        buttonSoundPlus.setPosition(Gdx.graphics.getWidth()*0.625f + bSizeXY * 1.5f,
-        		Gdx.graphics.getHeight()*0.5f - bSizeXY * 2.5f );
-        stage.addActor(buttonSoundPlus);
-        
-        //initialize Button Sound-
-        buttonSoundMinus = new TextButton("-S", bSkin1, "small");
-        buttonSoundMinus.setSize(bSizeXY, bSizeXY);
-        buttonSoundMinus.setPosition(Gdx.graphics.getWidth()*0.625f - bSizeXY * 0.5f,
-        		Gdx.graphics.getHeight()*0.5f - bSizeXY * 2.5f );
-        stage.addActor(buttonSoundMinus);
-    }
-    
-    @Override
-    public void show() {
-    	//set Input to stage
-    	Gdx.input.setInputProcessor(stage);
-    	
-    	//actions for button
-    	buttonMenu.addListener(new InputListener() {
-    		//touchDown returning true is necessary as precondition for touchUp
+        //add listener to manage input -> add actions
+        buttonMenu.addListener(new InputListener() {
+    		//touchDown returning true is necessary as precondition for touchUp(less errors due to continued pressing a button->multiple action circles)
     		@Override
     		public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
     			return true;
@@ -122,48 +83,93 @@ public class SettingsScreen extends ScreenAdapter {
                 game.manager.showScreen(Screens.TITLE);
             }
        	} );
-    	
-    	//actions for +- Buttons
-    	buttonMusicPlus.addListener(new InputListener() {
+        stage.addActor(buttonMenu);
+        
+        //initialize Button Music+
+        buttonMusicPlus = new TextButton("+M", bSkin1, "small");
+        buttonMusicPlus.setSize(bSizeXY, bSizeXY);
+        buttonMusicPlus.setPosition(Gdx.graphics.getWidth()*0.625f + bSizeXY * 1.5f,
+        		Gdx.graphics.getHeight()*0.5f - bSizeXY * 0.5f );
+        buttonMusicPlus.addListener(new InputListener() {
     		@Override
     		public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
-                if(getMusicVolume()<1) {
-                	setMusicVolume(getMusicVolume() + 0.125f);
-                    if(aStaticTest==1) System.out.println("+1M");
-                }
                 return true;
             }
-    	});
-    	buttonMusicMinus.addListener(new InputListener() {
     		@Override
-    		public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
-                if(getMusicVolume()>0) {
-                	setMusicVolume(getMusicVolume() - 0.125f);
-                    if(aStaticTest==1) System.out.println("-1M");
+    		public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
+    			if(getMusicVolume()<1) {
+                	setMusicVolume(getMusicVolume() + changeInterval);
+                    if(aStaticTest==1) System.out.println("+1M = "+getMusicVolume());
                 }
-                return true;
             }
     	});
-    	buttonSoundPlus.addListener(new InputListener() {
+        stage.addActor(buttonMusicPlus);
+        
+        //initialize Button Music-
+        buttonMusicMinus = new TextButton("-M", bSkin1, "small");
+        buttonMusicMinus.setSize(bSizeXY, bSizeXY);
+        buttonMusicMinus.setPosition(Gdx.graphics.getWidth()*0.625f - bSizeXY * 0.5f,
+        		Gdx.graphics.getHeight()*0.5f - bSizeXY * 0.5f );
+        buttonMusicMinus.addListener(new InputListener() {
     		@Override
     		public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
-                if(getSoundVolume()<1) {
-                	setSoundVolume(getSoundVolume() + 0.125f);
-                    if(aStaticTest==1) System.out.println("+1S");
-                }
                 return true;
             }
+    		@Override
+    		public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
+    			if(getMusicVolume()>0) {
+                	setMusicVolume(getMusicVolume() - changeInterval);
+                    if(aStaticTest==1) System.out.println("-1M = "+getMusicVolume());
+                }
+            }
     	});
-    	buttonSoundMinus.addListener(new InputListener() {
+        stage.addActor(buttonMusicMinus);
+        
+        //initialize Button Sound+
+        buttonSoundPlus = new TextButton("+S", bSkin1, "small");
+        buttonSoundPlus.setSize(bSizeXY, bSizeXY);
+        buttonSoundPlus.setPosition(Gdx.graphics.getWidth()*0.625f + bSizeXY * 1.5f,
+        		Gdx.graphics.getHeight()*0.5f - bSizeXY * 2.5f );
+        buttonSoundPlus.addListener(new InputListener() {
     		@Override
     		public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
+                return true;
+            }
+    		@Override
+    		public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
+    			if(getSoundVolume()<1) {
+                	setSoundVolume(getSoundVolume() + changeInterval);
+                    if(aStaticTest==1) System.out.println("+1S = "+getSoundVolume());
+                }
+            }
+    	});
+        stage.addActor(buttonSoundPlus);
+        
+        //initialize Button Sound-
+        buttonSoundMinus = new TextButton("-S", bSkin1, "small");
+        buttonSoundMinus.setSize(bSizeXY, bSizeXY);
+        buttonSoundMinus.setPosition(Gdx.graphics.getWidth()*0.625f - bSizeXY * 0.5f,
+        		Gdx.graphics.getHeight()*0.5f - bSizeXY * 2.5f );
+        buttonSoundMinus.addListener(new InputListener() {
+    		@Override
+    		public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
+                return true;
+            }
+    		@Override
+    		public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
                 if(getSoundVolume()>0) {
-                	setSoundVolume(getSoundVolume() - 0.125f);
-                    if(aStaticTest==1) System.out.println("-1S");
+                	setSoundVolume(getSoundVolume() - changeInterval);
+                    if(aStaticTest==1) System.out.println("-1S = "+getSoundVolume());
                 }
-                return true;
             }
     	});
+        stage.addActor(buttonSoundMinus);
+    }
+    
+    @Override
+    public void show() {
+    	//set Input to stage
+    	Gdx.input.setInputProcessor(stage);
     }
     
     @Override
@@ -175,6 +181,7 @@ public class SettingsScreen extends ScreenAdapter {
         stage.act();
         stage.draw();
         
+        //draw fonts
         batch.begin();
         font.draw(batch, "Settings",
         		Gdx.graphics.getWidth() * 0.25f , Gdx.graphics.getHeight() * .75f);
@@ -201,7 +208,7 @@ public class SettingsScreen extends ScreenAdapter {
     
     //methods to edit settings
     /** for volume settings */
-    private Preferences getPrefs() { //TODO private or protected?
+    private Preferences getPrefs() {
     	return Gdx.app.getPreferences(PREFS_NAME);
     }
     
