@@ -17,7 +17,7 @@ public class SettingsScreen extends ScreenAdapter {
 	
 	//variables for testing
 	/** for testing the Volume adjustments */
-	private int aStaticTest = 1;
+	private int aStaticTest = 0;
 	
 	//settings
 	private static final String PREF_MUSIC_VOLUME = "musicVolume";
