@@ -15,6 +15,10 @@ public class BackgroundMusic{
 		music.play();
 	}
 	
+	public void play(float volume) {
+		music.setVolume(volume);
+		music.play();
+	}
 	public void setloop(boolean loop) {
 		music.setLooping(loop);
 	}
