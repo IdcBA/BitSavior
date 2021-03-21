@@ -2,10 +2,15 @@ package com.bitsavior.screens;
 
 /**
  * This Class holds the Screens: TitleScreen, GameScreen, (Lose/Win)
- * <p> TODO: edit "initialize, show, dispose" of win-/lose-com.bitsavior.screens
- * <p> TODO: for other Screens: add them extra in Screens.java
+ * <p> TODO for new screens:
+ * <li>Here: add them to constructor, showScreen and dispose
+ * <li>Screens.java: add the enum to access it
  */
 public class ScreenManager {
+	
+	//variables for testing
+    /** 0: no messages; 1: send messages */
+    private int aScreenTestMode=0;
 	
 	/** the game BitSavior */
 	private BitSavior game;
@@ -56,8 +61,11 @@ public class ScreenManager {
 				if(winScreen==null) System.out.println("WinScreen is null");
 				else {
 					//deletes last GameScreen
-					gScreen.dispose();
-					gScreen = null;
+					if(gScreen!=null) {
+						gScreen.dispose();
+						gScreen = null;
+						if(aScreenTestMode==1) System.out.println("gScreen disposed for winScreen");
+					}
 					game.setScreen(winScreen);
 				}
 				break;
@@ -65,8 +73,11 @@ public class ScreenManager {
 				if(loseScreen==null) System.out.println("LoseScreen is null");
 				else {
 					//deletes last GameScreen
-					gScreen.dispose();
-					gScreen = null;
+					if(gScreen!=null) {
+						gScreen.dispose();
+						gScreen = null;
+						if(aScreenTestMode==1) System.out.println("gScreen disposed for loseScreen");
+					}
 					game.setScreen(loseScreen);
 				}
 				break;
