@@ -4,6 +4,7 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.bitsavior.entity.LightedEntity;
+import com.bitsavior.game.Watch;
 
 import java.util.ArrayList;
 
@@ -26,6 +27,10 @@ public class Environment
      */
     private Vector2[] lightPositions;
 
+    private final LightedEntity.EffectType standardEffect =  LightedEntity.EffectType.FLICKER;
+    private Watch timer;
+    
+    
     /**
      * constructor
      * creates the lighted entities and fills the positions into the array
@@ -62,7 +67,13 @@ public class Environment
      * updates all lighted entities
      */
     public void update()
-    {
+    { 
+    	if(timer != null) {
+    		timer.update();
+    		if(!timer.isActive()) 
+    			changeEffect(standardEffect);
+    	}
+    	
         for(LightedEntity lightbulb : lights)
             lightbulb.update();
     }
@@ -90,10 +101,17 @@ public class Environment
         }
     }
     
-    public void changeEffect(LightedEntity.EffectType type, long effectTime) {
+    public void changeEffect(LightedEntity.EffectType type, int effectTime) {
+    	timer = new Watch(effectTime);
+    	timer.startWatch();
     	for(int i = 0; i < NumberOfLights; i++) {
-            lights.get(i).setEffect(type, effectTime);
-
+            lights.get(i).setEffect(type);
         }
     }
+
+	public void changeEffect(LightedEntity.EffectType type) {
+		for(int i = 0; i < NumberOfLights; i++) {
+			lights.get(i).setEffect(type);
+		}
+	}
 }

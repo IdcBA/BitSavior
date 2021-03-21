@@ -114,6 +114,10 @@ public class World
 	 */
 	private long fadeTimer;
 	/**
+	 * value used for Volume during fading
+	 */
+	private float fadeVolume;
+	/**
 	 * maintains environmental objects and effects
 	 */
 	private Environment lights;
@@ -139,6 +143,7 @@ public class World
 		MaxNumberOfPickUps = 10;
 		fadeAlpha = 1.0f;
 		fadeTimer = 0L;
+		fadeVolume = 0f;
 
 		this.gameState = gameState;
 
@@ -209,6 +214,7 @@ public class World
 		music.setloop(true);
 		music.setVolume(0.5f);
 		music.play();music.setloop(true);
+		
 
 		timer.startWatch();
 	}
@@ -248,6 +254,7 @@ public class World
 			{
 				fadeTimer = startTimer.getRemainingMilliSeconds();
 				fadeAlpha -= 0.01;
+				fadeVolume += 0.005;
 			}
 		}
 		else if(startTimer.isActive && startTimer.getRemainingSeconds() <= 5)
@@ -256,11 +263,14 @@ public class World
 		if(startTimer.isActive && startTimer.getRemainingSeconds() <= 3)
 			fadeAlpha = 1.f;
 
+		
 		// if time is over start the game session and allow user manipulation
 		if(!startTimer.isActive) {
 			startGameSession();
 			gameState = GameState.RUN;
 		}
+		
+		
 	}
 	/**
 	 * updates the game logic
@@ -338,6 +348,8 @@ public class World
 		shapeRenderer.end();
 		Gdx.gl.glDisable(Gdx.gl.GL_BLEND);
 
+		music.play(fadeVolume);
+//		System.out.println(fadeVolume);
 		batch.begin();
 		player.draw(batch, Delta);
 		batch.end();
@@ -492,7 +504,7 @@ public class World
 			player.Save();
 			sound = new Soundeffect(assets.holder.get(Assets.save));
 			debugger.playSound(sound);	
-			lights.changeEffect(LightedEntity.EffectType.PULSATING, 10);
+			lights.changeEffect(LightedEntity.EffectType.DEACTIVATE, 10);
 			}
 	}
 	/**

@@ -120,4 +120,13 @@ public class AntiBug extends MovingEntity
        		else return;
        	}
        }
+    
+    public boolean WaitingtimeIsActive() {
+    	if(waitingTime == null) 
+    		return false;
+    	else {
+    		waitingTime.update();
+    		return waitingTime.isActive();
+    	}
+    }
 }
