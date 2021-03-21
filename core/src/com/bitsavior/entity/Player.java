@@ -47,22 +47,20 @@ public class Player
         setSize(30, 30);
 		
     }
-
     /**
      * updates players position on the screen
      * @param Delta : elapsed time since last frame
      */
+    @Override
     public void update(float Delta)
     {
-        if(!this.isAlive)
-            System.out.println("Hit");
-        
+
+        super.update(Delta);
         move(1, Delta);
 
         flashlight.update();
 
     }
-
     /**
      * collect the given pickup
      * @param pickUp : pickup that should be collected from the player
@@ -72,7 +70,11 @@ public class Player
         pickUp.isAlive = false;
         pickUpCounter++;
     }
-
+    /**
+     * draws the lightsource if the entity is alive
+     * @param batch : current Spritebatch
+     * @param Delta : elapsed time since last frame in milliseconds
+     */
     public void drawFlashlight(final SpriteBatch batch, float Delta)
     {
         if(isAlive)

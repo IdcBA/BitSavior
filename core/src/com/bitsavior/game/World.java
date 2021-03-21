@@ -41,7 +41,7 @@ public class World
 	/**
 	 * holds the time required for starting a game and animate the entrysequence
 	 */
-	private final Watch startTimer;
+	private final Watch gameStateTimer;
 	/**
 	 * manages all game-assets
 	 */
@@ -121,7 +121,7 @@ public class World
 	{
 		timer = new Watch(100);
 		// time limit for the entry animation
-		startTimer = new Watch(10);
+		gameStateTimer = new Watch(10);
 		assets = new Assets();
 		batch = new SpriteBatch();
 		camera = new OrthographicCamera();
@@ -152,6 +152,8 @@ public class World
 		// centers camera at 0,0
 		camera.position.set(WORLDBOUNDS.x / 2.f, WORLDBOUNDS.y / 2.f, 0);
 		camera.update();
+		// set the projection matrix of the ScreenBatch to camera's size
+		batch.setProjectionMatrix(camera.combined);
 
 
 		// load assets
@@ -172,10 +174,6 @@ public class World
 
 		lights = new Environment(assets.holder);
 
-
-		// if there is already a lightBuffer, reset
-		if(lightBuffer != null)
-			lightBuffer.dispose();
 		// create FrameBuffer with width/height of the screen
 		lightBuffer = new FrameBuffer(Pixmap.Format.RGBA8888, (int)WORLDBOUNDS.x, (int)WORLDBOUNDS.y, false);
 		lightBuffer.getColorBufferTexture().setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
@@ -185,8 +183,8 @@ public class World
 
 		gameState = GameState.START;
 		// start timer for the entry animation
-		startTimer.startWatch();
-		fadeTimer = startTimer.getRemainingMilliSeconds();
+		gameStateTimer.startWatch();
+		fadeTimer = gameStateTimer.getRemainingMilliSeconds();
 	}
 	/**
 	 * prepare the game session
@@ -207,6 +205,7 @@ public class World
 		music.play();music.setloop(true);
 
 		timer.startWatch();
+
 	}
 	/**
 	 * updates and handles the game logic in dependency of the current
@@ -224,8 +223,16 @@ public class World
 			case RUN:
 				runUpdate(Delta);
 				break;
+			case LOOSE_TIMEOUT:
+				looseUpdate(Delta);
+				break;
+			case LOOSE_CAUGHT:
+				looseUpdate(Delta);
+				break;
 			default:
 		}
+		// update camera
+		camera.update();
 
 		return gameState;
 	}
@@ -235,25 +242,26 @@ public class World
 	 */
 	private void startUpdate()
 	{
-		startTimer.update();
+		gameStateTimer.update();
 
 		// change the alphablending over the first 5 seconds
-		if(startTimer.isActive && startTimer.getRemainingSeconds() > 5 && fadeAlpha > 0.f)
+		if(gameStateTimer.isActive && gameStateTimer.getRemainingSeconds() > 5 && fadeAlpha > 0.f)
 		{
-			if(fadeTimer >= (startTimer.getRemainingMilliSeconds() + 50L))
+			if(fadeTimer >= (gameStateTimer.getRemainingMilliSeconds() + 50L))
 			{
-				fadeTimer = startTimer.getRemainingMilliSeconds();
+				fadeTimer = gameStateTimer.getRemainingMilliSeconds();
 				fadeAlpha -= 0.01;
 			}
 		}
-		else if(startTimer.isActive && startTimer.getRemainingSeconds() <= 5)
+		else if(gameStateTimer.isActive && gameStateTimer.getRemainingSeconds() <= 5)
 			player.isAlive = true;
 
-		if(startTimer.isActive && startTimer.getRemainingSeconds() <= 3)
+		if(gameStateTimer.isActive && gameStateTimer.getRemainingSeconds() <= 3)
 			fadeAlpha = 1.f;
 
 		// if time is over start the game session and allow user manipulation
-		if(!startTimer.isActive) {
+		if(!gameStateTimer.isActive) {
+			gameStateTimer.reset(8);
 			startGameSession();
 			gameState = GameState.RUN;
 		}
@@ -266,34 +274,53 @@ public class World
 	 */
 	private void runUpdate(float Delta)
 	{
-		handlePlayerInput();
-		player.update(Delta);
-		debugger.update(Delta);
+			handlePlayerInput();
+			timer.update();
+			player.update(Delta);
+			debugger.update(Delta);
+			lights.update();
+			for (int i = 0; i < MaxNumberOfEnemies; i++) {
+				Enemies.get(i).update(Delta, player);
+			}
+			updatePickUps();
+			userInterface.update(player.getPickUpCounter());
 
-		lights.update();
+			checkCollisions();
 
+			if (!timer.isActive) {
+				gameState = GameState.LOOSE_TIMEOUT;
+				gameStateTimer.startWatch();
+			}
+			else if (!player.isAlive) {
+				gameState = GameState.LOOSE_CAUGHT;
+				gameStateTimer.startWatch();
+				music.setStuttering(0.5f);
+			}
+	}
 
+	/**
+	 * updates the game logic when players looses the game
+	 * @param Delta : elapsed time since last frame
+	 */
+	public void looseUpdate(float Delta)
+	{
+		gameStateTimer.update();
+		if(!gameStateTimer.isActive)
+			gameState = GameState.LOOSE_SHUTDOWN;
 
-		for(int i = 0; i < MaxNumberOfEnemies; i++)
-		{
-			Enemies.get(i).update(Delta, player);
-		}
-		updatePickUps();
-		userInterface.update(player.getPickUpCounter());
+		music.update();
 
-		checkCollisions();
-
-		timer.update();
-		if(!timer.isActive)
-			gameState = GameState.LOOSE_TIMEOUT;
-		if(!player.isAlive)
-			gameState = GameState.LOOSE_CAUGHT;
 	}
 	/**
 	 * manages all render calls inside the world
 	 */
 	public void render(final float Delta)
 	{
+		// Clear the Screen
+		Gdx.gl.glClearColor(0, 0, 0, 1);
+		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		// render the map
+		map.render();
 
 		switch(gameState)
 		{
@@ -301,6 +328,8 @@ public class World
 				startRender(Delta);
 				break;
 			case RUN:
+			case LOOSE_TIMEOUT:
+			case LOOSE_CAUGHT:
 				runRender(Delta);
 				break;
 			default:
@@ -314,18 +343,6 @@ public class World
 	 */
 	private void startRender(float Delta)
 	{
-		// Clear the Screen
-		Gdx.gl.glClearColor(0, 0, 0, 1);
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-
-		// update camera
-		camera.update();
-		// render the map
-		map.render();
-
-		// set the projection matrix of the ScreenBatch to camera's size
-		batch.setProjectionMatrix(camera.combined);
-
 		Gdx.gl.glEnable(Gdx.gl.GL_BLEND);
 		Gdx.gl.glBlendFunc(Gdx.gl.GL_SRC_ALPHA, Gdx.gl.GL_ONE_MINUS_SRC_ALPHA);
 		shapeRenderer.setColor(0, 0, 0, fadeAlpha);
@@ -337,9 +354,7 @@ public class World
 		batch.begin();
 		player.draw(batch, Delta);
 		batch.end();
-
 	}
-
 	/**
 	 * handles the drawing of the scene in a running game
 	 * takes over when GameState = RUN
@@ -348,34 +363,16 @@ public class World
 	 */
 	private void runRender(float Delta)
 	{
-		// Clear the Screen
-		Gdx.gl.glClearColor(0, 0, 0, 0);
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-
-		// update camera
-		camera.update();
-		// render the map
-		map.render();
-
-		// set the projection matrix of the ScreenBatch to camera's size
-		batch.setProjectionMatrix(camera.combined);
-
-
 		// draw objects
 		batch.begin();
-
 		for(PickUp pickUp : pickUps)
 			pickUp.draw(batch, Delta);
 		for(Bug bug : Enemies)
 			bug.draw(batch, Delta);
-
-
 		batch.end();
-
 
 		// render blending into the second FrameBuffer
 		lightBuffer.begin();
-
 		// set blending functions
 		Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE);
 		Gdx.gl.glEnable(GL20.GL_BLEND);
@@ -389,13 +386,7 @@ public class World
 		lights.drawLight(batch, Delta);
 		player.drawFlashlight(batch, Delta);
 		debugger.drawFlashlight(batch,Delta);
-
-
-
-
 		batch.end();
-
-
 		lightBuffer.end();
 
 		// draw second buffer and player on top
@@ -403,16 +394,11 @@ public class World
 		batch.begin();
 		batch.draw(lightBufferRegion, 0, 0, 1280, 960);
 
-
 		player.draw(batch, Delta);
 		debugger.draw(batch, Delta);
 		lights.draw(batch, Delta);
 		userInterface.draw(batch);
-
-
-
 		batch.end();
-
 	}
 	
 	/**
@@ -465,7 +451,8 @@ public class World
 			Enemies.get(i).isCollided(map);
 
 			// !!! buggy !!!
-			if(player.isCollided(Enemies.get(i)) && !player.isSaved()) {
+			if(player.isCollided(Enemies.get(i)) ) //&& !player.isSaved()
+				{
 				player.isAlive = false;
 				player.stopMusic(music);
 				player.playSound(assets.holder.get(Assets.lose), false);
@@ -539,5 +526,4 @@ public class World
 			}
 		}
 	}
-
 }

@@ -4,6 +4,7 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.bitsavior.entity.LightedEntity;
+import com.bitsavior.game.Watch;
 
 import java.util.ArrayList;
 
@@ -25,7 +26,6 @@ public class Environment
      * list of the positions of the lights
      */
     private Vector2[] lightPositions;
-
     /**
      * constructor
      * creates the lighted entities and fills the positions into the array
@@ -65,6 +65,7 @@ public class Environment
     {
         for(LightedEntity lightbulb : lights)
             lightbulb.update();
+
     }
 
     /**

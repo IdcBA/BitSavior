@@ -50,9 +50,9 @@ public class LightedEntity extends Entity
      */
     private long timer;
     /**
-     * holds the desired time in milliseconds for effects to happen
+     * holds the desired time in milliseconds for the translation between two states of the effect
      */
-    private long effectTimer = 50L;
+    private long effectAnimationTime = 50L;
     /**
      * internal variable for checking if a growth or shrink is needed(size change)
      */
@@ -114,7 +114,7 @@ public class LightedEntity extends Entity
     public void update()
     {
 
-        if(timer <= System.currentTimeMillis() - effectTimer)
+        if(timer <= System.currentTimeMillis() - effectAnimationTime)
         {
             timer = System.currentTimeMillis();
 
@@ -158,11 +158,11 @@ public class LightedEntity extends Entity
     /**
      * sets the desired effect for the lightsource and sets the effect timer
      * @param type : type of effect for the lightsource
-     * @param effectTimer : the desired time in milliseconds for effects to happen
+     * @param effectTimer : the desired time in milliseconds for the translation between two states of the effect
      */
     public void setEffect(EffectType type, long effectTimer)
     {
-        this.effectTimer = effectTimer;
+        this.effectAnimationTime = effectTimer;
         switch(type)
         {
             case PULSATING:
