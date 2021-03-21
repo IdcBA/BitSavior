@@ -25,7 +25,7 @@ public class GameScreen extends ScreenAdapter {
 	/**
 	 * Constructor:
 	 * @param game game
-	 * @param tScreen to "jump back"
+	 * @param level current level
 	 */
 	public GameScreen(BitSavior game, int level)
 	{
@@ -59,12 +59,10 @@ public class GameScreen extends ScreenAdapter {
 	@Override
 	public void render(float Delta)
 	{
-
 		switch(world.update(Delta))
 		{
-			case LOOSE_CAUGHT:
-			case LOOSE_TIMEOUT:
-				game.manager.showScreen(Screens.TITLE);
+			case LOOSE_SHUTDOWN:
+				game.manager.showScreen(Screens.LOSE);
 				break;
 			default:
 		}

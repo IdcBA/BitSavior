@@ -78,6 +78,7 @@ public class Bug
      */
     public void update(float Delta, final Entity player)
     {
+        super.update(Delta);
         brain.update();
 
         // if player is in range, double the velocity

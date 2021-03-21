@@ -5,6 +5,9 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.bitsavior.asset.Assets;
 import java.util.Random;
 
+/**
+ * represents a helping bug that has a light attached and random movement
+ */
 public class AntiBug extends MovingEntity
 {
     private LightSource flashlight;
@@ -17,6 +20,11 @@ public class AntiBug extends MovingEntity
      */
     private float walkDistance = 0.f;
 
+    /**
+     * constructor
+     * load texture and attach lightsource
+     * @param manager : assetmanager that holds all assets
+     */
     public AntiBug(final AssetManager manager)
     {
         super(manager.get(Assets.antibug), 100.f, 2, 1, 0.1f);
@@ -29,7 +37,6 @@ public class AntiBug extends MovingEntity
         // set size
         setSize(25, 25);
     }
-
     /**
      * set the enemy alive and spawn it at the given position
      * @param x : x-coordinate(spawn)
@@ -41,13 +48,14 @@ public class AntiBug extends MovingEntity
         setPosition(x, y);
         chooseDirection();
     }
-
     /**
      * updates position, direction and artifical intelligence
      * @param Delta : elapsed time since last frame
      */
+    @Override
     public void update(float Delta)
     {
+        super.update(Delta);
         // change enemies direction if moved enough
         if(walkDistance >= maxWalkingDistance)
             chooseDirection();
@@ -60,14 +68,16 @@ public class AntiBug extends MovingEntity
 
     }
 
+    /**
+     * draws the lightsource if the entity is alive
+     * @param batch : current Spritebatch
+     * @param Delta : elapsed time since last frame in milliseconds
+     */
     public void drawFlashlight(final SpriteBatch batch, float Delta)
     {
         if(isAlive)
             flashlight.draw(batch, Delta);
     }
-
-
-    // private Methods
     /**
      * set move direction of the enemy randomly
      */
@@ -94,7 +104,6 @@ public class AntiBug extends MovingEntity
                 break;
             default:
                 System.out.println("fail");
-
         }
     }
 }
