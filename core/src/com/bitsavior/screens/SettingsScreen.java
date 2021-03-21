@@ -17,13 +17,15 @@ public class SettingsScreen extends ScreenAdapter {
 	
 	//variables for testing
 	/** for testing the Volume adjustments */
-	private int aStaticTest = 0;
+	private int aStaticTest = 1;
 	
 	//settings
+	/** Format: integer 0 to 100 */
 	private static final String PREF_MUSIC_VOLUME = "musicVolume";
+	/** Format: integer 0 to 100 */
 	private static final String PREF_SOUND_VOLUME = "soundVolume";
-	private static final String PREFS_NAME = "b2dtut";
-	private float changeInterval = 0.0625f;
+	private static final String PREFS_NAME = "b2dtut_v2";
+	private static int changeInterval = 10;
 	
 	//visuals e.g. stage, batch, font
 	/** Stage to store Buttons, fonts, etc */
@@ -97,7 +99,7 @@ public class SettingsScreen extends ScreenAdapter {
             }
     		@Override
     		public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
-    			if(getMusicVolume()<1) {
+    			if(getMusicVolume()<=100-changeInterval) {
                 	setMusicVolume(getMusicVolume() + changeInterval);
                     if(aStaticTest==1) System.out.println("+1M = "+getMusicVolume());
                 }
@@ -117,7 +119,7 @@ public class SettingsScreen extends ScreenAdapter {
             }
     		@Override
     		public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
-    			if(getMusicVolume()>0) {
+    			if(getMusicVolume()>=0+changeInterval) {
                 	setMusicVolume(getMusicVolume() - changeInterval);
                     if(aStaticTest==1) System.out.println("-1M = "+getMusicVolume());
                 }
@@ -137,7 +139,7 @@ public class SettingsScreen extends ScreenAdapter {
             }
     		@Override
     		public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
-    			if(getSoundVolume()<1) {
+    			if(getSoundVolume()<=100-changeInterval) {
                 	setSoundVolume(getSoundVolume() + changeInterval);
                     if(aStaticTest==1) System.out.println("+1S = "+getSoundVolume());
                 }
@@ -157,7 +159,7 @@ public class SettingsScreen extends ScreenAdapter {
             }
     		@Override
     		public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
-                if(getSoundVolume()>0) {
+                if(getSoundVolume()>=0+changeInterval) {
                 	setSoundVolume(getSoundVolume() - changeInterval);
                     if(aStaticTest==1) System.out.println("-1S = "+getSoundVolume());
                 }
@@ -185,9 +187,9 @@ public class SettingsScreen extends ScreenAdapter {
         batch.begin();
         font.draw(batch, "Settings",
         		Gdx.graphics.getWidth() * 0.25f , Gdx.graphics.getHeight() * .75f);
-        fontMusic.draw(batch, "Music " + getMusicVolume()*100 + "%",
+        fontMusic.draw(batch, "Music " + getMusicVolume() + "%",
         		Gdx.graphics.getWidth() * 0.375f , Gdx.graphics.getHeight() * 0.5f - bSizeXY * 0.0f);
-        fontSound.draw(batch, "Sound " + getSoundVolume()*100 + "%",
+        fontSound.draw(batch, "Sound " + getSoundVolume() + "%",
         		Gdx.graphics.getWidth() * 0.375f , Gdx.graphics.getHeight() * 0.5f - bSizeXY * 2.0f);
         batch.end();
     }
@@ -208,40 +210,40 @@ public class SettingsScreen extends ScreenAdapter {
     
     //methods to edit settings
     /** for volume settings */
-    private Preferences getPrefs() {
+    private static Preferences getPrefs() {
     	return Gdx.app.getPreferences(PREFS_NAME);
     }
     
-    /** returns the volume of the music [0,1] */
-    public float getMusicVolume() {
-    	return getPrefs().getFloat(PREF_MUSIC_VOLUME, 0.1f);
+    /** @return the volume of the music [0,100] as integer ! */
+    static int getMusicVolume() {
+    	return getPrefs().getInteger(PREF_MUSIC_VOLUME, 10);
     }
     
     /** saves the music volume
-     * @param volume 0(silent) to 1(loud)
-     * @return true if volume was 0 to 1 and got accepted
+     * @param volume 0(silent) to 100(loud)
+     * @return true if volume was 0 to 100 and got accepted
      */
-    private boolean setMusicVolume(float volume) {
-    	if (0<=volume && volume<=1) {
-			getPrefs().putFloat(PREF_MUSIC_VOLUME, volume);
+    private boolean setMusicVolume(int volume) {
+    	if (0<=volume && volume<=100) {
+			getPrefs().putInteger(PREF_MUSIC_VOLUME, volume);
 			getPrefs().flush();
 			return true;
 		}
     	else return false;
     }
     
-    /** returns the volume of the sound [0,1] */
-    public float getSoundVolume() {
-    	return getPrefs().getFloat(PREF_SOUND_VOLUME, 0.1f);
+    /** @return the volume of the sound [0,100] as integer ! */
+    static int getSoundVolume() {
+    	return getPrefs().getInteger(PREF_SOUND_VOLUME, 10);
     }
     
     /** saves the sound volume
-     * @param volume 0(silent) to 1(loud)
-     * @return true if volume was 0 to 1 and got accepted
+     * @param volume 0(silent) to 100(loud)
+     * @return true if volume was 0 to 100 and got accepted
      */
-    private boolean setSoundVolume(float volume) {
-    	if (0<=volume && volume<=1) {
-	    	getPrefs().putFloat(PREF_SOUND_VOLUME, volume);
+    private boolean setSoundVolume(int volume) {
+    	if (0<=volume && volume<=100) {
+	    	getPrefs().putInteger(PREF_SOUND_VOLUME, volume);
 	    	getPrefs().flush();
 	    	return true;
     	}
