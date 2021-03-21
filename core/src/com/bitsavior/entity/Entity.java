@@ -6,16 +6,16 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 
+/**
+ * represents a basic entity that can exist in the world.
+ * Offers all basic functionality needed for ann entity
+ */
 public class Entity
 {
-
-    // protected Members
     /**
      * Velocity of the Entity
      */
     protected float velocity = 0.f;
-
-    // protected Members
     /**
      * holds the entity's texture
      */
@@ -24,23 +24,32 @@ public class Entity
      * lifestate of the entity
      */
     public boolean isAlive;
-
     /**
-     * Constructor()
+     * constructor
+     * sets the texture of the entity
      * @param texture : texture for the entity
      */
-    // public Methods
     public Entity(final Texture texture)
     {
         sprite = new Sprite(texture);
 
     }
+
+    /**
+     * constructor
+     * @param texture : texture for the entity
+     * @param velocity : velocity of the entity
+     */
     public Entity(final Texture texture, float velocity)
     {
         this.velocity = velocity;
         sprite = new Sprite(texture);
     }
 
+    /**
+     * copyconstructor
+     * @param entity : entity to be copied
+     */
     public Entity(final Entity entity)
     {
         this.velocity = entity.velocity;
@@ -74,7 +83,6 @@ public class Entity
             throw new IllegalArgumentException("Error: size must be greater then zero!");
         sprite.setSize(width, height);
     }
-
     /**
      * sets the current velocity
      * @param velocity : velocity of the entity
@@ -97,8 +105,6 @@ public class Entity
      * @return : bounding rectangle
      */
     public Rectangle getBoundings() { return new Rectangle(sprite.getBoundingRectangle()); }
-
-
     /**
      * draws the entity
      * @param batch : current SpriteBatch for drawing

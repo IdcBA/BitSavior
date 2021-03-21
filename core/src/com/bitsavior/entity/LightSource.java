@@ -57,6 +57,7 @@ public class LightSource extends Entity
             throw new IllegalArgumentException("passed entity is null!");
         }
         parent = entity;
+        update();
     }
     /**
      * updates the position accordingly to the attached parent entity

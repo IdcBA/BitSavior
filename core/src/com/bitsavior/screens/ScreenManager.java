@@ -1,7 +1,5 @@
 package com.bitsavior.screens;
 
-//import com.bitsavior.game.TitleScreen;
-
 /**
  * This Class holds the Screens: TitleScreen, GameScreen, (Lose/Win)
  * <p> TODO: edit "initialize, show, dispose" of win-/lose-com.bitsavior.screens
@@ -13,7 +11,7 @@ public class ScreenManager {
 	private BitSavior game;
 	
 	//the Screens
-	/** The TitleScreen/Mainmenu */
+	/** The main menu */
 	private TitleScreen tScreen;
 	/** The GameScreen */
 	private GameScreen gScreen;
@@ -21,23 +19,28 @@ public class ScreenManager {
 	private WinScreen winScreen;
 	/** The LoseScreen after losing the game */
 	private LoseScreen loseScreen;
+	/** The Settings for the game */
+	private SettingsScreen settingsScreen;
 	
 	/** 
 	 * Constructor
-	 * <p>initializes (only?) title Screen
+	 * <p>initializes all Screens except the GameScreen
 	 */
 	public ScreenManager(BitSavior game) {
 		this.game = game;
 		tScreen = new TitleScreen(game);
 		winScreen = new WinScreen(game);
 		loseScreen = new LoseScreen(game);
-		//TODO  ... win/lose
+		settingsScreen = new SettingsScreen(game);
 	}
 	
 	/**
-	 * Level has to be set before: 
-	 * @see {@link setGameLevel}
-	 * @param screenName one of these: TITLE,GAME,WIN,LOSE
+	 * @param screenName Screens.[one of the following]
+	 * <li>TITLE
+	 * <li>GAME
+	 * <li>WIN
+	 * <li>LOSE
+	 * <li>SETTINGS
 	 */
 	public void showScreen(Screens screenName) {
 		switch(screenName) {
@@ -67,16 +70,20 @@ public class ScreenManager {
 					game.setScreen(loseScreen);
 				}
 				break;
-			default : System.out.println("try \"TITLE, GAME, WIN, LOSE\"");
+			case SETTINGS :
+				if(settingsScreen==null) System.out.println("settingsScreen is null");
+				else game.setScreen(settingsScreen);
+				break;
+			default : System.out.println("try \"TITLE, GAME, WIN, LOSE or SETTINGS\"");
 		}
 	}
 	
+	//methods to manage GameScreen
 	/** true if the GameScreen is not null*/
 	public boolean gameIsRunning() {
 		if(gScreen==null) return false;
 		else return true;
 	}
-	
 	/** sets the GameScreen or replaces the existing one
 	 * <p> has to be set before the GameScreen can be shown
 	 * @param level currently only 1
@@ -94,11 +101,26 @@ public class ScreenManager {
 	public int getGameLevel() {
 		return gScreen.getGameLevel();
 	}
+	
+	//Methods to get Volumes
+	/** returns the volume of the music [0,1] */
+    public float getMusicVolume() {
+    	return settingsScreen.getMusicVolume();
+    }
+	/** returns the volume of the sound [0,1] */
+	public float getSoundVolume() {
+		return settingsScreen.getSoundVolume();
+	}
 
+	/**
+	 * disposes title-, game-, win-, lose-, settingsScreen
+	 * <p> (if not already null/disposed)
+	 */
 	public void dispose() {
 		if(tScreen != null) tScreen.dispose();
 		if(gScreen != null) gScreen.dispose();
 		if(winScreen != null) winScreen.dispose();
 		if(loseScreen != null) loseScreen.dispose();
+		if(settingsScreen != null) settingsScreen.dispose();
 	}
 }

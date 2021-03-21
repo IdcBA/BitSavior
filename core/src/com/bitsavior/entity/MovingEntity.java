@@ -23,6 +23,10 @@ public class MovingEntity extends Entity implements ICollision
      */
     private final Animation<TextureRegion> entityAnimation;
     /**
+     * current animationframe to be drawn
+     */
+    private TextureRegion keyFrame;
+    /**
      * the time spend in the current animation frame
      */
     private float stateTime = 0f;
@@ -68,6 +72,7 @@ public class MovingEntity extends Entity implements ICollision
             }
         }
         entityAnimation = new Animation<TextureRegion>(this.frameDuration, entityFrames);
+        keyFrame = new TextureRegion(entityFrames[0]);
 
     }
 
@@ -115,6 +120,12 @@ public class MovingEntity extends Entity implements ICollision
         return boundaries.overlaps(entity.getBoundings());
     }
 
+    public void update(float Delta)
+    {
+        stateTime += Delta;
+        keyFrame =  entityAnimation.getKeyFrame(stateTime, true);
+    }
+
     /**
      * check object layer of the map if a collision happened
      * @param map : map with the collideable objects to check
@@ -147,9 +158,7 @@ public class MovingEntity extends Entity implements ICollision
     {
         if(isAlive)
         {
-            stateTime += Delta;
-
-            batch.draw(entityAnimation.getKeyFrame(stateTime, true), getPosition().x, getPosition().y,
+            batch.draw(keyFrame, getPosition().x, getPosition().y,
                     getSize().x / 2.f,
                     getSize().y / 2.f,
                     getSize().x, getSize().y,1.f, 1.f, rotation);

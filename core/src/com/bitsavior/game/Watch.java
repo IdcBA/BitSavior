@@ -35,6 +35,13 @@ public class Watch
             }
         }
     }
+    public void reset(int timeLimit)
+    {
+        isActive = false;
+        startTime = 0L;
+        elapsedTime = 0L;
+        this.timeLimit = timeLimit * 1000L;
+    }
 
     public int getRemainingSeconds() { return (int)((timeLimit - elapsedTime) / 1000); }
 

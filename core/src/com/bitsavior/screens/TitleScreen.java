@@ -12,21 +12,18 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.bitsavior.screens.BitSavior;
-import com.bitsavior.screens.Screens;
+//import com.bitsavior.screens.BitSavior;
+//import com.bitsavior.screens.Screens;
 
 public class TitleScreen extends ScreenAdapter
 {
     //variables for testing
     /** 0: no messages; 1: send messages; 2: --- */
     private int aScreenTestMode=0;
-    /** 0: no messages<p>1: send messages for Buttons*/
-    private int aButtonTestMode=0;
+    /** 0: no messages<p>1: send messages for Buttons */
+    //private int aButtonTestMode=0; //not used atm
 
-    //the game and its screens
-    private BitSavior game;
-
-    /** Stage to store Buttons, fonts, etc
+    /** Stage to store/draw Buttons, fonts, etc
      * <p>
      * TODO: integrate fonts, +buttons, etc (also from BitSavior AND delete batch)
      */
@@ -39,10 +36,12 @@ public class TitleScreen extends ScreenAdapter
     private Skin bSkin1;
     /** Button 1: New Game */
     private TextButton button1;
-    /** Button 9: continue */
+    /** Button 9: continues if there is a paused game */
     private TextButton button9;
     /** Button Exit: exits the game */
     private TextButton buttonExit;
+    /** Button Settings: opens settings menu*/
+    private TextButton buttonSettings; 
     /** norm X size for Buttons */
     private float bSizeX = 300;
     /** norm Y size for Buttons */
@@ -53,9 +52,7 @@ public class TitleScreen extends ScreenAdapter
      * @param the game
      */
     public TitleScreen(final BitSavior game) {
-        //for the game
-        this.game = game;
-
+    	
         //add Stage and batch&font to display objects
         stage = new Stage(new ScreenViewport());
         batch = new SpriteBatch();
@@ -69,6 +66,19 @@ public class TitleScreen extends ScreenAdapter
         button1.setSize(bSizeX, bSizeY);
         button1.setPosition(Gdx.graphics.getWidth() * 0.5f - bSizeX / 2,
                 Gdx.graphics.getHeight() * 0.5f - (bSizeY * 0.5f) );
+        //add listener to manage input -> add actions
+        button1.addListener(new InputListener() {
+            //touchDown returning true is necessary as precondition for touchUp
+            @Override
+            public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
+                return true;
+            }
+            @Override
+            public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
+                game.manager.setGameLevel(1);
+                game.manager.showScreen(Screens.GAME);
+            }
+        } );
         stage.addActor(button1);
 
         //initialize continue Button 9
@@ -76,7 +86,24 @@ public class TitleScreen extends ScreenAdapter
         button9.setSize(bSizeX, bSizeY);
         button9.setPosition(Gdx.graphics.getWidth() * 0.5f  - bSizeX / 2,
                 Gdx.graphics.getHeight() * 0.5f - (bSizeY * 2.0f) );
-        if(aButtonTestMode==1) System.out.println("Button9 x:"+ (Gdx.graphics.getWidth()*0.5f  - bSizeX / 2) + ", y:" + (Gdx.graphics.getHeight() / 2f - bSizeY * 2.5f ));
+        button9.addListener(new InputListener() {
+            @Override
+            public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
+                return true;
+            }
+            @Override
+            public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
+                //continue paused game...
+                if(game.manager.gameIsRunning()) {
+                    if(aScreenTestMode==1) System.out.println("last gScreen gets loaded");
+                    game.manager.showScreen(Screens.GAME);
+                }
+                //...or edit Buttons text
+                else {
+                    button9.setText("No game in progress.");
+                }
+            }
+        } );
         stage.addActor(button9);
         
         //initialize exit Button
@@ -84,7 +111,34 @@ public class TitleScreen extends ScreenAdapter
         buttonExit.setSize(bSizeX, bSizeY);
         buttonExit.setPosition(Gdx.graphics.getWidth() * 0.25f - bSizeX / 2,
                 Gdx.graphics.getHeight() * 0.5f - (bSizeY * 4.0f) );
+        buttonExit.addListener(new InputListener() {
+            @Override
+            public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
+                return true;
+            }
+            @Override
+            public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
+        		Gdx.app.exit();
+            }
+        } );
         stage.addActor(buttonExit);
+        
+        //initializes settings Button
+        buttonSettings = new TextButton("Settings", bSkin1, "small");
+        buttonSettings.setSize(bSizeX, bSizeY);
+        buttonSettings.setPosition(Gdx.graphics.getWidth() * 0.75f - bSizeX / 2,
+        		Gdx.graphics.getHeight() * 0.5f - (bSizeY * 4.0f) );
+        buttonSettings.addListener(new InputListener() {
+            @Override
+            public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
+                return true;
+            }
+            @Override
+            public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
+            	game.manager.showScreen(Screens.SETTINGS);
+            }
+        } );
+        stage.addActor(buttonSettings);
     }
 
     @Override
@@ -94,56 +148,6 @@ public class TitleScreen extends ScreenAdapter
 
         //reset "continue" button
         button9.setText("Continue paused Game");
-
-        //actions for button 1
-        button1.addListener(new InputListener() {
-            //touchDown returning true is necessary as precondition for touchUp
-            @Override
-            public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
-                return true;
-            }
-            @Override
-            public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
-
-                game.manager.setGameLevel(1);
-                game.manager.showScreen(Screens.GAME);
-            }
-        } );
-
-        //actions for continue button 9
-        button9.addListener(new InputListener() {
-            //touchDown returning true is necessary as precondition for touchUp
-            @Override
-            public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
-                return true;
-            }
-            @Override
-            public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
-                //continue paused game
-                if(game.manager.gameIsRunning()) {
-                    if(aScreenTestMode==1) System.out.println("last gScreen gets loaded");
-                    game.manager.showScreen(Screens.GAME);
-                }
-                else {
-                    button9.setText("No game in progress.");
-                }
-            }
-        } );
-        
-        //actions for exit button
-        buttonExit.addListener(new InputListener() {
-            //touchDown returning true is necessary as precondition for touchUp
-            @Override
-            public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
-                return true;
-            }
-            @Override
-            public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
-        		Gdx.app.exit();
-            	//game.manager.dispose();
-            }
-        } );
-
     }
 
     @Override
@@ -156,7 +160,6 @@ public class TitleScreen extends ScreenAdapter
 
         batch.begin();
         font.draw(batch, "Welcome to Bitsavior!", Gdx.graphics.getWidth() * .25f - 30f, Gdx.graphics.getHeight() * .75f);
-        //game.font.draw(game.batch, "Press space to play.", Gdx.graphics.getWidth() * .25f, Gdx.graphics.getHeight() * .25f);
         batch.end();
     }
 

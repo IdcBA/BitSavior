@@ -30,7 +30,6 @@ public class Environment
     private final LightedEntity.EffectType standardEffect =  LightedEntity.EffectType.FLICKER;
     private Watch timer;
     
-    
     /**
      * constructor
      * creates the lighted entities and fills the positions into the array
@@ -76,6 +75,7 @@ public class Environment
     	
         for(LightedEntity lightbulb : lights)
             lightbulb.update();
+
     }
 
     /**

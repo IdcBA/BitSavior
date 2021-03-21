@@ -12,7 +12,8 @@ public class GameScreen extends ScreenAdapter {
 	// private Members
 	private BitSavior game;
 	private World world;
-
+	
+	/** not needed at the moment because there is only one level */
 	private int gameLevel = 0;
 
 	
@@ -25,13 +26,11 @@ public class GameScreen extends ScreenAdapter {
 	/**
 	 * Constructor:
 	 * @param game game
-	 * @param tScreen to "jump back"
+	 * @param level current level
 	 */
 	public GameScreen(BitSavior game, int level)
 	{
 		this.game = game;
-		//if(tScreen==null) System.out.println("tScreen beim erstellen von GameScreen leer");
-		//this.tScreen = tScreen;
 		world = new World(GameState.INITIALIZE);    // creating the World
 		world.create();
 		gameLevel = level;
@@ -46,25 +45,21 @@ public class GameScreen extends ScreenAdapter {
 			@Override
 			public boolean keyDown(int keyCode) {
 				if (keyCode == Input.Keys.ESCAPE) {
-
 					game.manager.showScreen(Screens.TITLE);
-
 				}
 				return true;
 			}
-		});
+		} );
 	}
 
 
 	@Override
 	public void render(float Delta)
 	{
-
 		switch(world.update(Delta))
 		{
-			case LOOSE_CAUGHT:
-			case LOOSE_TIMEOUT:
-				game.manager.showScreen(Screens.TITLE);
+			case LOOSE_SHUTDOWN:
+				game.manager.showScreen(Screens.LOSE);
 				break;
 			default:
 		}

@@ -15,9 +15,7 @@ public class WinScreen extends ScreenAdapter {
 	//variables for testing
 	/** ... */
 	
-	//the game and visuals(e.g. stage, batch, font)
-	/** the game for screen management */
-	private BitSavior game;
+	//visuals e.g. stage, batch, font
 	/** Stage to store Buttons, fonts, etc */
     private Stage stage;
     
@@ -35,9 +33,7 @@ public class WinScreen extends ScreenAdapter {
 	 * Constructor
 	 * @param the game
 	 */
-    public WinScreen(BitSavior game) {
-    	//for the game
-    	this.game = game;
+    public WinScreen(final BitSavior game) {
         
         //add Stage and batch&font to display objects
         stage = new Stage(new ScreenViewport());
@@ -50,16 +46,8 @@ public class WinScreen extends ScreenAdapter {
         buttonMenu.setSize(bSizeX, bSizeY);
         buttonMenu.setPosition(Gdx.graphics.getWidth()*0.5f - bSizeX / 2,
         		Gdx.graphics.getHeight()*0.25f - bSizeY / 2 ); //height()*... from bottom
-        stage.addActor(buttonMenu);
-    }
-    
-    @Override
-    public void show() {
-    	//set Input to stage
-    	Gdx.input.setInputProcessor(stage);
-    	
-    	//actions for button
-    	buttonMenu.addListener(new InputListener() {
+        //add listener to manage input -> add actions
+        buttonMenu.addListener(new InputListener() {
     		//touchDown returning true is necessary as precondition for touchUp
     		@Override
     		public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
@@ -70,6 +58,13 @@ public class WinScreen extends ScreenAdapter {
                 game.manager.showScreen(Screens.TITLE);
             }
        	} );
+        stage.addActor(buttonMenu);
+    }
+    
+    @Override
+    public void show() {
+    	//set Input to stage
+    	Gdx.input.setInputProcessor(stage);
     }
     
     @Override
