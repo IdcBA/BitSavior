@@ -2,6 +2,7 @@ package com.bitsavior.screens;//package com.bitsavior.game;
 
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -12,21 +13,16 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-//import com.bitsavior.screens.BitSavior;
-//import com.bitsavior.screens.Screens;
 
 public class TitleScreen extends ScreenAdapter
 {
     //variables for testing
     /** 0: no messages; 1: send messages; 2: --- */
-    private int aScreenTestMode=0;
+    private int aScreenTestMode=1;
     /** 0: no messages<p>1: send messages for Buttons */
     //private int aButtonTestMode=0; //not used atm
 
-    /** Stage to store/draw Buttons, fonts, etc
-     * <p>
-     * TODO: integrate fonts, +buttons, etc (also from BitSavior AND delete batch)
-     */
+    //Stage to store/draw Buttons, fonts, etc
     private Stage stage;
     private SpriteBatch batch;
     private BitmapFont font;
@@ -54,7 +50,7 @@ public class TitleScreen extends ScreenAdapter
     public TitleScreen(final BitSavior game) {
     	
         //add Stage and batch&font to display objects
-        stage = new Stage(new ScreenViewport());
+        stage = new Stage(); //new (ScreenViewport())
         batch = new SpriteBatch();
         font = new BitmapFont(Gdx.files.internal("s64verdana_blue.fnt"));
 
@@ -139,6 +135,24 @@ public class TitleScreen extends ScreenAdapter
             }
         } );
         stage.addActor(buttonSettings);
+        
+        //for testing screens: win=NUM1 and lose=NUM2
+        if(aScreenTestMode==1) {
+	        stage.addListener(new InputListener() {
+	        	@Override
+	        	public boolean keyDown(InputEvent event, int keyCode) {
+					if (keyCode == Input.Keys.NUM_1) {
+						game.manager.showScreen(Screens.WIN);
+						return true;
+					}
+					if (keyCode == Input.Keys.NUM_2) {
+						game.manager.showScreen(Screens.LOSE);
+						return true;
+					}
+					return false;
+				}
+			});
+        }
     }
 
     @Override
