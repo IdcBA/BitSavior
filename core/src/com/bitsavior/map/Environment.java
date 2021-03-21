@@ -26,6 +26,10 @@ public class Environment
      * list of the positions of the lights
      */
     private Vector2[] lightPositions;
+
+    private final LightedEntity.EffectType standardEffect =  LightedEntity.EffectType.FLICKER;
+    private Watch timer;
+    
     /**
      * constructor
      * creates the lighted entities and fills the positions into the array
@@ -62,7 +66,13 @@ public class Environment
      * updates all lighted entities
      */
     public void update()
-    {
+    { 
+    	if(timer != null) {
+    		timer.update();
+    		if(!timer.isActive()) 
+    			changeEffect(standardEffect);
+    	}
+    	
         for(LightedEntity lightbulb : lights)
             lightbulb.update();
 
@@ -90,4 +100,18 @@ public class Environment
             lightbulb.drawLight(batch, Delta);
         }
     }
+    
+    public void changeEffect(LightedEntity.EffectType type, int effectTime) {
+    	timer = new Watch(effectTime);
+    	timer.startWatch();
+    	for(int i = 0; i < NumberOfLights; i++) {
+            lights.get(i).setEffect(type);
+        }
+    }
+
+	public void changeEffect(LightedEntity.EffectType type) {
+		for(int i = 0; i < NumberOfLights; i++) {
+			lights.get(i).setEffect(type);
+		}
+	}
 }

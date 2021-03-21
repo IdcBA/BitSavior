@@ -67,6 +67,10 @@ public class World
 	 */
 	private BackgroundMusic music;
 	/**
+	 * holds the sound effect currently needed
+	 */
+	private Soundeffect sound;
+	/**
 	 * class contains the Tiled Map, additional renderer and related data
 	 */
 	private Tilemap map;
@@ -110,6 +114,10 @@ public class World
 	 */
 	private long fadeTimer;
 	/**
+	 * value used for Volume during fading
+	 */
+	private float fadeVolume;
+	/**
 	 * maintains environmental objects and effects
 	 */
 	private Environment lights;
@@ -135,6 +143,7 @@ public class World
 		MaxNumberOfPickUps = 10;
 		fadeAlpha = 1.0f;
 		fadeTimer = 0L;
+		fadeVolume = 0f;
 
 		this.gameState = gameState;
 
@@ -203,6 +212,7 @@ public class World
 		music.setloop(true);
 		music.setVolume(0.5f);
 		music.play();music.setloop(true);
+		
 
 		timer.startWatch();
 
@@ -251,6 +261,7 @@ public class World
 			{
 				fadeTimer = gameStateTimer.getRemainingMilliSeconds();
 				fadeAlpha -= 0.01;
+				fadeVolume += 0.005;
 			}
 		}
 		else if(gameStateTimer.isActive && gameStateTimer.getRemainingSeconds() <= 5)
@@ -259,12 +270,15 @@ public class World
 		if(gameStateTimer.isActive && gameStateTimer.getRemainingSeconds() <= 3)
 			fadeAlpha = 1.f;
 
+		
 		// if time is over start the game session and allow user manipulation
 		if(!gameStateTimer.isActive) {
 			gameStateTimer.reset(8);
 			startGameSession();
 			gameState = GameState.RUN;
 		}
+		
+		
 	}
 	/**
 	 * updates the game logic
@@ -351,6 +365,8 @@ public class World
 		shapeRenderer.end();
 		Gdx.gl.glDisable(Gdx.gl.GL_BLEND);
 
+		music.play(fadeVolume);
+//		System.out.println(fadeVolume);
 		batch.begin();
 		player.draw(batch, Delta);
 		batch.end();
@@ -450,12 +466,12 @@ public class World
 		{
 			Enemies.get(i).isCollided(map);
 
-			// !!! buggy !!!
-			if(player.isCollided(Enemies.get(i)) ) //&& !player.isSaved()
-				{
+
+			if(player.isCollided(Enemies.get(i)) && !player.isSaved()) {
 				player.isAlive = false;
-				player.stopMusic(music);
-				player.playSound(assets.holder.get(Assets.lose), false);
+				music.stop();
+				sound = new Soundeffect(assets.holder.get(Assets.lose));
+				sound.play();
 			}
 		}
 
@@ -466,14 +482,17 @@ public class World
 		for(int i = 0; i < PickUp.pickUpCounter; i++)
 			if(player.isCollided(pickUps.get(i))) {
 				player.collect(pickUps.get(i));
-				player.playSound(assets.holder.get(Assets.blop), false);
+				sound = new Soundeffect(assets.holder.get(Assets.blop));
+				sound.play();
 			}
 		
 		// check debugger collision 
 		if (player.isCollided(debugger)) {
 			player.Save();
-			player.playSound(assets.holder.get(Assets.save), true);
-		}
+			sound = new Soundeffect(assets.holder.get(Assets.save));
+			debugger.playSound(sound);	
+			lights.changeEffect(LightedEntity.EffectType.DEACTIVATE, 10);
+			}
 	}
 	/**
 	 * spawn the maximum amount of enemies given by MaxNumberOfEnemies

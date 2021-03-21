@@ -3,6 +3,8 @@ package com.bitsavior.entity;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.bitsavior.asset.Assets;
+import com.bitsavior.game.Soundeffect;
+import com.bitsavior.game.Watch;
 import java.util.Random;
 
 /**
@@ -11,6 +13,8 @@ import java.util.Random;
 public class AntiBug extends MovingEntity
 {
     private LightSource flashlight;
+    private Watch waitingTime;
+
     /**
      * maximum walk distance before change of direction
      */
@@ -105,5 +109,33 @@ public class AntiBug extends MovingEntity
             default:
                 System.out.println("fail");
         }
+    }
+    
+    public void playSound(Soundeffect sound) {
+    	
+        if(waitingTime == null) { 
+       	sound.play();
+       	waitingTime = new Watch(2);
+       	waitingTime.startWatch();
+       	}
+       	else {
+       		waitingTime.update();
+       		if(!waitingTime.isActive()) {
+   	    	sound.play();
+   	    	waitingTime = new Watch(2);
+   	    	waitingTime.startWatch();
+       		}
+       		
+       		else return;
+       	}
+       }
+    
+    public boolean WaitingtimeIsActive() {
+    	if(waitingTime == null) 
+    		return false;
+    	else {
+    		waitingTime.update();
+    		return waitingTime.isActive();
+    	}
     }
 }
