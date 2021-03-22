@@ -137,6 +137,7 @@ public class LightedEntity extends Entity
         switch(type)
         {
             case PULSATING:
+            	 flicker = false;
                 pulsating = true;
                 break;
             case SIZE_CHANGE:
@@ -166,6 +167,7 @@ public class LightedEntity extends Entity
         switch(type)
         {
             case PULSATING:
+            	flicker = false;
                 pulsating = true;
                 break;
             case SIZE_CHANGE:

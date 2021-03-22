@@ -26,8 +26,13 @@ public class Environment
      * list of the positions of the lights
      */
     private Vector2[] lightPositions;
-
+    /**
+     * standard effect, if no other is set
+     */
     private final LightedEntity.EffectType standardEffect =  LightedEntity.EffectType.FLICKER;
+    /**
+     * timer to set a effect for a limited time
+     */
     private Watch timer;
     
     /**
@@ -101,6 +106,11 @@ public class Environment
         }
     }
     
+    /**
+     * changes the effect for a limited time
+     * @param type : new effect
+     * @param effectTime : time limit for effect
+     */
     public void changeEffect(LightedEntity.EffectType type, int effectTime) {
     	timer = new Watch(effectTime);
     	timer.startWatch();
@@ -109,6 +119,10 @@ public class Environment
         }
     }
 
+    /**
+     * changes the effect
+     * @param type : new effect
+     */
 	public void changeEffect(LightedEntity.EffectType type) {
 		for(int i = 0; i < NumberOfLights; i++) {
 			lights.get(i).setEffect(type);
