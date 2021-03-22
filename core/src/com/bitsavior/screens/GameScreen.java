@@ -9,18 +9,14 @@ import com.bitsavior.game.World;
 
 public class GameScreen extends ScreenAdapter {
 
+	//variables for testing
+	/** ... */
+	
 	// private Members
 	private BitSavior game;
 	private World world;
-	
 	/** not needed at the moment because there is only one level */
 	private int gameLevel = 0;
-
-	
-	/**
-     * 0: no messages; 1: send messages
-     */
-    int aTestMode=1;
 
 	// public methods
 	/**
@@ -30,17 +26,20 @@ public class GameScreen extends ScreenAdapter {
 	 */
 	public GameScreen(BitSavior game, int level)
 	{
+		if(ScreenManager.aScreenTestMode) System.out.println("GameScreen created");
+		
 		this.game = game;
 		world = new World(GameState.INITIALIZE);    // creating the World
 		world.create();
 		gameLevel = level;
-		if(aTestMode==1) System.out.println("creates new world");
 	}
 
 
 	@Override
 	public void show()
 	{
+		if(ScreenManager.aScreenTestMode) System.out.println("GameScreen is shown");
+		
 		Gdx.input.setInputProcessor(new InputAdapter() {
 			@Override
 			public boolean keyDown(int keyCode) {
@@ -61,6 +60,9 @@ public class GameScreen extends ScreenAdapter {
 			case LOOSE_SHUTDOWN:
 				game.manager.showScreen(Screens.LOSE);
 				break;
+			case WIN:
+				game.manager.setWinStats(-1, -1); //TODO insert parameters for time and bugs
+				game.manager.showScreen(Screens.WIN);
 			default:
 		}
 		world.render(Delta);
@@ -72,6 +74,8 @@ public class GameScreen extends ScreenAdapter {
 	@Override
 	public void dispose()
 	{
+		if(ScreenManager.aScreenTestMode) System.out.println("GameScreen is disposed");
+		
 		world.dispose();
 	}
 	
@@ -80,7 +84,4 @@ public class GameScreen extends ScreenAdapter {
 	{
 		Gdx.input.setInputProcessor(null);
 	}
-	
-	// private methods
-	private void processEvents() {}
 }

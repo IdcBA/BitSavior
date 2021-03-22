@@ -17,7 +17,7 @@ public class SettingsScreen extends ScreenAdapter {
 	
 	//variables for testing
 	/** for testing the Volume adjustments */
-	private int aStaticTest = 1;
+	private boolean aStaticTest = false;
 	
 	//settings
 	/** Format: integer 0 to 100 */
@@ -56,6 +56,7 @@ public class SettingsScreen extends ScreenAdapter {
 	 * @param the game
 	 */
     public SettingsScreen(final BitSavior game) {
+    	if(ScreenManager.aScreenTestMode) System.out.println("SettingsScreen created");
         
         //add Stage and batch&font to display objects
         stage = new Stage(new ScreenViewport());
@@ -101,7 +102,7 @@ public class SettingsScreen extends ScreenAdapter {
     		public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
     			if(getMusicVolume()<=100-changeInterval) {
                 	setMusicVolume(getMusicVolume() + changeInterval);
-                    if(aStaticTest==1) System.out.println("+1M = "+getMusicVolume());
+                    if(aStaticTest) System.out.println("+1M = "+getMusicVolume());
                 }
             }
     	});
@@ -121,7 +122,7 @@ public class SettingsScreen extends ScreenAdapter {
     		public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
     			if(getMusicVolume()>=0+changeInterval) {
                 	setMusicVolume(getMusicVolume() - changeInterval);
-                    if(aStaticTest==1) System.out.println("-1M = "+getMusicVolume());
+                    if(aStaticTest) System.out.println("-1M = "+getMusicVolume());
                 }
             }
     	});
@@ -141,7 +142,7 @@ public class SettingsScreen extends ScreenAdapter {
     		public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
     			if(getSoundVolume()<=100-changeInterval) {
                 	setSoundVolume(getSoundVolume() + changeInterval);
-                    if(aStaticTest==1) System.out.println("+1S = "+getSoundVolume());
+                    if(aStaticTest) System.out.println("+1S = "+getSoundVolume());
                 }
             }
     	});
@@ -161,7 +162,7 @@ public class SettingsScreen extends ScreenAdapter {
     		public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
                 if(getSoundVolume()>=0+changeInterval) {
                 	setSoundVolume(getSoundVolume() - changeInterval);
-                    if(aStaticTest==1) System.out.println("-1S = "+getSoundVolume());
+                    if(aStaticTest) System.out.println("-1S = "+getSoundVolume());
                 }
             }
     	});
@@ -170,6 +171,8 @@ public class SettingsScreen extends ScreenAdapter {
     
     @Override
     public void show() {
+    	if(ScreenManager.aScreenTestMode) System.out.println("SettingScreen is shown");
+    	
     	//set Input to stage
     	Gdx.input.setInputProcessor(stage);
     }
@@ -200,6 +203,8 @@ public class SettingsScreen extends ScreenAdapter {
     }
     
     public void dispose() {
+    	if(ScreenManager.aScreenTestMode) System.out.println("SettingsScreen is disposed");
+    	
     	stage.dispose();
     	batch.dispose();
     	font.dispose();
