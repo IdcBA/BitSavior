@@ -9,49 +9,55 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
-public class LoseScreen extends ScreenAdapter{
+public class LoseScreen extends ScreenAdapter {
 
 	//variables for testing
-	/** ... */
+	/** testing input-> 0: no messages; 1: send messages*/
+	private boolean aInputTest = false;
+	/** becomes true when listener was successfully added to stage */
+	private boolean sucessful = false;
 	
 	//visuals e.g. stage, batch, font
 	/** Stage to handle input*/
     private Stage stage;
 	private SpriteBatch batch;
-	private Texture img;
+	private Texture imgBackground;
     
     /**
 	 * Constructor
 	 * @param the game
 	 */
     public LoseScreen(final BitSavior game) {
+    	if(ScreenManager.aScreenTestMode) System.out.println("LoseScreen created");
     	
         //add Stage and batch&font to display objects
         stage = new Stage();
         batch = new SpriteBatch();
-    	img = new Texture("bluescreen_reworked.png");
+    	imgBackground = new Texture("bluescreen_reworked.png");
         
     	//actions
-        stage.addListener(new InputListener() {
+    	sucessful = stage.addListener(new InputListener() {
         	@Override
         	public boolean keyDown(InputEvent event, int keyCode) {
-				if (keyCode == Input.Keys.ESCAPE) {
+				if(aInputTest) System.out.println("key pressed");
+        		if (keyCode == Input.Keys.ESCAPE) {
 					game.manager.showScreen(Screens.TITLE);
 					return true;
 				}
 				return false;
 			}
 		});
+    	if(aInputTest) System.out.println("stage added listener is "+sucessful);
     }
     
     @Override
     public void show() {
+    	if(ScreenManager.aScreenTestMode) System.out.println("LoseScreen is shown");
+    	
     	//set Input to stage
     	Gdx.input.setInputProcessor(stage);
+    	if(aInputTest) System.out.println("stage processes");
     }
     
     @Override
@@ -59,7 +65,12 @@ public class LoseScreen extends ScreenAdapter{
         Gdx.gl.glClearColor(0, 0.25f, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         batch.begin();
-        batch.draw(img, 0, 0); // img.getWidth()/2, img.getHeight()/2
+        try {
+        	batch.draw(imgBackground, 0, 0);
+        }
+        catch (NullPointerException e) {
+        	System.out.println("loseScreen background image is null");;
+        }
         batch.end();
         
         //draw stage(buttons, etc.)
@@ -73,6 +84,10 @@ public class LoseScreen extends ScreenAdapter{
     }
     
     public void dispose() {
-    	stage.dispose();
+    	if(ScreenManager.aScreenTestMode) System.out.println("LoseScreen is disposed");
+    	
+    	if(stage!=null) stage.dispose();
+    	if(batch!=null) batch.dispose();
+    	if(imgBackground!=null) imgBackground.dispose();
     }
 }

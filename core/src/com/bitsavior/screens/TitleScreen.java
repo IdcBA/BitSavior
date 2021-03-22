@@ -8,7 +8,6 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -17,10 +16,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 public class TitleScreen extends ScreenAdapter
 {
     //variables for testing
-    /** 0: no messages; 1: send messages; 2: --- */
-    private int aScreenTestMode=1;
-    /** 0: no messages<p>1: send messages for Buttons */
-    //private int aButtonTestMode=0; //not used atm
+    /** ... */
 
     //Stage to store/draw Buttons, fonts, etc
     private Stage stage;
@@ -48,6 +44,7 @@ public class TitleScreen extends ScreenAdapter
      * @param the game
      */
     public TitleScreen(final BitSavior game) {
+    	if(ScreenManager.aScreenTestMode) System.out.println("TitleScreen created");
     	
         //add Stage and batch&font to display objects
         stage = new Stage(); //new (ScreenViewport())
@@ -91,7 +88,7 @@ public class TitleScreen extends ScreenAdapter
             public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
                 //continue paused game...
                 if(game.manager.gameIsRunning()) {
-                    if(aScreenTestMode==1) System.out.println("last gScreen gets loaded");
+                    if(ScreenManager.aScreenTestMode) System.out.println("last gScreen gets loaded");
                     game.manager.showScreen(Screens.GAME);
                 }
                 //...or edit Buttons text
@@ -137,15 +134,17 @@ public class TitleScreen extends ScreenAdapter
         stage.addActor(buttonSettings);
         
         //for testing screens: win=NUM1 and lose=NUM2
-        if(aScreenTestMode==1) {
+        if(ScreenManager.aScreenEasySwitch) {
 	        stage.addListener(new InputListener() {
 	        	@Override
 	        	public boolean keyDown(InputEvent event, int keyCode) {
 					if (keyCode == Input.Keys.NUM_1) {
+						game.manager.setWinStats(-1, -1);
 						game.manager.showScreen(Screens.WIN);
 						return true;
 					}
 					if (keyCode == Input.Keys.NUM_2) {
+						game.manager.setLoseStats();
 						game.manager.showScreen(Screens.LOSE);
 						return true;
 					}
@@ -157,6 +156,8 @@ public class TitleScreen extends ScreenAdapter
 
     @Override
     public void show() {
+    	if(ScreenManager.aScreenTestMode) System.out.println("TitleScreen is shown");
+    	
         //set Input to stage
         Gdx.input.setInputProcessor(stage);
 
@@ -184,8 +185,10 @@ public class TitleScreen extends ScreenAdapter
     }
 
     public void dispose() {
-        stage.dispose();
-        batch.dispose();
-        font.dispose();
+    	if(ScreenManager.aScreenTestMode) System.out.println("TitleScreen is disposed");
+    	
+        if(stage!=null) stage.dispose();
+        if(batch!=null) batch.dispose();
+        if(font!=null) font.dispose();
     }
 }
