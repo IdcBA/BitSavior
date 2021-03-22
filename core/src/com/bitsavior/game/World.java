@@ -89,6 +89,10 @@ public class World
 	 */
 	private final int MaxNumberOfEnemies;
 	/**
+	 * number of removed Enemies
+	 */
+	private int removedEnemies;
+	/**
 	 * maximum Number of pickups
 	 */
 	private final int MaxNumberOfPickUps;
@@ -144,6 +148,7 @@ public class World
 		fadeAlpha = 1.0f;
 		fadeTimer = 0L;
 		fadeVolume = 0f;
+		removedEnemies = 0;
 
 		this.gameState = gameState;
 
@@ -293,7 +298,8 @@ public class World
 			player.update(Delta);
 			debugger.update(Delta);
 			lights.update();
-			for (int i = 0; i < MaxNumberOfEnemies; i++) {
+			updateBugs();
+			for (int i = 0; i < MaxNumberOfEnemies - removedEnemies; i++) {
 				Enemies.get(i).update(Delta, player);
 			}
 			updatePickUps();
@@ -309,6 +315,7 @@ public class World
 				gameState = GameState.LOOSE_CAUGHT;
 				gameStateTimer.startWatch();
 				music.setStuttering(0.5f);
+				lights.changeEffect(LightedEntity.EffectType.DEACTIVATE);
 			}
 	}
 
@@ -424,6 +431,8 @@ public class World
 	{
 		userInterface.dispose();
 		lightBuffer.dispose();
+		music.dispose();
+		sound.dispose();
 		shapeRenderer.dispose();
 		batch.dispose();
 		assets.dispose();
@@ -462,7 +471,7 @@ public class World
 		player.isCollided(map);
 
 		// check enemy collision
-		for(int i = 0; i < MaxNumberOfEnemies; i++)
+		for(int i = 0; i < MaxNumberOfEnemies -removedEnemies; i++)
 		{
 			Enemies.get(i).isCollided(map);
 
@@ -471,6 +480,11 @@ public class World
 				player.isAlive = false;
 				music.stop();
 				sound = new Soundeffect(assets.holder.get(Assets.lose));
+				sound.play();
+			}
+			else if(player.isCollided(Enemies.get(i)) && player.isSaved()) {
+				Enemies.get(i).isAlive = false;
+				sound = new Soundeffect(assets.holder.get(Assets.save));
 				sound.play();
 			}
 		}
@@ -491,7 +505,7 @@ public class World
 			player.Save();
 			sound = new Soundeffect(assets.holder.get(Assets.save));
 			debugger.playSound(sound);	
-			lights.changeEffect(LightedEntity.EffectType.DEACTIVATE, 10);
+			lights.changeEffect(LightedEntity.EffectType.PULSATING, 10);
 			}
 	}
 	/**
@@ -542,6 +556,16 @@ public class World
 			if(!pickUps.get(i).isAlive) {
 				pickUps.remove(i);
 				PickUp.pickUpCounter--;
+			}
+		}
+	}
+	
+	private void updateBugs() 
+	{
+		for(int i = 0; i < Enemies.size(); i++) {
+			if (Enemies.get(i).isAlive == false) {
+				Enemies.remove(i);
+				removedEnemies++;
 			}
 		}
 	}

@@ -64,6 +64,10 @@ public class BackgroundMusic{
 	public void pause () {
 		music.pause();
 	}
+
+	public void dispose() {
+		music.dispose();		
+	}
 	
 }
 
