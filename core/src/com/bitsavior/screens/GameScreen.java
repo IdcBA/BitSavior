@@ -58,6 +58,7 @@ public class GameScreen extends ScreenAdapter {
 		switch(world.update(Delta))
 		{
 			case LOOSE_SHUTDOWN:
+				game.manager.setLoseStats();
 				game.manager.showScreen(Screens.LOSE);
 				break;
 			case WIN:
