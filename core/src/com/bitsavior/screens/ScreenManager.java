@@ -9,7 +9,7 @@ package com.bitsavior.screens;
 public class ScreenManager {
 	
 	//variables for testing
-    /** when true prints create, show and dispose of screens */
+    /** when true: prints create, show and dispose of screens */
     static boolean aScreenTestMode = false;
     /** when true: in titleScreen NUM1->winScreen and NUM2->loseScreen */
     static boolean aScreenEasySwitch = true;
@@ -38,13 +38,13 @@ public class ScreenManager {
 		tScreen = new TitleScreen(game);
 		settingsScreen = new SettingsScreen(game);
 		//game is created with setGameLevel
-		//winScreen  is created after a game in showScreen->case WIN
-		//loseScreen is created after a game in showScreen->case lose
+		//winScreen  is created with setWinStats
+		//loseScreen is created with setLoseStats
 	}
 	
 	/**
 	 * shows the requested screen
-	 * @param screenName e.g.: "Screens.WIN" ; consider screen comments!
+	 * @param screenName e.g.: "Screens.TITLE" ; consider screen comments!
 	 */
 	public void showScreen(Screens screenName) {
 		switch(screenName) {

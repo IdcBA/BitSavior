@@ -66,7 +66,7 @@ public class WinScreen extends ScreenAdapter {
         Label.LabelStyle lStyle = new Label.LabelStyle();
         font = new BitmapFont(Gdx.files.internal("s32verdana_blue.fnt"));
         lStyle.font = font;
-        labelText = new Label("blablalalalla", lStyle);
+        labelText = new Label("label initialized, not edited", lStyle);
         labelText.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         //edit height: 1 is top and higher is nearer screenCenter
         labelText.setPosition(0, Gdx.graphics.getHeight()/ /*->*/ 8 /*<-*/);
