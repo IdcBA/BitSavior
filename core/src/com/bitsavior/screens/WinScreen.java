@@ -50,6 +50,8 @@ public class WinScreen extends ScreenAdapter {
 	private String line5;
 	private String line6;
 	private String line7;
+	private String line8;
+	private String line9;
     
 	//game result
 	/** timeLeft to display it <p> -10 is default */
@@ -86,7 +88,7 @@ public class WinScreen extends ScreenAdapter {
         stage = new Stage(new ScreenViewport());
         
         //add "console" background as Texture wrapped in an Image
-		textureBackground = new Texture("winscreen_back.png"); // TODO fill in filename of background
+		textureBackground = new Texture("winscreen_back.png");
 		textureBackground.setWrap(TextureWrap.MirroredRepeat, TextureWrap.MirroredRepeat);
 		tRegion = new TextureRegion(textureBackground);
 		tRegion.setRegion(0, 0, textureBackground.getWidth(), textureBackground.getHeight());
@@ -97,7 +99,7 @@ public class WinScreen extends ScreenAdapter {
 		
         //add label and its font for "console" text
         Label.LabelStyle lStyle = new Label.LabelStyle();
-        font = new BitmapFont(Gdx.files.internal("font/s32arial_2_white.fnt")); //TODO add font
+        font = new BitmapFont(Gdx.files.internal("font/s32arial_2_white.fnt"));
         lStyle.font = font;
         labelText = new Label("", lStyle);
         //edit height: 1 is top and higher is nearer screenCenter
@@ -114,6 +116,8 @@ public class WinScreen extends ScreenAdapter {
         line5 = "> Log:\n";
         line6 = "> compiled with 0 errors and " + bugsLeft + " warnings\n";
         line7 = "> compiled in " + timeLeft + " seconds";
+        line8 = "";
+        line9 = "";
 
         //load Skin for Buttons
         bSkin1 = new Skin(Gdx.files.internal("skin/glassy-ui.json"));
@@ -171,8 +175,10 @@ public class WinScreen extends ScreenAdapter {
      * checks the current time and sets the labels text depending on this
      */
     private void updateText() {
-    	//last line first for more efficiency
-    	if(startTime+(delayTime*7) < System.currentTimeMillis())       labelText.setText(line1+line2+line3+line4+line5+line6+line7);
+    	//last line first for more efficiency later on
+    	if(startTime+(delayTime*9) < System.currentTimeMillis())       labelText.setText(line1+line2+line3+line4+line5+line6+line7+line8+line9);
+    	else if (startTime+(delayTime*8) < System.currentTimeMillis()) labelText.setText(line1+line2+line3+line4+line5+line6+line7+line8);
+    	else if (startTime+(delayTime*7) < System.currentTimeMillis()) labelText.setText(line1+line2+line3+line4+line5+line6+line7);
     	else if (startTime+(delayTime*6) < System.currentTimeMillis()) labelText.setText(line1+line2+line3+line4+line5+line6);
     	else if (startTime+(delayTime*5) < System.currentTimeMillis()) labelText.setText(line1+line2+line3+line4+line5);
     	else if (startTime+(delayTime*4) < System.currentTimeMillis()) labelText.setText(line1+line2+line3+line4);
