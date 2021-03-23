@@ -61,9 +61,9 @@ public class SettingsScreen extends ScreenAdapter {
         //add Stage and batch&font to display objects
         stage = new Stage(new ScreenViewport());
         batch = new SpriteBatch();
-        font = new BitmapFont(Gdx.files.internal("s32verdana_blue.fnt"));
-        fontMusic = new BitmapFont(Gdx.files.internal("s32verdana_blue.fnt"));
-        fontSound = new BitmapFont(Gdx.files.internal("s32verdana_blue.fnt"));
+        font = new BitmapFont(Gdx.files.internal("font/s32verdana_blue.fnt"));
+        fontMusic = new BitmapFont(Gdx.files.internal("font/s32verdana_blue.fnt"));
+        fontSound = new BitmapFont(Gdx.files.internal("font/s32verdana_blue.fnt"));
 
         //load Skin for Buttons
         bSkin1 = new Skin(Gdx.files.internal("skin/glassy-ui.json"));
