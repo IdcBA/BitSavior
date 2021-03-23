@@ -13,9 +13,9 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 public class LoseScreen extends ScreenAdapter {
 
 	//variables for testing
-	/** testing input-> 0: no messages; 1: send messages*/
+	/** to test input, if true: sends messages*/
 	private boolean aInputTest = false;
-	/** becomes true when listener was successfully added to stage */
+	/** to test input: becomes true when listener was successfully added to stage */
 	private boolean sucessful = false;
 	
 	//visuals e.g. stage, batch, font
