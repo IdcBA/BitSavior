@@ -26,7 +26,6 @@ public class EnemyAI
      * the viewrange for the owner to detect other entities
      */
     float viewRange;
-
     /**
      * constructor
      * attaches the owner and get the center of the owners sprite

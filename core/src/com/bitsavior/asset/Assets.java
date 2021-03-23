@@ -9,7 +9,7 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 
 /**
- * maintains the assets
+ * manages all the assets with easy access due to AssetDescriptors
  */
 public class Assets
 {
@@ -20,18 +20,14 @@ public class Assets
             new AssetDescriptor<Texture>("spritesheet_enemy.png", Texture.class);
     public static final AssetDescriptor<Texture> antibug =
             new AssetDescriptor<Texture>("spritesheet_antibug.png", Texture.class);
-
     public static final AssetDescriptor<TiledMap> currentMap =
             new AssetDescriptor<TiledMap>("map_1.tmx", TiledMap.class);
-
     public static final AssetDescriptor<Texture> player =
             new AssetDescriptor<Texture>("spritesheet_test3.png", Texture.class);
-
     public static final AssetDescriptor<Texture> pickUp =
             new AssetDescriptor<Texture>("memory-leaks.jpg", Texture.class);
     public static final AssetDescriptor<Texture> breakpoint =
             new AssetDescriptor<Texture>("breakpoint.png", Texture.class);
-
     public static final AssetDescriptor<Texture> light =
             new AssetDescriptor<Texture>("lightcone3.png", Texture.class);
     public static final AssetDescriptor<Texture> redLight =
@@ -48,15 +44,16 @@ public class Assets
     		new AssetDescriptor<>("save.wav", Sound.class);
 
 
-
-    
+    /**
+     * constructor
+     * create new AssetManager and add a loader for tmx files
+     */
     public Assets()
     {
         holder = new AssetManager();
         // add additional loader for tmx maps
         holder.setLoader(TiledMap.class, new TmxMapLoader());
     }
-
     /**
      * load all described assets into the assetholder
      */
@@ -71,16 +68,12 @@ public class Assets
             holder.load(currentMap);
             holder.load(breakpoint);
             holder.load(uiRect);
-
             holder.load(background);
             holder.load(blop);
             holder.load(lose);
             holder.load(save);
 
             holder.finishLoading();
-
-
-
     }
     /**
      * dispose all resources

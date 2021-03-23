@@ -66,10 +66,10 @@ public class LoseScreen extends ScreenAdapter {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         batch.begin();
         try {
-        	batch.draw(imgBackground, 0, 0);
+        	batch.draw(imgBackground, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         }
         catch (NullPointerException e) {
-        	System.out.println("loseScreen background image is null");;
+        	System.out.println("loseScreen background image is null");
         }
         batch.end();
         

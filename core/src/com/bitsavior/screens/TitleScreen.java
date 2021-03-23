@@ -45,6 +45,7 @@ public class TitleScreen extends ScreenAdapter
      */
     public TitleScreen(final BitSavior game) {
     	if(ScreenManager.aScreenTestMode) System.out.println("TitleScreen created");
+
     	
         //add Stage and batch&font to display objects
         stage = new Stage(); //new (ScreenViewport())

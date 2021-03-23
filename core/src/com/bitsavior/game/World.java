@@ -10,7 +10,6 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.math.Vector2;
 import com.bitsavior.asset.Assets;
 import com.bitsavior.entity.*;
 import com.bitsavior.map.Environment;
@@ -78,7 +77,9 @@ public class World
 	 * Player class
 	 */
 	private Player player;
-
+	/**
+	 * debugger that lights its way and helps the player navigate through the level
+	 */
 	private AntiBug debugger;
 	/**
 	 * contains all enemies
@@ -100,11 +101,6 @@ public class World
 	 * contains all pickups
 	 */
 	private final ArrayList<PickUp> pickUps;
-	/**
-	 * describes the bounds of the world
-	 * visible trough the camera in worldunits
-	 */
-	public final Vector2 WORLDBOUNDS;
 	/**
 	 * shape renderer for the fading effects
 	 */
@@ -128,10 +124,11 @@ public class World
 	/**
 	 * initialise required data for the creation of the world
 	 * @param gameState : initialises the gamestate once, to ensure the correct behaviour
+	 * @param level : the actual level of the game
 	 */
-	public World(GameState gameState)
+	public World(GameState gameState, int level)
 	{
-		timer = new Watch(100);
+		timer = new Watch(20 - (level * 5));
 		// time limit for the entry animation
 		gameStateTimer = new Watch(10);
 		assets = new Assets();
@@ -140,17 +137,20 @@ public class World
 
 		shapeRenderer = new ShapeRenderer();
 
-		WORLDBOUNDS = new Vector2(1280.f, 960.f);
 
 		// setup numbers
-		MaxNumberOfEnemies = 10;
-		MaxNumberOfPickUps = 10;
+		MaxNumberOfEnemies = 9 + level;
+		MaxNumberOfPickUps = 9 + level;
+
 		fadeAlpha = 1.0f;
 		fadeTimer = 0L;
 		fadeVolume = 0f;
 		removedEnemies = 0;
 
-		this.gameState = gameState;
+		if(level != 1)
+			this.gameState = GameState.START;
+		else
+			this.gameState = gameState;
 
 		Enemies = new ArrayList<Bug>();
 		pickUps = new ArrayList<PickUp>();
@@ -161,10 +161,10 @@ public class World
 	 */
 	public void create() {
 		// sets the camera to the world bounds
-		camera.viewportWidth  = WORLDBOUNDS.x;
-		camera.viewportHeight = WORLDBOUNDS.y;
+		camera.viewportWidth  = WorldBounds.WIDTH;
+		camera.viewportHeight = WorldBounds.HEIGHT;
 		// centers camera at 0,0
-		camera.position.set(WORLDBOUNDS.x / 2.f, WORLDBOUNDS.y / 2.f, 0);
+		camera.position.set(WorldBounds.WIDTH / 2.f, WorldBounds.HEIGHT / 2.f, 0);
 		camera.update();
 		// set the projection matrix of the ScreenBatch to camera's size
 		batch.setProjectionMatrix(camera.combined);
@@ -173,7 +173,7 @@ public class World
 		// load assets
 		assets.load();
 
-		userInterface = new UserInterface(assets.holder, timer);
+		userInterface = new UserInterface(assets.holder, timer, MaxNumberOfPickUps);
 
 		// distribute textures & create Entities
 		map = new Tilemap(assets.holder.get(Assets.currentMap), camera);
@@ -189,16 +189,21 @@ public class World
 		lights = new Environment(assets.holder);
 
 		// create FrameBuffer with width/height of the screen
-		lightBuffer = new FrameBuffer(Pixmap.Format.RGBA8888, (int)WORLDBOUNDS.x, (int)WORLDBOUNDS.y, false);
+		lightBuffer = new FrameBuffer(Pixmap.Format.RGBA8888, (int)WorldBounds.WIDTH, (int)WorldBounds.HEIGHT, false);
 		lightBuffer.getColorBufferTexture().setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
 
 		lightBufferRegion = new TextureRegion(lightBuffer.getColorBufferTexture(), 0, 0, 1280, 960);
 		lightBufferRegion.flip(false, true);
 
-		gameState = GameState.START;
-		// start timer for the entry animation
-		gameStateTimer.startWatch();
-		fadeTimer = gameStateTimer.getRemainingMilliSeconds();
+		if(gameState == GameState.INITIALIZE)
+		{
+			// start timer for the entry animation
+			gameStateTimer.startWatch();
+			fadeTimer = gameStateTimer.getRemainingMilliSeconds();
+			gameState = GameState.START;
+		}
+		else if(gameState == GameState.START)
+			startGameSession();
 	}
 	/**
 	 * prepare the game session
@@ -216,11 +221,16 @@ public class World
 
 		music.setloop(true);
 		music.setVolume(0.5f);
-		music.play();music.setloop(true);
-		
+		music.play();
+		music.setloop(true);
 
+		// start game timer
 		timer.startWatch();
 
+		// reset gameStateTimer for later use
+		gameStateTimer.reset(7);
+
+		gameState = GameState.RUN;
 	}
 	/**
 	 * updates and handles the game logic in dependency of the current
@@ -238,10 +248,7 @@ public class World
 			case RUN:
 				runUpdate(Delta);
 				break;
-			case LOOSE_TIMEOUT:
-				looseUpdate(Delta);
-				break;
-			case LOOSE_CAUGHT:
+			case LOOSE:
 				looseUpdate(Delta);
 				break;
 			default:
@@ -277,13 +284,8 @@ public class World
 
 		
 		// if time is over start the game session and allow user manipulation
-		if(!gameStateTimer.isActive) {
-			gameStateTimer.reset(8);
+		if(!gameStateTimer.isActive)
 			startGameSession();
-			gameState = GameState.RUN;
-		}
-		
-		
 	}
 	/**
 	 * updates the game logic
@@ -303,18 +305,14 @@ public class World
 				Enemies.get(i).update(Delta, player);
 			}
 			updatePickUps();
-			userInterface.update(player.getPickUpCounter());
+			userInterface.update();
 
 			checkCollisions();
 
-			if (!timer.isActive) {
-				gameState = GameState.LOOSE_TIMEOUT;
+			if (!timer.isActive || !player.isAlive) {
+				gameState = GameState.LOOSE;
 				gameStateTimer.startWatch();
-			}
-			else if (!player.isAlive) {
-				gameState = GameState.LOOSE_CAUGHT;
-				gameStateTimer.startWatch();
-				music.setStuttering(0.5f);
+				music.setStuttering(0.3f);
 				lights.changeEffect(LightedEntity.EffectType.DEACTIVATE);
 			}
 	}
@@ -330,10 +328,10 @@ public class World
 			gameState = GameState.LOOSE_SHUTDOWN;
 
 		music.update();
-
 	}
 	/**
 	 * manages all render calls inside the world
+	 * @param Delta : elapsed time since last frame
 	 */
 	public void render(final float Delta)
 	{
@@ -349,8 +347,7 @@ public class World
 				startRender(Delta);
 				break;
 			case RUN:
-			case LOOSE_TIMEOUT:
-			case LOOSE_CAUGHT:
+			case LOOSE:
 				runRender(Delta);
 				break;
 			default:
@@ -392,6 +389,8 @@ public class World
 			pickUp.draw(batch, Delta);
 		for(Bug bug : Enemies)
 			bug.draw(batch, Delta);
+		lights.draw(batch, Delta);
+
 		batch.end();
 
 		// render blending into the second FrameBuffer
@@ -412,14 +411,13 @@ public class World
 		batch.end();
 		lightBuffer.end();
 
-		// draw second buffer and player on top
+		// draw second buffer and objects on top that should not be affected by the lightning
 		Gdx.gl.glBlendFunc(GL20.GL_DST_COLOR, GL20.GL_ZERO);
 		batch.begin();
 		batch.draw(lightBufferRegion, 0, 0, 1280, 960);
 
 		player.draw(batch, Delta);
 		debugger.draw(batch, Delta);
-		lights.draw(batch, Delta);
 		userInterface.draw(batch);
 		batch.end();
 	}
@@ -502,7 +500,7 @@ public class World
 		
 		// check debugger collision 
 		if (player.isCollided(debugger)) {
-			player.Save();
+			player.save();
 			sound = new Soundeffect(assets.holder.get(Assets.save));
 			debugger.playSound(sound);	
 			lights.changeEffect(LightedEntity.EffectType.PULSATING, 10);
@@ -521,9 +519,9 @@ public class World
 
 			do {
 				if(i < MaxNumberOfEnemies / 2)
-					Enemies.get(i).spawn(random.nextInt((int)(WORLDBOUNDS.x / 3)), random.nextInt((int)WORLDBOUNDS.y) );
+					Enemies.get(i).spawn(random.nextInt((int)(WorldBounds.WIDTH / 3)), random.nextInt((int)WorldBounds.HEIGHT) );
 				else
-					Enemies.get(i).spawn((int)(WORLDBOUNDS.x / 3 * 2) + random.nextInt((int)(WORLDBOUNDS.x / 3)), random.nextInt((int)WORLDBOUNDS.y) );
+					Enemies.get(i).spawn((int)(WorldBounds.WIDTH / 3 * 2) + random.nextInt((int)(WorldBounds.WIDTH / 3)), random.nextInt((int)WorldBounds.HEIGHT) );
 			} while(map.isCollided(Enemies.get(i)));
 		}
 
@@ -542,7 +540,7 @@ public class World
 
 			// if a pickup is colliding with the map, repeat with new coordinates
 			do {
-				pickUps.get(i).spawn(random.nextInt((int)WORLDBOUNDS.x), random.nextInt((int)WORLDBOUNDS.y));
+				pickUps.get(i).spawn(random.nextInt((int)WorldBounds.WIDTH), random.nextInt((int)WorldBounds.HEIGHT));
 			} while(map.isCollided(pickUps.get(i)));
 		}
 	}

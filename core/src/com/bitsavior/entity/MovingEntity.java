@@ -12,12 +12,12 @@ import com.bitsavior.collision.ICollision;
 import com.bitsavior.map.Tilemap;
 
 /**
- * specifies the moving functionality for moving entities
- * and takes care of the moving animations
+ * a moving entity controls the moving behaviour and the moving animations.
+ * A moving entity extends an entity and implement a collision interface for
+ * collision detection
  */
 public class MovingEntity extends Entity implements ICollision
 {
-
     /**
      * represents the animation of the moving entity
      */
@@ -38,8 +38,6 @@ public class MovingEntity extends Entity implements ICollision
      * rotation angle of the sprite in degrees
      */
     private float rotation = 0.f;
-
-    // public members
     /**
      * contains the actual movement direction
      */
@@ -72,10 +70,14 @@ public class MovingEntity extends Entity implements ICollision
             }
         }
         entityAnimation = new Animation<TextureRegion>(this.frameDuration, entityFrames);
-        keyFrame = new TextureRegion(entityFrames[0]);
-
+        try {
+            keyFrame = new TextureRegion(entityFrames[0]);
+        }
+        catch(IndexOutOfBoundsException e)
+        {
+            System.out.println("Error: entitFrames index out of bounds!");
+        }
     }
-
     /**
      * sets the coordinates of the entity accordingly to the given direction
      * @param inversion : 1 for the normal direction, -1 for the inverse direction
@@ -120,12 +122,17 @@ public class MovingEntity extends Entity implements ICollision
         return boundaries.overlaps(entity.getBoundings());
     }
 
+    /**
+     * updates the animation logic
+     * Notice: if this class is inherited by another class,
+     * this function must be called in the update function of the child
+     * @param Delta : time since last frame in milliseconds
+     */
     public void update(float Delta)
     {
         stateTime += Delta;
         keyFrame =  entityAnimation.getKeyFrame(stateTime, true);
     }
-
     /**
      * check object layer of the map if a collision happened
      * @param map : map with the collideable objects to check
@@ -147,7 +154,6 @@ public class MovingEntity extends Entity implements ICollision
             }
         }
     }
-
     /**
      * draw the current animation with the given rotation
      * @param batch : current SpriteBatch for drawing

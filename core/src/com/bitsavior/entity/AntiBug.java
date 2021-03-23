@@ -12,9 +12,12 @@ import java.util.Random;
  */
 public class AntiBug extends MovingEntity
 {
+    /**
+     * lightsource to implement light effects
+     */
     private LightSource flashlight;
-    private Watch waitingTime;
 
+    private Watch waitingTime;
     /**
      * maximum walk distance before change of direction
      */
@@ -71,7 +74,6 @@ public class AntiBug extends MovingEntity
         walkDistance += velocity * Delta;
 
     }
-
     /**
      * draws the lightsource if the entity is alive
      * @param batch : current Spritebatch
