@@ -12,7 +12,6 @@ import com.bitsavior.asset.Assets;
  */
 public class LightedEntity extends Entity
 {
-
     /**
      * represents a type of effect for the lightsource
      */
@@ -36,7 +35,6 @@ public class LightedEntity extends Entity
          */
         DEACTIVATE
     }
-
     /**
      * maximum diameter of the lightsource for the size change effect
      */
@@ -77,7 +75,6 @@ public class LightedEntity extends Entity
      * lightsource for the lighted entity
      */
     private final LightSource light;
-
     /**
      * constructor
      * sets a red dot for the lighted entity and a red light light for the lightsource
@@ -87,7 +84,6 @@ public class LightedEntity extends Entity
     {
         this(manager.get(Assets.breakpoint),manager.get(Assets.redLight) );
     }
-
     /**
      * constructor
      * sets the textures, attaches the lightsource and set the timer for the effects
@@ -106,14 +102,12 @@ public class LightedEntity extends Entity
 
         timer = System.currentTimeMillis();
     }
-
     /**
      * updates the logic for the lighted entity
      * checks the timer and activate required effects
      */
     public void update()
     {
-
         if(timer <= System.currentTimeMillis() - effectAnimationTime)
         {
             timer = System.currentTimeMillis();
@@ -127,7 +121,6 @@ public class LightedEntity extends Entity
         }
         light.update();
     }
-
     /**
      * sets the desired effect for the lightsource
      * @param type : type of effect for the lightsource
@@ -137,6 +130,7 @@ public class LightedEntity extends Entity
         switch(type)
         {
             case PULSATING:
+            	 flicker = false;
                 pulsating = true;
                 break;
             case SIZE_CHANGE:
@@ -151,10 +145,8 @@ public class LightedEntity extends Entity
                 pulsating = false;
                 flicker = false;
             default:
-
         }
     }
-
     /**
      * sets the desired effect for the lightsource and sets the effect timer
      * @param type : type of effect for the lightsource
@@ -166,6 +158,7 @@ public class LightedEntity extends Entity
         switch(type)
         {
             case PULSATING:
+            	flicker = false;
                 pulsating = true;
                 break;
             case SIZE_CHANGE:
@@ -180,7 +173,6 @@ public class LightedEntity extends Entity
                 pulsating = false;
                 flicker = false;
             default:
-
         }
     }
     /**
@@ -191,7 +183,6 @@ public class LightedEntity extends Entity
     {
         light.setRadius(radius);
     }
-
     /**
      * sets the range for the size change
      * @param minLightDiameter : minimum diameter of the lightsource for the size change effect
@@ -204,7 +195,6 @@ public class LightedEntity extends Entity
         this.minLightDiameter = minLightDiameter;
         this.maxLightDiameter = maxLightDiameter;
     }
-
     /**
      * manages the size change effect
      */
@@ -219,7 +209,6 @@ public class LightedEntity extends Entity
         else
             light.setSize(light.getSize().x - 2.f, light.getSize().y - 2.f);
     }
-
     /**
      * manages the pulsate effect
      */
@@ -234,7 +223,6 @@ public class LightedEntity extends Entity
         else
             light.setIntensity(light.getIntensityFactor() - 0.03f);
     }
-
     /**
      * manages the flicker effect
      */
@@ -250,7 +238,6 @@ public class LightedEntity extends Entity
             brighter = true;
         }
     }
-
     /**
      * draws the lightsource
      * @param batch : current Spritebatch

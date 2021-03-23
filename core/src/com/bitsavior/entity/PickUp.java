@@ -3,21 +3,20 @@ package com.bitsavior.entity;
 import com.badlogic.gdx.graphics.Texture;
 
 
+/**
+ * a pickup that can be collected
+ */
 public class PickUp extends Entity
 {
-    // static Members
-
     /**
      * counts the amount of existing pickups
      */
-    public static int pickUpCounter;
+    public static int pickUpCounter = 0;
 
-    static {
-        pickUpCounter = 0;
-    }
-
-
-    // public Methods
+    /**
+     * constructor
+     * @param texture : texture for the representation of the pickup
+     */
     public PickUp(final Texture texture)
     {
         super(texture);
@@ -29,7 +28,6 @@ public class PickUp extends Entity
 
         pickUpCounter++;
     }
-
     /**
      * set the enemy alive and spawn it at the given position
      * @param x : x-coordinate(spawn)

@@ -2,6 +2,7 @@ package com.bitsavior.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -42,6 +43,7 @@ public class WinScreen extends ScreenAdapter {
     private int bSizeX = 300;
     /** norm Y size for Buttons */
     private int bSizeY = 100;
+
     
     /**
 	 * Constructor
@@ -64,14 +66,20 @@ public class WinScreen extends ScreenAdapter {
 		imgBackground = new Texture("");*/
         
         Label.LabelStyle lStyle = new Label.LabelStyle();
-        font = new BitmapFont(Gdx.files.internal("s32verdana_blue.fnt"));
+        font = new BitmapFont();
         lStyle.font = font;
-        labelText = new Label("label initialized, not edited", lStyle);
+
+        labelText = new Label("blablalalalla", lStyle);
+        labelText.setFontScale(2.f);
+        labelText.setColor(74.7f, 75.6f, 74.6f, 1.f);
+
+        labelText.setPosition(Gdx.graphics.getWidth() * 0.015f, Gdx.graphics.getHeight() * -0.020f);
         labelText.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         //edit height: 1 is top and higher is nearer screenCenter
-        labelText.setPosition(0, Gdx.graphics.getHeight()/ /*->*/ 8 /*<-*/);
-        labelText.setAlignment(Align.center);
+
+        labelText.setAlignment(Align.topLeft);
         stage.addActor(labelText);
+
         
         //load Skin for Buttons
         bSkin1 = new Skin(Gdx.files.internal("skin/glassy-ui.json"));
@@ -94,6 +102,8 @@ public class WinScreen extends ScreenAdapter {
             }
        	} );
         stage.addActor(buttonMenu);
+
+       imgBackground = new Texture("winscreen_back.png");
     }
     
     @Override
@@ -102,9 +112,14 @@ public class WinScreen extends ScreenAdapter {
     	
     	//edit win message
     	labelText.setText( //TODO insert text, bugsLeft and timeLeft
-    			"first line \n"
-    			+ "second line blablabla\n"
-    			+ "third line");
+    			"> Executing Task: Bitsavior.level 1\n"
+                + "> Task:core:Bitsavior:level 1:compile \n\n"
+    			+ "> Task:core:Bitsavior:level 1:classes\n\n"
+    			+ "> Task:core:Bitsavior:level 1:main:compile successfull\n"
+                        + "> Log:\n"
+                        + "> compiled with 0 errors and 5 warnings\n"
+                        + "> compiled in 50 seconds"
+        + Gdx.graphics.getWidth());
     	
     	//set Input to stage
     	Gdx.input.setInputProcessor(stage);
@@ -117,7 +132,7 @@ public class WinScreen extends ScreenAdapter {
         
         batch.begin();
         try {
-        	batch.draw(imgBackground, 0, 0);
+        	batch.draw(imgBackground, 0, Gdx.graphics.getHeight() / 2, Gdx.graphics.getWidth(), Gdx.graphics.getHeight() / 2);
         }
         catch (NullPointerException e) {
         	if(aErrorMessage) System.out.println("winScreen background image is null");;

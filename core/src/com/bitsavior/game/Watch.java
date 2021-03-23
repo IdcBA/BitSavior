@@ -1,15 +1,30 @@
 package com.bitsavior.game;
 
+/**
+ * a watch holds information and functionality for
+ * implementing timers e.g for controlling time sensitive behaviours and
+ * effect changes
+ */
 public class Watch
 {
-    public long startTime = 0L;
-    public long elapsedTime = 0L;
-    public long timeLimit;
-
-    boolean isActive = false;
-
     /**
-     *
+     * the current system time in milliseconds
+     */
+    public long startTime = 0L;
+    /**
+     * the elapsed time since the start of the watch in milliseconds
+     */
+    public long elapsedTime = 0L;
+    /**
+     * the desired time limit in milliseconds
+     */
+    public long timeLimit;
+    /**
+     * shows if the watch is active or not
+     */
+    boolean isActive = false;
+    /**
+     * constructor
      * @param timeLimit : time limit in seconds
      */
     public Watch(int timeLimit)
@@ -17,12 +32,17 @@ public class Watch
         this.timeLimit = timeLimit * 1000L;
 
     }
+    /**
+     * starts the watch
+     */
     public void startWatch()
     {
         startTime = System.currentTimeMillis();
         isActive = true;
     }
-
+    /**
+     * updates the times and calculates the elapsed time
+     */
     public void update()
     {
         if(isActive) {
@@ -35,6 +55,10 @@ public class Watch
             }
         }
     }
+    /**
+     * reset the current watch and set all values to zero
+     * @param timeLimit : the new time limit in seconds
+     */
     public void reset(int timeLimit)
     {
         isActive = false;
@@ -42,13 +66,24 @@ public class Watch
         elapsedTime = 0L;
         this.timeLimit = timeLimit * 1000L;
     }
-
+    /**
+     * gets the remaining seconds until watch is finished
+     * @return : the remaining time of the watch in seconds
+     */
     public int getRemainingSeconds() { return (int)((timeLimit - elapsedTime) / 1000); }
-
+    /**
+     * gets the remaining milliseconds until watch is finished
+     * @return : the remaining time of the watch in milliseconds
+     */
     public long getRemainingMilliSeconds() { return timeLimit - elapsedTime; }
-
+    /**
+     * gets the time limit of the watch
+     * @return : the time limit of the watch in seconds
+     */
     public int getTimeLimit(){ return (int)(timeLimit / 1000); }
-
+    /**
+     * gets if the watch is active or not
+     * @return : true if the watch is active, false if not
+     */
     public boolean isActive(){ return isActive; }
-
 }

@@ -21,40 +21,45 @@ import com.bitsavior.entity.Entity;
  */
 public class Tilemap implements ICollision
 {
-
-	//private Members
-	private TiledMap tiledMap;
-	private final OrthogonalTiledMapRenderer renderer;
-
-	//public Methods
 	/**
-	 * Constructor()
-	 * @param tiledMap : reference to the asset
-	 * @param camera : actual camera
+	 * holds the tiled map in .tmx format
+	 */
+	private TiledMap tiledMap;
+	/**
+	 * special tiled map renderer
+	 */
+	private final OrthogonalTiledMapRenderer renderer;
+	/**
+	 * constructor
+	 * @param tiledMap : the tiled map
+	 * @param camera : currently used camera
 	 */
 	public Tilemap(final TiledMap tiledMap, final OrthographicCamera camera) {
 		this.tiledMap = new TiledMap();
 		this.tiledMap = tiledMap;
 
 		renderer = new OrthogonalTiledMapRenderer(tiledMap);
-
 		renderer.setView(camera);
 	}
 	/**
-	 * render the tiled map
+	 * renders the tiled map
 	 */
-	public void render() {
-
-		renderer.render();
-	}
+	public void render(){ renderer.render(); }
 	/**
-	 * get back the required layer
+	 * returns the desired layer of the tiled map
 	 * @param layer : layerindex
 	 * @return : required layer
 	 */
 	public MapLayer getLayer(int layer)
 	{
-		return tiledMap.getLayers().get(layer);
+		try {
+			return tiledMap.getLayers().get(layer);
+		}
+		catch(IndexOutOfBoundsException e)
+		{
+			System.out.println("Error: Layer: " + layer + " not available in the map!");
+			return null;
+		}
 	}
 
 	public boolean isCollided(final Entity entity)

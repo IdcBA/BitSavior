@@ -18,5 +18,9 @@ public class Soundeffect{
 	public void loop() {
 		sound.loop() ;
 	}
+
+	public void dispose() {
+		sound.dispose();
+	}
 }
 

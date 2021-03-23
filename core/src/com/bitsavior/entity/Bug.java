@@ -8,12 +8,13 @@ import java.util.Random;
 
 /**
  * represents an enemy including A.I
+ * is a MovingEntity for the movement behaviour and
+ * implements a collision interface
  */
 public class Bug
         extends MovingEntity
         implements ICollision
 {
-    // private Members
     /**
      * view range of the enemy in units
      */
@@ -34,11 +35,8 @@ public class Bug
      * walked worldunits before direction change
      */
     private float walkDistance = 0.f;
-	
-
-    // public Methods
     /**
-     * Constructor()
+     * constructor
      * @param texture : texture of the enemy
      */
     public Bug(Texture texture)
@@ -57,7 +55,6 @@ public class Bug
         brain = new EnemyAI(this, viewRange);
 
     }
-
     /**
      * set the enemy alive and spawn it at the given position
      * @param x : x-coordinate(spawn)
@@ -70,7 +67,6 @@ public class Bug
         setPosition(x, y);
         chooseDirection();
     }
-
     /**
      * updates position, direction and artifical intelligence
      * @param Delta : elapsed time since last frame
@@ -96,21 +92,16 @@ public class Bug
         // add covered distance of the frame
         walkDistance += velocity * Delta;
     }
-
-
     /**
      * return the viewrange of the enemy
      * @return : viewrange of the enemy
      */
     public float getViewRange() { return viewRange; }
-
     /**
      * sets the current viewrange of the enemy
      * @param viewRange : describes how far the enemy can see
      */
     public void setViewRange(float viewRange) { this.viewRange = viewRange; }
-
-    // private Methods
     /**
      * set move direction of the enemy randomly
      */
@@ -136,8 +127,6 @@ public class Bug
                 this.direction = Movement.DOWN;
                 break;
             default:
-                System.out.println("fail");
-
         }
     }
 }

@@ -10,6 +10,7 @@ public class DesktopLauncher {
 		config.width = 1280;
 		config.height = 960;
 		config.fullscreen = true;
+		config.resizable = false;
 		new LwjglApplication(new BitSavior(), config);
 	}
 }

@@ -14,7 +14,6 @@ public class LightSource extends Entity
      * holds a reference to the entity the light is attached to
      */
     private Entity parent;
-
     /**
      * hue of the lightsource
      */
@@ -29,7 +28,13 @@ public class LightSource extends Entity
      */
     public enum TYPE
     {
+        /**
+         * a rather cold color for white light
+         */
         COLD,
+        /**
+         * a warm yellow color
+         */
         WARM
     }
     /**
@@ -42,7 +47,6 @@ public class LightSource extends Entity
         super(texture);
         parent = null;
         color = new Color(0.7f, 0.7f, 0.8f, 0.99f);
-
     }
     /**
      * attaches the lightsource to an entity
@@ -89,7 +93,6 @@ public class LightSource extends Entity
             default:
         }
     }
-
     /**
      * sets the Intensity of the light via the alpha value
      * @param intensityFactor : must be between 0 to 1, 0 = invisible, 1 = full intensity
@@ -108,7 +111,6 @@ public class LightSource extends Entity
      * @return : intensity value of the light, 0 = invisible, 1 = full intensity
      */
     public float getIntensityFactor(){ return intensityFactor; }
-
     /**
      * set the radius of the lightsource
      * @param radius : radius of the lightsource
@@ -126,7 +128,6 @@ public class LightSource extends Entity
     public void draw(final SpriteBatch batch, float Delta)
     {
         batch.setColor(color);
-
         super.draw(batch, Delta);
     }
 }

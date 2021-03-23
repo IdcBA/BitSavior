@@ -8,6 +8,7 @@ import com.bitsavior.game.Watch;
 /**
  * represents the Player
  * including functionality for collecting of pickups
+ * and extends a moving entity
  */
 public class Player
         extends MovingEntity
@@ -16,13 +17,16 @@ public class Player
      * counts the collected pickups
      */
     private int pickUpCounter;
-
-
-    private LightSource flashlight;
-    private Watch saveTime;
-	
     /**
-     * Constructor
+     * a lightsource for the light effect
+     */
+    private LightSource flashlight;
+    /**
+     * timer for the player invincibility after touches the debugger
+     */
+    private Watch saveTime;
+    /**
+     * constructor
      * @param manager : assetHolder for player and flashlight assets
      */
     public Player(final AssetManager manager) {
@@ -40,7 +44,7 @@ public class Player
         pickUpCounter = 0;
 
         // set player size
-        setSize(30, 30);
+        setSize(25, 25);
 		
     }
     /**
@@ -71,16 +75,19 @@ public class Player
      * @param batch : current Spritebatch
      * @param Delta : elapsed time since last frame in milliseconds
      */
-    public void drawFlashlight(final SpriteBatch batch, float Delta)
-    {
-        if(isAlive)
+    public void drawFlashlight(final SpriteBatch batch, float Delta) {
+        if (isAlive)
             flashlight.draw(batch, Delta);
     }
 
+    /**
+     * gets the current number of collected pickups
+     * @return : number of currently collected pickups
+     */
     public int getPickUpCounter() { return pickUpCounter; }
 
 
-	public void Save() {
+	public void save() {
 		saveTime = new Watch(10);
 		saveTime.startWatch();
 	}

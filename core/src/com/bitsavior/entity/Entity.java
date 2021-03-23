@@ -23,7 +23,7 @@ public class Entity
     /**
      * lifestate of the entity
      */
-    public boolean isAlive;
+    public boolean isAlive = false;
     /**
      * constructor
      * sets the texture of the entity
@@ -32,9 +32,7 @@ public class Entity
     public Entity(final Texture texture)
     {
         sprite = new Sprite(texture);
-
     }
-
     /**
      * constructor
      * @param texture : texture for the entity
@@ -45,7 +43,6 @@ public class Entity
         this.velocity = velocity;
         sprite = new Sprite(texture);
     }
-
     /**
      * copyconstructor
      * @param entity : entity to be copied
@@ -54,7 +51,7 @@ public class Entity
     {
         this.velocity = entity.velocity;
         this.sprite = new Sprite(entity.sprite);
-        isAlive = false;
+        this.isAlive = false;
     }
     /**
      * add a new position to the current position
@@ -62,7 +59,6 @@ public class Entity
      * @param y : vertical position of the Player
      */
     protected void updatePosition(float x, float y) { sprite.setPosition(sprite.getX() + x,sprite.getY() + y); }
-
     /**
      * sets the position of the entity
      * @param x : horizontal position of the Player
@@ -114,5 +110,4 @@ public class Entity
     {
         batch.draw(sprite,sprite.getX(), sprite.getY(), sprite.getWidth(), sprite.getHeight());
     }
-
 }
