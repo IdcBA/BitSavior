@@ -2,14 +2,15 @@ package com.bitsavior.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
@@ -19,20 +20,44 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 public class WinScreen extends ScreenAdapter {
 	
 	//variables for testing
-	/** ... */
+	/** true for messages */
 	private boolean aErrorMessage = false;
 	
-	//visuals e.g. stage, batch, font
-	/** Stage to store Buttons, fonts, etc */
+	//visuals e.g. stage, font
+	/** Stage to store and display Buttons, etc */
     private Stage stage;
-    private SpriteBatch batch;
-	private Texture imgBackground;
+    /** "console" background */
+	private Texture textureBackground;
+	/** "console" background position */
+	private TextureRegion tRegion;
+	/** "console" background image */
+	private Image imageBackground;
+	/** "console" font */
 	private BitmapFont font;
+	/** "console" text */
 	private Label labelText;
+	
+	//timer to manage "console" messages
+	/** time when winScreen gets shown */
+	private long startTime = 0;
+	/** delay between "console" messages */
+	private long delayTime = 1000;
+	//messages
+	private String line1;
+	private String line2;
+	private String line3;
+	private String line4;
+	private String line5;
+	private String line6;
+	private String line7;
+	private String line8;
+	private String line9;
     
 	//game result
-	private int timeLeft;
-	private int bugsLeft;
+	/** timeLeft to display it <p> -10 is default */
+	private int timeLeft = -10;
+	/** bugsLeft to display it <p> -10 is default */
+	private int bugsLeft = -10;
 	
     //Button properties
     /** Skin for the Buttons */
@@ -59,28 +84,41 @@ public class WinScreen extends ScreenAdapter {
     	this.timeLeft=timeLeft;
     	this.bugsLeft=bugsLeft;
     	
-    	//add Stage and batch&font to display objects
+    	//add Stage
         stage = new Stage(new ScreenViewport());
-        batch = new SpriteBatch();
-        /*TODO fill in filename of background; including data type (.png)
-		imgBackground = new Texture("");*/
         
+        //add "console" background as Texture wrapped in an Image
+		textureBackground = new Texture("winscreen_back.png");
+		textureBackground.setWrap(TextureWrap.MirroredRepeat, TextureWrap.MirroredRepeat);
+		tRegion = new TextureRegion(textureBackground);
+		tRegion.setRegion(0, 0, textureBackground.getWidth(), textureBackground.getHeight());
+		imageBackground = new Image(tRegion);
+		imageBackground.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight() / 2);
+		imageBackground.setPosition(0, Gdx.graphics.getHeight() / 2);
+		stage.addActor(imageBackground);
+		
+        //add label and its font for "console" text
         Label.LabelStyle lStyle = new Label.LabelStyle();
-        font = new BitmapFont();
+        font = new BitmapFont(Gdx.files.internal("font/s32arial_2_white.fnt"));
         lStyle.font = font;
-
-        labelText = new Label("blablalalalla", lStyle);
-        labelText.setFontScale(2.f);
-        labelText.setColor(74.7f, 75.6f, 74.6f, 1.f);
-
+        labelText = new Label("", lStyle);
+        //edit height: 1 is top and higher is nearer screenCenter
         labelText.setPosition(Gdx.graphics.getWidth() * 0.015f, Gdx.graphics.getHeight() * -0.020f);
         labelText.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        //edit height: 1 is top and higher is nearer screenCenter
-
         labelText.setAlignment(Align.topLeft);
         stage.addActor(labelText);
-
         
+        //TODO set lines for delayed text output
+        line1 = "> Executing Task: Bitsavior.level 1 \n";
+        line2 = "> Task:core:Bitsavior:level 1:compile \n\n";
+		line3 = "> Task:core:Bitsavior:level 1:classes \n\n";
+		line4 = "> Task:core:Bitsavior:level 1:main:compile successfull\n";
+        line5 = "> Log:\n";
+        line6 = "> compiled with 0 errors and " + bugsLeft + " warnings\n";
+        line7 = "> compiled in " + timeLeft + " seconds";
+        line8 = "";
+        line9 = "";
+
         //load Skin for Buttons
         bSkin1 = new Skin(Gdx.files.internal("skin/glassy-ui.json"));
         
@@ -101,25 +139,15 @@ public class WinScreen extends ScreenAdapter {
                 game.manager.showScreen(Screens.TITLE);
             }
        	} );
-        stage.addActor(buttonMenu);
-
-       imgBackground = new Texture("winscreen_back.png");
+        stage.addActor(buttonMenu); 
     }
     
     @Override
     public void show() {
     	if(ScreenManager.aScreenTestMode) System.out.println("WinScreen is shown");
     	
-    	//edit win message
-    	labelText.setText( //TODO insert text, bugsLeft and timeLeft
-    			"> Executing Task: Bitsavior.level 1\n"
-                + "> Task:core:Bitsavior:level 1:compile \n\n"
-    			+ "> Task:core:Bitsavior:level 1:classes\n\n"
-    			+ "> Task:core:Bitsavior:level 1:main:compile successfull\n"
-                        + "> Log:\n"
-                        + "> compiled with 0 errors and 5 warnings\n"
-                        + "> compiled in 50 seconds"
-        + Gdx.graphics.getWidth());
+    	//time start of winScreen
+        startTime = System.currentTimeMillis();
     	
     	//set Input to stage
     	Gdx.input.setInputProcessor(stage);
@@ -127,17 +155,11 @@ public class WinScreen extends ScreenAdapter {
     
     @Override
     public void render(float delta) {    	
-        Gdx.gl.glClearColor(0, 0.25f, 0, 1);
+        Gdx.gl.glClearColor(0, 0.6353f, 0.9294f, 1); //microsoft blue --> https://encycolorpedia.com/00a2ed
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         
-        batch.begin();
-        try {
-        	batch.draw(imgBackground, 0, Gdx.graphics.getHeight() / 2, Gdx.graphics.getWidth(), Gdx.graphics.getHeight() / 2);
-        }
-        catch (NullPointerException e) {
-        	if(aErrorMessage) System.out.println("winScreen background image is null");;
-        }
-        batch.end();
+        //update the text
+        updateText();
         
         //draw stage(buttons, etc.)
         stage.act();
@@ -149,11 +171,25 @@ public class WinScreen extends ScreenAdapter {
         Gdx.input.setInputProcessor(null);
     }
     
+    /**
+     * checks the current time and sets the labels text depending on this
+     */
+    private void updateText() {
+    	//last line first for more efficiency later on
+    	if(startTime+(delayTime*9) < System.currentTimeMillis())       labelText.setText(line1+line2+line3+line4+line5+line6+line7+line8+line9);
+    	else if (startTime+(delayTime*8) < System.currentTimeMillis()) labelText.setText(line1+line2+line3+line4+line5+line6+line7+line8);
+    	else if (startTime+(delayTime*7) < System.currentTimeMillis()) labelText.setText(line1+line2+line3+line4+line5+line6+line7);
+    	else if (startTime+(delayTime*6) < System.currentTimeMillis()) labelText.setText(line1+line2+line3+line4+line5+line6);
+    	else if (startTime+(delayTime*5) < System.currentTimeMillis()) labelText.setText(line1+line2+line3+line4+line5);
+    	else if (startTime+(delayTime*4) < System.currentTimeMillis()) labelText.setText(line1+line2+line3+line4);
+    	else if (startTime+(delayTime*3) < System.currentTimeMillis()) labelText.setText(line1+line2+line3);
+    	else if (startTime+(delayTime*2) < System.currentTimeMillis()) labelText.setText(line1+line2);
+    	else if (startTime+(delayTime*1) < System.currentTimeMillis()) labelText.setText(line1);
+    }
+    
     public void dispose() {
     	if(ScreenManager.aScreenTestMode) System.out.println("WinScreen is disposed");
     	
     	if(stage!=null) stage.dispose();
-    	if(batch!=null) batch.dispose();
-    	if(imgBackground!=null) imgBackground.dispose();
     }
 }

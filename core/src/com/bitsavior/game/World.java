@@ -24,6 +24,10 @@ public class World
 {
 	// private Members
 	/**
+	 * if true: sends dispose message
+	 */
+	private boolean aWorldTest = false;
+	/**
 	 * holds the actual state of the game
 	 * to manage different behaviours
 	 */
@@ -427,17 +431,17 @@ public class World
 	 */
 	public void dispose()
 	{
-		userInterface.dispose();
-		lightBuffer.dispose();
-		music.dispose();
-		sound.dispose();
-		shapeRenderer.dispose();
-		batch.dispose();
-		assets.dispose();
+		if(userInterface!=null) userInterface.dispose();
+		if(lightBuffer!=null) lightBuffer.dispose();
+		if(music!=null) music.dispose();
+		if(sound!=null) sound.dispose();
+		if(shapeRenderer!=null) shapeRenderer.dispose();
+		if(batch!=null) batch.dispose();
+		if(assets!=null) assets.dispose();
 
 		PickUp.pickUpCounter = 0;
 
-		System.out.println("disposed");
+		if(aWorldTest) System.out.println("world: world disposed");
 	}
 	/**
 	 * manages the player input

@@ -50,7 +50,7 @@ public class TitleScreen extends ScreenAdapter
         //add Stage and batch&font to display objects
         stage = new Stage(); //new (ScreenViewport())
         batch = new SpriteBatch();
-        font = new BitmapFont(Gdx.files.internal("s64verdana_blue.fnt"));
+        font = new BitmapFont(Gdx.files.internal("font/s64verdana_blue.fnt"));
 
         //load Skin for Buttons
         bSkin1 = new Skin(Gdx.files.internal("skin/glassy-ui.json"));
