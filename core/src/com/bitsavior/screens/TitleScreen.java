@@ -5,23 +5,43 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
 public class TitleScreen extends ScreenAdapter
 {
     //variables for testing
-    /** ... */
+    /** to find best background color with QWE ASD*/
+	private boolean colorChange = false;
+	private float colorDepthRed = 0f;
+	private float colorDepthGreen = 0.25f;
+	private float colorDepthBlue = 0f;
 
+	
     //Stage to store/draw Buttons, fonts, etc
     private Stage stage;
-    private SpriteBatch batch;
-    private BitmapFont font;
+    
+    /** background */
+	private Texture textureBackground;
+	/** background region */
+	private TextureRegion tRegion;
+	/** background image */
+	private Image imageBackground;
+    /** font for the title */
+    private BitmapFont fontTitle;
+    /** label to write title */
+    private Label labelTitle;
 
     //Button properties
     /** Skin for the Buttons */
@@ -46,11 +66,28 @@ public class TitleScreen extends ScreenAdapter
     public TitleScreen(final BitSavior game) {
     	if(ScreenManager.aScreenTestMode) System.out.println("TitleScreen created");
 
-    	
-        //add Stage and batch&font to display objects
+        //add Stage
         stage = new Stage(); //new (ScreenViewport())
-        batch = new SpriteBatch();
-        font = new BitmapFont(Gdx.files.internal("font/s64verdana_blue.fnt"));
+        
+        /*add background as Texture wrapped in an Image
+      	textureBackground = new Texture("...");  //TODO add filename of background
+      	textureBackground.setWrap(TextureWrap.MirroredRepeat, TextureWrap.MirroredRepeat);
+      	tRegion = new TextureRegion(textureBackground);
+      	tRegion.setRegion(0, 0, textureBackground.getWidth(), textureBackground.getHeight());
+      	imageBackground = new Image(tRegion);
+      	imageBackground.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+      	imageBackground.setPosition(0, 0);
+      	stage.addActor(imageBackground);*/
+        
+        //set font&label for title
+        Label.LabelStyle labelTitleStyle = new Label.LabelStyle();
+        fontTitle = new BitmapFont(Gdx.files.internal("font/s64verdana_blue.fnt"));
+        labelTitleStyle.font = fontTitle;
+        labelTitle = new Label("Welcome to Bitsavior!", labelTitleStyle);
+        labelTitle.setPosition(0, Gdx.graphics.getHeight() * 0.5f);
+        labelTitle.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight() * 0.5f);
+        labelTitle.setAlignment(Align.center);
+        stage.addActor(labelTitle);
 
         //load Skin for Buttons
         bSkin1 = new Skin(Gdx.files.internal("skin/glassy-ui.json"));
@@ -104,7 +141,7 @@ public class TitleScreen extends ScreenAdapter
         buttonExit = new TextButton("Exit the game", bSkin1, "small");
         buttonExit.setSize(bSizeX, bSizeY);
         buttonExit.setPosition(Gdx.graphics.getWidth() * 0.25f - bSizeX / 2,
-                Gdx.graphics.getHeight() * 0.5f - (bSizeY * 4.0f) );
+                Gdx.graphics.getHeight() * 0.125f - bSizeY * 0.5f );
         buttonExit.addListener(new InputListener() {
             @Override
             public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
@@ -121,7 +158,7 @@ public class TitleScreen extends ScreenAdapter
         buttonSettings = new TextButton("Settings", bSkin1, "small");
         buttonSettings.setSize(bSizeX, bSizeY);
         buttonSettings.setPosition(Gdx.graphics.getWidth() * 0.75f - bSizeX / 2,
-        		Gdx.graphics.getHeight() * 0.5f - (bSizeY * 4.0f) );
+        		Gdx.graphics.getHeight() * 0.125f - bSizeY * 0.5f );
         buttonSettings.addListener(new InputListener() {
             @Override
             public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
@@ -149,6 +186,30 @@ public class TitleScreen extends ScreenAdapter
 						game.manager.showScreen(Screens.LOSE);
 						return true;
 					}
+					if (keyCode == Input.Keys.Q && colorChange) { //+red
+						if(colorDepthRed<1) colorDepthRed += 0.125f;
+				        labelTitle.setText(colorDepthRed+" "+colorDepthGreen+" "+colorDepthBlue);
+					}
+					if (keyCode == Input.Keys.A && colorChange) { //-red
+						if(colorDepthRed>0) colorDepthRed -= 0.125f;
+				        labelTitle.setText(colorDepthRed+" "+colorDepthGreen+" "+colorDepthBlue);
+					}
+					if (keyCode == Input.Keys.W && colorChange) { //+green
+						if(colorDepthGreen<1) colorDepthGreen += 0.125f;
+				        labelTitle.setText(colorDepthRed+" "+colorDepthGreen+" "+colorDepthBlue);
+					}
+					if (keyCode == Input.Keys.S && colorChange) { //-green
+						if(colorDepthGreen>0) colorDepthGreen -= 0.125f;
+				        labelTitle.setText(colorDepthRed+" "+colorDepthGreen+" "+colorDepthBlue);
+					}
+					if (keyCode == Input.Keys.E && colorChange) { //+blue
+						if(colorDepthBlue<1) colorDepthBlue += 0.125f;
+				        labelTitle.setText(colorDepthRed+" "+colorDepthGreen+" "+colorDepthBlue);
+					}
+					if (keyCode == Input.Keys.D && colorChange) { //-blue
+						if(colorDepthBlue>0) colorDepthBlue -= 0.125f;
+				        labelTitle.setText(colorDepthRed+" "+colorDepthGreen+" "+colorDepthBlue);
+					}
 					return false;
 				}
 			});
@@ -168,15 +229,12 @@ public class TitleScreen extends ScreenAdapter
 
     @Override
     public void render(float delta) {
-        Gdx.gl.glClearColor(0, 0.25f, 0, 1);
+        if(colorChange) Gdx.gl.glClearColor(colorDepthRed, colorDepthGreen, colorDepthBlue, 1); 
+        else Gdx.gl.glClearColor(0, 0.25f, 0, 1); //old/first green
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         stage.act();
         stage.draw();
-
-        batch.begin();
-        font.draw(batch, "Welcome to Bitsavior!", Gdx.graphics.getWidth() * .25f - 30f, Gdx.graphics.getHeight() * .75f);
-        batch.end();
     }
 
     @Override
@@ -189,7 +247,6 @@ public class TitleScreen extends ScreenAdapter
     	if(ScreenManager.aScreenTestMode) System.out.println("TitleScreen is disposed");
     	
         if(stage!=null) stage.dispose();
-        if(batch!=null) batch.dispose();
-        if(font!=null) font.dispose();
+        if(fontTitle!=null) fontTitle.dispose();
     }
 }

@@ -64,6 +64,7 @@ public class GameScreen extends ScreenAdapter {
 			case WIN:
 				game.manager.setWinStats(-1, -1); //TODO insert parameters for time and bugs
 				game.manager.showScreen(Screens.WIN);
+				break;
 			default:
 		}
 		world.render(Delta);
