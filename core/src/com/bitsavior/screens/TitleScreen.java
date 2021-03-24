@@ -18,7 +18,11 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 public class TitleScreen extends ScreenAdapter
 {
     //variables for testing
-    /** ... */
+    /** to find best background color with QWE ASD*/
+	private boolean colorChange = true;
+	private float colorDepthRed = 0;
+	private float colorDepthGreen = 0;
+	private float colorDepthBlue = 0;
 
     //Stage to store/draw Buttons, fonts, etc
     private Stage stage;
@@ -159,6 +163,30 @@ public class TitleScreen extends ScreenAdapter
 						game.manager.showScreen(Screens.LOSE);
 						return true;
 					}
+					if (keyCode == Input.Keys.Q && colorChange) { //+red
+						if(colorDepthRed<1) colorDepthRed += 0.125f;
+				        labelTitle.setText(colorDepthRed+" "+colorDepthGreen+" "+colorDepthBlue);
+					}
+					if (keyCode == Input.Keys.A && colorChange) { //-red
+						if(colorDepthRed>0) colorDepthRed -= 0.125f;
+				        labelTitle.setText(colorDepthRed+" "+colorDepthGreen+" "+colorDepthBlue);
+					}
+					if (keyCode == Input.Keys.W && colorChange) { //+green
+						if(colorDepthGreen<1) colorDepthGreen += 0.125f;
+				        labelTitle.setText(colorDepthRed+" "+colorDepthGreen+" "+colorDepthBlue);
+					}
+					if (keyCode == Input.Keys.S && colorChange) { //-green
+						if(colorDepthGreen>0) colorDepthGreen -= 0.125f;
+				        labelTitle.setText(colorDepthRed+" "+colorDepthGreen+" "+colorDepthBlue);
+					}
+					if (keyCode == Input.Keys.E && colorChange) { //+blue
+						if(colorDepthBlue<1) colorDepthBlue += 0.125f;
+				        labelTitle.setText(colorDepthRed+" "+colorDepthGreen+" "+colorDepthBlue);
+					}
+					if (keyCode == Input.Keys.D && colorChange) { //-blue
+						if(colorDepthBlue>0) colorDepthBlue -= 0.125f;
+				        labelTitle.setText(colorDepthRed+" "+colorDepthGreen+" "+colorDepthBlue);
+					}
 					return false;
 				}
 			});
@@ -178,7 +206,8 @@ public class TitleScreen extends ScreenAdapter
 
     @Override
     public void render(float delta) {
-        Gdx.gl.glClearColor(0, 0.25f, 0, 1);
+        if(colorChange) Gdx.gl.glClearColor(colorDepthRed, colorDepthGreen, colorDepthBlue, 1); 
+        else Gdx.gl.glClearColor(0, 0.25f, 0, 1); //old/first green
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         stage.act();
