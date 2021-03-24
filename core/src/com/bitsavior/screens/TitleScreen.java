@@ -5,13 +5,17 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
@@ -24,9 +28,19 @@ public class TitleScreen extends ScreenAdapter
 	private float colorDepthGreen = 0;
 	private float colorDepthBlue = 0;
 
+	
     //Stage to store/draw Buttons, fonts, etc
     private Stage stage;
+    
+    /** background */
+	private Texture textureBackground;
+	/** background region */
+	private TextureRegion tRegion;
+	/** background image */
+	private Image imageBackground;
+    /** font for the title */
     private BitmapFont fontTitle;
+    /** label to write title */
     private Label labelTitle;
 
     //Button properties
@@ -52,9 +66,18 @@ public class TitleScreen extends ScreenAdapter
     public TitleScreen(final BitSavior game) {
     	if(ScreenManager.aScreenTestMode) System.out.println("TitleScreen created");
 
-    	
         //add Stage
         stage = new Stage(); //new (ScreenViewport())
+        
+        /*add background as Texture wrapped in an Image
+      	textureBackground = new Texture("...");  //TODO add filename of background
+      	textureBackground.setWrap(TextureWrap.MirroredRepeat, TextureWrap.MirroredRepeat);
+      	tRegion = new TextureRegion(textureBackground);
+      	tRegion.setRegion(0, 0, textureBackground.getWidth(), textureBackground.getHeight());
+      	imageBackground = new Image(tRegion);
+      	imageBackground.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+      	imageBackground.setPosition(0, 0);
+      	stage.addActor(imageBackground);*/
         
         //set font&label for title
         Label.LabelStyle labelTitleStyle = new Label.LabelStyle();

@@ -4,11 +4,14 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
@@ -27,14 +30,25 @@ public class SettingsScreen extends ScreenAdapter {
 	/** Format: integer 0 to 100 */
 	private static final String PREF_SOUND_VOLUME = "soundVolume";
 	private static final String PREFS_NAME = "b2dtut_v2";
+	/** interval to change settings per button click */
 	private static int changeInterval = 10;
 	
-	//visuals e.g. stage, batch, font
+	//visuals e.g. stage, font
 	/** Stage to store Buttons, fonts, etc */
     private Stage stage;
+    /** background */
+	private Texture textureBackground;
+	/** background region */
+	private TextureRegion tRegion;
+	/** background image */
+	private Image imageBackground;
+	/** font for title */
     private BitmapFont fontTitle;
-    private BitmapFont fontText;
+    /** label to write title */
     private Label labelTitle;
+    /** font for text */
+    private BitmapFont fontText;
+    /** label to write text */
     private Label labelText;
     
     //Buttons and button properties
@@ -73,6 +87,16 @@ public class SettingsScreen extends ScreenAdapter {
         
         //add Stage to manage objects
         stage = new Stage(new ScreenViewport());
+        
+        /*add background as Texture wrapped in an Image
+      	textureBackground = new Texture("...");  //TODO add filename of background
+      	textureBackground.setWrap(TextureWrap.MirroredRepeat, TextureWrap.MirroredRepeat);
+      	tRegion = new TextureRegion(textureBackground);
+      	tRegion.setRegion(0, 0, textureBackground.getWidth(), textureBackground.getHeight());
+      	imageBackground = new Image(tRegion);
+      	imageBackground.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+      	imageBackground.setPosition(0, 0);
+      	stage.addActor(imageBackground);*/
 
         //set fonts for labels
         Label.LabelStyle labelTitleStyle = new Label.LabelStyle();
