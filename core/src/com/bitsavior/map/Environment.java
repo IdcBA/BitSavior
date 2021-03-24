@@ -3,7 +3,9 @@ package com.bitsavior.map;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
+import com.bitsavior.asset.Assets;
 import com.bitsavior.entity.LightedEntity;
+import com.bitsavior.game.Soundeffect;
 import com.bitsavior.game.Watch;
 
 import java.util.ArrayList;
@@ -29,11 +31,20 @@ public class Environment
     /**
      * standard effect, if no other is set
      */
-    private final LightedEntity.EffectType standardEffect =  LightedEntity.EffectType.FLICKER;
+    private final LightedEntity.EffectType standardEffect =  LightedEntity.EffectType.DEACTIVATE;
     /**
      * timer to set a effect for a limited time
      */
     private Watch timer;
+    /**
+     * soundeffect for the light objects
+     */
+    private Soundeffect sirene;
+    /**
+     * timer for the sound effect
+     */
+    private Watch soundTimer;
+
     
     /**
      * constructor
@@ -49,10 +60,13 @@ public class Environment
 
         lightPositions = new Vector2[NumberOfLights];
 
-        lightPositions[0] = new Vector2(390, 191);
-        lightPositions[1] = new Vector2(638, 767);
-        lightPositions[2] = new Vector2(1252, 26);
-        lightPositions[3] = new Vector2(152, 615);
+        lightPositions[0] = new Vector2(370, 30);
+        lightPositions[1] = new Vector2(625, 752);
+        lightPositions[2] = new Vector2(1252, 0);
+        lightPositions[3] = new Vector2(152, 590);
+
+        soundTimer = new Watch(10);
+        sirene = new Soundeffect(manager.get(Assets.sirene));
     }
 
     /**
@@ -62,9 +76,13 @@ public class Environment
     {
         for(int i = 0; i < NumberOfLights; i++) {
             lights.get(i).setPosition(lightPositions[i].x, lightPositions[i].y);
-            lights.get(i).setEffect(LightedEntity.EffectType.FLICKER, 500L);
-
         }
+
+        lights.get(0).setEffect(LightedEntity.EffectType.PULSATING, 500L);
+        lights.get(1).setLightRadius(100.f);
+        lights.get(2).setEffect(LightedEntity.EffectType.PULSATING);
+        lights.get(2).setLightRadius(80.f);
+        lights.get(3).setEffect(LightedEntity.EffectType.PULSATING, 500L);
     }
 
     /**
@@ -81,6 +99,11 @@ public class Environment
         for(LightedEntity lightbulb : lights)
             lightbulb.update();
 
+        soundTimer.update();
+
+
+        if(!soundTimer.isActive())
+           sirene.stop();
     }
 
     /**
@@ -115,7 +138,7 @@ public class Environment
     	timer = new Watch(effectTime);
     	timer.startWatch();
     	for(int i = 0; i < NumberOfLights; i++) {
-            lights.get(i).setEffect(type);
+            lights.get(i).setEffect(type, 18L);
         }
     }
 
@@ -128,4 +151,17 @@ public class Environment
 			lights.get(i).setEffect(type);
 		}
 	}
+	public void playSirene()
+    {
+        if(!soundTimer.isActive()) {
+            soundTimer.startWatch();
+            sirene.play();
+            changeEffect(LightedEntity.EffectType.PULSATING, soundTimer.getTimeLimit());
+        }
+    }
+    public void dispose()
+    {
+        sirene.dispose();
+    }
+
 }

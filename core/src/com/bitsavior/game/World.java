@@ -22,7 +22,6 @@ import java.util.Random;
  */
 public class World
 {
-	// private Members
 	/**
 	 * if true: sends dispose message
 	 */
@@ -88,23 +87,19 @@ public class World
 	/**
 	 * contains all enemies
 	 */
-	private final ArrayList<Bug> Enemies;
+	private final ArrayList<Bug> ListOfEnemies;
 	/**
 	 * maximum Number of Enemies
 	 */
-	private final int MaxNumberOfEnemies;
-	/**
-	 * number of removed Enemies
-	 */
-	private int removedEnemies;
+	private final int NumberOfEnemies;
 	/**
 	 * maximum Number of pickups
 	 */
-	private final int MaxNumberOfPickUps;
+	private final int NumberOfPickUps;
 	/**
 	 * contains all pickups
 	 */
-	private final ArrayList<PickUp> pickUps;
+	private final ArrayList<PickUp> ListOfPickUps;
 	/**
 	 * shape renderer for the fading effects
 	 */
@@ -132,7 +127,7 @@ public class World
 	 */
 	public World(GameState gameState, int level)
 	{
-		timer = new Watch(20 - (level * 5));
+		timer = new Watch(105 - (level * 5));
 		// time limit for the entry animation
 		gameStateTimer = new Watch(10);
 		assets = new Assets();
@@ -143,21 +138,20 @@ public class World
 
 
 		// setup numbers
-		MaxNumberOfEnemies = 9 + level;
-		MaxNumberOfPickUps = 9 + level;
+		NumberOfEnemies = 7 + level;
+		NumberOfPickUps = 9 + level;
 
 		fadeAlpha = 1.0f;
 		fadeTimer = 0L;
 		fadeVolume = 0f;
-		removedEnemies = 0;
 
 		if(level != 1)
 			this.gameState = GameState.START;
 		else
 			this.gameState = gameState;
 
-		Enemies = new ArrayList<Bug>();
-		pickUps = new ArrayList<PickUp>();
+		ListOfEnemies = new ArrayList<Bug>();
+		ListOfPickUps = new ArrayList<PickUp>();
 
 	}
 	/**
@@ -177,7 +171,7 @@ public class World
 		// load assets
 		assets.load();
 
-		userInterface = new UserInterface(assets.holder, timer, MaxNumberOfPickUps);
+		userInterface = new UserInterface(assets.holder, timer, NumberOfPickUps);
 
 		// distribute textures & create Entities
 		map = new Tilemap(assets.holder.get(Assets.currentMap), camera);
@@ -216,7 +210,7 @@ public class World
 	private void startGameSession()
 	{
 		player.isAlive = true;
-		debugger.spawn(40, 40);
+		debugger.spawn(625, 400);
 
 		spawnEnemies();
 		spawnPickUps();
@@ -232,7 +226,7 @@ public class World
 		timer.startWatch();
 
 		// reset gameStateTimer for later use
-		gameStateTimer.reset(7);
+		gameStateTimer.reset(6);
 
 		gameState = GameState.RUN;
 	}
@@ -300,18 +294,23 @@ public class World
 	private void runUpdate(float Delta)
 	{
 			handlePlayerInput();
-			timer.update();
 			player.update(Delta);
 			debugger.update(Delta);
 			lights.update();
-			updateBugs();
-			for (int i = 0; i < MaxNumberOfEnemies - removedEnemies; i++) {
-				Enemies.get(i).update(Delta, player);
-			}
+			updateBugs(Delta);
 			updatePickUps();
 			userInterface.update();
 
 			checkCollisions();
+
+			if(player.isSaved())
+			{
+				debugger.playSound();
+				music.pause();
+				lights.playSirene();
+			}
+			else
+				music.play();
 
 			if (!timer.isActive || !player.isAlive) {
 				gameState = GameState.LOOSE;
@@ -374,7 +373,6 @@ public class World
 		Gdx.gl.glDisable(Gdx.gl.GL_BLEND);
 
 		music.play(fadeVolume);
-//		System.out.println(fadeVolume);
 		batch.begin();
 		player.draw(batch, Delta);
 		batch.end();
@@ -389,9 +387,9 @@ public class World
 	{
 		// draw objects
 		batch.begin();
-		for(PickUp pickUp : pickUps)
+		for(PickUp pickUp : ListOfPickUps)
 			pickUp.draw(batch, Delta);
-		for(Bug bug : Enemies)
+		for(Bug bug : ListOfEnemies)
 			bug.draw(batch, Delta);
 		lights.draw(batch, Delta);
 
@@ -473,60 +471,58 @@ public class World
 		player.isCollided(map);
 
 		// check enemy collision
-		for(int i = 0; i < MaxNumberOfEnemies -removedEnemies; i++)
+		for(Bug enemy : ListOfEnemies)
 		{
-			Enemies.get(i).isCollided(map);
+			enemy.isCollided(map);
 
-
-			if(player.isCollided(Enemies.get(i)) && !player.isSaved()) {
-				player.isAlive = false;
-				music.stop();
-				sound = new Soundeffect(assets.holder.get(Assets.lose));
-				sound.play();
-			}
-			else if(player.isCollided(Enemies.get(i)) && player.isSaved()) {
-				Enemies.get(i).isAlive = false;
-				sound = new Soundeffect(assets.holder.get(Assets.save));
+			if(player.isCollided(enemy))
+			{
+				if(player.isSaved())
+				{
+					enemy.isAlive = false;
+					sound = new Soundeffect(assets.holder.get(Assets.save));
+				}
+				else
+				{
+					player.isAlive = false;
+					sound = new Soundeffect(assets.holder.get(Assets.lose));
+				}
 				sound.play();
 			}
 		}
-
 		// check debugger collision
 		debugger.isCollided(map);
 
 		// check pickup collision
-		for(int i = 0; i < PickUp.pickUpCounter; i++)
-			if(player.isCollided(pickUps.get(i))) {
-				player.collect(pickUps.get(i));
+		for(PickUp pickUp : ListOfPickUps)
+		{
+			if(player.isCollided(pickUp))
+			{
+				player.collect(pickUp);
 				sound = new Soundeffect(assets.holder.get(Assets.blop));
 				sound.play();
 			}
-		
+		}
 		// check debugger collision 
-		if (player.isCollided(debugger)) {
+		if (player.isCollided(debugger))
 			player.save();
-			sound = new Soundeffect(assets.holder.get(Assets.save));
-			debugger.playSound(sound);	
-			lights.changeEffect(LightedEntity.EffectType.PULSATING, 10);
-			}
 	}
 	/**
 	 * spawn the maximum amount of enemies given by MaxNumberOfEnemies
 	 */
 	void spawnEnemies()
 	{
-
 		Random random = new Random();
 
-		for(int i = 0; i < MaxNumberOfEnemies ; i++) {
-			Enemies.add(new Bug(assets.holder.get(Assets.enemy)));
+		for(int i = 0; i < NumberOfEnemies; i++) {
+			ListOfEnemies.add(new Bug(assets.holder.get(Assets.enemy)));
 
 			do {
-				if(i < MaxNumberOfEnemies / 2)
-					Enemies.get(i).spawn(random.nextInt((int)(WorldBounds.WIDTH / 3)), random.nextInt((int)WorldBounds.HEIGHT) );
+				if(i < NumberOfEnemies / 2)
+					ListOfEnemies.get(i).spawn(random.nextInt((int)(WorldBounds.WIDTH / 3)), random.nextInt((int)WorldBounds.HEIGHT) );
 				else
-					Enemies.get(i).spawn((int)(WorldBounds.WIDTH / 3 * 2) + random.nextInt((int)(WorldBounds.WIDTH / 3)), random.nextInt((int)WorldBounds.HEIGHT) );
-			} while(map.isCollided(Enemies.get(i)));
+					ListOfEnemies.get(i).spawn((int)(WorldBounds.WIDTH / 3 * 2) + random.nextInt((int)(WorldBounds.WIDTH / 3)), random.nextInt((int)WorldBounds.HEIGHT) );
+			} while(map.isCollided(ListOfEnemies.get(i)));
 		}
 
 	}
@@ -535,17 +531,16 @@ public class World
 	 */
 	private void spawnPickUps()
 	{
-
 		Random random = new Random();
 
-		for(int i = 0; i < MaxNumberOfPickUps; i++)
+		for(int i = 0; i < NumberOfPickUps; i++)
 		{
-			pickUps.add(new PickUp(assets.holder.get(Assets.pickUp)));
+			ListOfPickUps.add(new PickUp(assets.holder.get(Assets.pickUp)));
 
 			// if a pickup is colliding with the map, repeat with new coordinates
 			do {
-				pickUps.get(i).spawn(random.nextInt((int)WorldBounds.WIDTH), random.nextInt((int)WorldBounds.HEIGHT));
-			} while(map.isCollided(pickUps.get(i)));
+				ListOfPickUps.get(i).spawn(random.nextInt((int)WorldBounds.WIDTH), random.nextInt((int)WorldBounds.HEIGHT));
+			} while(map.isCollided(ListOfPickUps.get(i)));
 		}
 	}
 	/**
@@ -553,21 +548,23 @@ public class World
 	 */
 	private void updatePickUps()
 	{
-		for(int i = 0; i < PickUp.pickUpCounter; i++)
+		for(int i = 0; i < ListOfPickUps.size(); i++)
 		{
-			if(!pickUps.get(i).isAlive) {
-				pickUps.remove(i);
+			if(!ListOfPickUps.get(i).isAlive) {
+				ListOfPickUps.remove(i);
 				PickUp.pickUpCounter--;
 			}
 		}
 	}
 	
-	private void updateBugs() 
+	private void updateBugs(float Delta)
 	{
-		for(int i = 0; i < Enemies.size(); i++) {
-			if (Enemies.get(i).isAlive == false) {
-				Enemies.remove(i);
-				removedEnemies++;
+		for(int i = 0; i < ListOfEnemies.size(); i++) {
+
+			ListOfEnemies.get(i).update(Delta, player);
+
+			if (ListOfEnemies.get(i).isAlive == false) {
+				ListOfEnemies.remove(i);
 			}
 		}
 	}
