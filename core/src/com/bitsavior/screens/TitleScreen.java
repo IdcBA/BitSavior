@@ -23,10 +23,10 @@ public class TitleScreen extends ScreenAdapter
 {
     //variables for testing
     /** to find best background color with QWE ASD*/
-	private boolean colorChange = true;
-	private float colorDepthRed = 0;
-	private float colorDepthGreen = 0;
-	private float colorDepthBlue = 0;
+	private boolean colorChange = false;
+	private float colorDepthRed = 0f;
+	private float colorDepthGreen = 0.25f;
+	private float colorDepthBlue = 0f;
 
 	
     //Stage to store/draw Buttons, fonts, etc
