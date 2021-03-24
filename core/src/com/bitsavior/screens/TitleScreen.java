@@ -8,9 +8,11 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
 public class TitleScreen extends ScreenAdapter
@@ -20,8 +22,8 @@ public class TitleScreen extends ScreenAdapter
 
     //Stage to store/draw Buttons, fonts, etc
     private Stage stage;
-    private SpriteBatch batch;
-    private BitmapFont font;
+    private BitmapFont fontTitle;
+    private Label labelTitle;
 
     //Button properties
     /** Skin for the Buttons */
@@ -47,10 +49,18 @@ public class TitleScreen extends ScreenAdapter
     	if(ScreenManager.aScreenTestMode) System.out.println("TitleScreen created");
 
     	
-        //add Stage and batch&font to display objects
+        //add Stage
         stage = new Stage(); //new (ScreenViewport())
-        batch = new SpriteBatch();
-        font = new BitmapFont(Gdx.files.internal("font/s64verdana_blue.fnt"));
+        
+        //set font&label for title
+        Label.LabelStyle labelTitleStyle = new Label.LabelStyle();
+        fontTitle = new BitmapFont(Gdx.files.internal("font/s64verdana_blue.fnt"));
+        labelTitleStyle.font = fontTitle;
+        labelTitle = new Label("Welcome to Bitsavior!", labelTitleStyle);
+        labelTitle.setPosition(0, Gdx.graphics.getHeight() * 0.5f);
+        labelTitle.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight() * 0.5f);
+        labelTitle.setAlignment(Align.center);
+        stage.addActor(labelTitle);
 
         //load Skin for Buttons
         bSkin1 = new Skin(Gdx.files.internal("skin/glassy-ui.json"));
@@ -104,7 +114,7 @@ public class TitleScreen extends ScreenAdapter
         buttonExit = new TextButton("Exit the game", bSkin1, "small");
         buttonExit.setSize(bSizeX, bSizeY);
         buttonExit.setPosition(Gdx.graphics.getWidth() * 0.25f - bSizeX / 2,
-                Gdx.graphics.getHeight() * 0.5f - (bSizeY * 4.0f) );
+                Gdx.graphics.getHeight() * 0.125f - bSizeY * 0.5f );
         buttonExit.addListener(new InputListener() {
             @Override
             public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
@@ -121,7 +131,7 @@ public class TitleScreen extends ScreenAdapter
         buttonSettings = new TextButton("Settings", bSkin1, "small");
         buttonSettings.setSize(bSizeX, bSizeY);
         buttonSettings.setPosition(Gdx.graphics.getWidth() * 0.75f - bSizeX / 2,
-        		Gdx.graphics.getHeight() * 0.5f - (bSizeY * 4.0f) );
+        		Gdx.graphics.getHeight() * 0.125f - bSizeY * 0.5f );
         buttonSettings.addListener(new InputListener() {
             @Override
             public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
@@ -173,10 +183,6 @@ public class TitleScreen extends ScreenAdapter
 
         stage.act();
         stage.draw();
-
-        batch.begin();
-        font.draw(batch, "Welcome to Bitsavior!", Gdx.graphics.getWidth() * .25f - 30f, Gdx.graphics.getHeight() * .75f);
-        batch.end();
     }
 
     @Override
@@ -189,7 +195,6 @@ public class TitleScreen extends ScreenAdapter
     	if(ScreenManager.aScreenTestMode) System.out.println("TitleScreen is disposed");
     	
         if(stage!=null) stage.dispose();
-        if(batch!=null) batch.dispose();
-        if(font!=null) font.dispose();
+        if(fontTitle!=null) fontTitle.dispose();
     }
 }

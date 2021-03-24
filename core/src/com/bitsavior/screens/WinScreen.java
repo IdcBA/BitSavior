@@ -191,5 +191,6 @@ public class WinScreen extends ScreenAdapter {
     	if(ScreenManager.aScreenTestMode) System.out.println("WinScreen is disposed");
     	
     	if(stage!=null) stage.dispose();
+    	if(textureBackground!=null) textureBackground.dispose();
     }
 }

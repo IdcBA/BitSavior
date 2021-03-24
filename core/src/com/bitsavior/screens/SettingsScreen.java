@@ -9,8 +9,10 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 public class SettingsScreen extends ScreenAdapter {
@@ -30,10 +32,10 @@ public class SettingsScreen extends ScreenAdapter {
 	//visuals e.g. stage, batch, font
 	/** Stage to store Buttons, fonts, etc */
     private Stage stage;
-    private SpriteBatch batch;
-    private BitmapFont font;
-    private BitmapFont fontMusic;
-    private BitmapFont fontSound;
+    private BitmapFont fontTitle;
+    private BitmapFont fontText;
+    private Label labelTitle;
+    private Label labelText;
     
     //Buttons and button properties
     /** Button: to return to main menu */
@@ -50,6 +52,17 @@ public class SettingsScreen extends ScreenAdapter {
     private int bSizeY = 100;
     /** X/Y size for small Buttons */
     private int bSizeXY = 50;
+    /** X position for left buttons (-) */
+    private float bMinusX = Gdx.graphics.getWidth() * 0.375f;
+    /** X position for right buttons (+) */
+    private float bPlusX = Gdx.graphics.getWidth() * 0.625f - bSizeXY; // -bSizeXY to be mirrored
+    /** lineHeight of fontText to adjust button positions
+     * <p> Y of the button regarding the line = bLine(line)Y - (2*(line)-1)*lineHeight */
+    private float lineHeight;
+    /** Y position for 1. column */
+    private float bLine1Y;
+    /** Y position for 2. column */
+    private float bLine2Y;
     
     /**
 	 * Constructor
@@ -58,22 +71,43 @@ public class SettingsScreen extends ScreenAdapter {
     public SettingsScreen(final BitSavior game) {
     	if(ScreenManager.aScreenTestMode) System.out.println("SettingsScreen created");
         
-        //add Stage and batch&font to display objects
+        //add Stage to manage objects
         stage = new Stage(new ScreenViewport());
-        batch = new SpriteBatch();
-        font = new BitmapFont(Gdx.files.internal("font/s32verdana_blue.fnt"));
-        fontMusic = new BitmapFont(Gdx.files.internal("font/s32verdana_blue.fnt"));
-        fontSound = new BitmapFont(Gdx.files.internal("font/s32verdana_blue.fnt"));
 
-        //load Skin for Buttons
+        //set fonts for labels
+        Label.LabelStyle labelTitleStyle = new Label.LabelStyle();
+        fontTitle = new BitmapFont(Gdx.files.internal("font/s64verdana_blue.fnt"));
+        labelTitleStyle.font = fontTitle;
+        Label.LabelStyle labelTextStyle = new Label.LabelStyle();
+        fontText = new BitmapFont(Gdx.files.internal("font/s32verdana_blue.fnt"));
+        labelTextStyle.font = fontText;
+        
+        //label to display title
+        labelTitle = new Label("Settings", labelTitleStyle);
+        labelTitle.setPosition(0, Gdx.graphics.getHeight() * 0.5f);
+        labelTitle.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight() * 0.5f);
+        labelTitle.setAlignment(Align.center);
+        stage.addActor(labelTitle);
+        //label to display text
+        labelText = new Label("Music x%\n\nSound x%", labelTextStyle);
+        labelText.setPosition(0, 0);
+        labelText.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight() * 0.5f);
+        labelText.setAlignment(Align.top);
+        stage.addActor(labelText);
+        
+        //load Skin for buttons
         bSkin1 = new Skin(Gdx.files.internal("skin/glassy-ui.json"));
         
+        //load lineHeight of font to adjust button positions
+        lineHeight = fontText.getLineHeight();
+        bLine1Y = Gdx.graphics.getHeight() * 0.5f - 1*lineHeight;
+        bLine2Y = Gdx.graphics.getHeight() * 0.5f - 3*lineHeight;
         
-        //initialize Button 1
+        //initialize menu button
         buttonMenu = new TextButton("Back to main menu", bSkin1, "small");
         buttonMenu.setSize(bSizeX, bSizeY);
-        buttonMenu.setPosition(Gdx.graphics.getWidth()*0.5f - bSizeX / 2,
-        		Gdx.graphics.getHeight()*0.25f - bSizeY * 0.5f ); //height()*... from bottom
+        buttonMenu.setPosition(Gdx.graphics.getWidth()*0.5f - bSizeX * 0.5f,
+        		Gdx.graphics.getHeight()*0.125f - bSizeY * 0.5f );
         //add listener to manage input -> add actions
         buttonMenu.addListener(new InputListener() {
     		//touchDown returning true is necessary as precondition for touchUp(less errors due to continued pressing a button->multiple action circles)
@@ -89,10 +123,9 @@ public class SettingsScreen extends ScreenAdapter {
         stage.addActor(buttonMenu);
         
         //initialize Button Music+
-        buttonMusicPlus = new TextButton("+M", bSkin1, "small");
+        buttonMusicPlus = new TextButton("+"+changeInterval, bSkin1, "small");
         buttonMusicPlus.setSize(bSizeXY, bSizeXY);
-        buttonMusicPlus.setPosition(Gdx.graphics.getWidth()*0.625f + bSizeXY * 1.5f,
-        		Gdx.graphics.getHeight()*0.5f - bSizeXY * 0.5f );
+        buttonMusicPlus.setPosition(bPlusX, bLine1Y);
         buttonMusicPlus.addListener(new InputListener() {
     		@Override
     		public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
@@ -109,10 +142,9 @@ public class SettingsScreen extends ScreenAdapter {
         stage.addActor(buttonMusicPlus);
         
         //initialize Button Music-
-        buttonMusicMinus = new TextButton("-M", bSkin1, "small");
+        buttonMusicMinus = new TextButton("-"+changeInterval, bSkin1, "small");
         buttonMusicMinus.setSize(bSizeXY, bSizeXY);
-        buttonMusicMinus.setPosition(Gdx.graphics.getWidth()*0.625f - bSizeXY * 0.5f,
-        		Gdx.graphics.getHeight()*0.5f - bSizeXY * 0.5f );
+        buttonMusicMinus.setPosition(bMinusX, bLine1Y);
         buttonMusicMinus.addListener(new InputListener() {
     		@Override
     		public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
@@ -129,10 +161,9 @@ public class SettingsScreen extends ScreenAdapter {
         stage.addActor(buttonMusicMinus);
         
         //initialize Button Sound+
-        buttonSoundPlus = new TextButton("+S", bSkin1, "small");
+        buttonSoundPlus = new TextButton("+"+changeInterval, bSkin1, "small");
         buttonSoundPlus.setSize(bSizeXY, bSizeXY);
-        buttonSoundPlus.setPosition(Gdx.graphics.getWidth()*0.625f + bSizeXY * 1.5f,
-        		Gdx.graphics.getHeight()*0.5f - bSizeXY * 2.5f );
+        buttonSoundPlus.setPosition(bPlusX, bLine2Y);
         buttonSoundPlus.addListener(new InputListener() {
     		@Override
     		public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
@@ -149,10 +180,9 @@ public class SettingsScreen extends ScreenAdapter {
         stage.addActor(buttonSoundPlus);
         
         //initialize Button Sound-
-        buttonSoundMinus = new TextButton("-S", bSkin1, "small");
+        buttonSoundMinus = new TextButton("-"+changeInterval, bSkin1, "small");
         buttonSoundMinus.setSize(bSizeXY, bSizeXY);
-        buttonSoundMinus.setPosition(Gdx.graphics.getWidth()*0.625f - bSizeXY * 0.5f,
-        		Gdx.graphics.getHeight()*0.5f - bSizeXY * 2.5f );
+        buttonSoundMinus.setPosition(bMinusX, bLine2Y);
         buttonSoundMinus.addListener(new InputListener() {
     		@Override
     		public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
@@ -182,19 +212,12 @@ public class SettingsScreen extends ScreenAdapter {
         Gdx.gl.glClearColor(0, 0.25f, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         
+        //update text
+        labelText.setText("Music " + getMusicVolume() + "%\n\nSound " + getSoundVolume() + "%");
+        
         //draw stage(buttons, etc.)
         stage.act();
         stage.draw();
-        
-        //draw fonts
-        batch.begin();
-        font.draw(batch, "Settings",
-        		Gdx.graphics.getWidth() * 0.25f , Gdx.graphics.getHeight() * .75f);
-        fontMusic.draw(batch, "Music " + getMusicVolume() + "%",
-        		Gdx.graphics.getWidth() * 0.375f , Gdx.graphics.getHeight() * 0.5f - bSizeXY * 0.0f);
-        fontSound.draw(batch, "Sound " + getSoundVolume() + "%",
-        		Gdx.graphics.getWidth() * 0.375f , Gdx.graphics.getHeight() * 0.5f - bSizeXY * 2.0f);
-        batch.end();
     }
     
     @Override
@@ -205,11 +228,9 @@ public class SettingsScreen extends ScreenAdapter {
     public void dispose() {
     	if(ScreenManager.aScreenTestMode) System.out.println("SettingsScreen is disposed");
     	
-    	stage.dispose();
-    	batch.dispose();
-    	font.dispose();
-    	fontMusic.dispose();
-    	fontSound.dispose();
+    	if(stage!=null) stage.dispose();
+    	if(fontTitle!=null) fontTitle.dispose();
+    	if(fontText!=null) fontText.dispose();
     }
     
     
