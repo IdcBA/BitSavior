@@ -43,6 +43,8 @@ public class Player
 
         pickUpCounter = 0;
 
+        saveTime = new Watch(10);
+
         // set player size
         setSize(25, 25);
 		
@@ -88,8 +90,10 @@ public class Player
 
 
 	public void save() {
-		saveTime = new Watch(10);
-		saveTime.startWatch();
+        if(!saveTime.isActive()) {
+            saveTime.reset(10);
+            saveTime.startWatch();
+        }
 	}
 	
 	public boolean isSaved() {

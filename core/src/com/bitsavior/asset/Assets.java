@@ -27,7 +27,7 @@ public class Assets
     public static final AssetDescriptor<Texture> pickUp =
             new AssetDescriptor<Texture>("memory-leaks.jpg", Texture.class);
     public static final AssetDescriptor<Texture> breakpoint =
-            new AssetDescriptor<Texture>("breakpoint.png", Texture.class);
+            new AssetDescriptor<Texture>("metallic_light.png", Texture.class);
     public static final AssetDescriptor<Texture> light =
             new AssetDescriptor<Texture>("lightcone3.png", Texture.class);
     public static final AssetDescriptor<Texture> redLight =
@@ -40,8 +40,11 @@ public class Assets
     		new AssetDescriptor<>("blop.wav", Sound.class);
     public static final AssetDescriptor<Sound> lose =
     		new AssetDescriptor<>("lose.wav", Sound.class);
+    public static final AssetDescriptor<Sound> sirene =
+            new AssetDescriptor<>("sirene.wav", Sound.class);
     public static final AssetDescriptor<Sound> save =
     		new AssetDescriptor<>("save.wav", Sound.class);
+
 
 
     /**
@@ -71,6 +74,7 @@ public class Assets
             holder.load(background);
             holder.load(blop);
             holder.load(lose);
+            holder.load(sirene);
             holder.load(save);
 
             holder.finishLoading();

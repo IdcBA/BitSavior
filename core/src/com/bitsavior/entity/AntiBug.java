@@ -27,6 +27,8 @@ public class AntiBug extends MovingEntity
      */
     private float walkDistance = 0.f;
 
+    private Soundeffect saveSound;
+
     /**
      * constructor
      * load texture and attach lightsource
@@ -40,6 +42,10 @@ public class AntiBug extends MovingEntity
 
         flashlight = new LightSource(manager.get(Assets.light));
         flashlight.attach(this);
+
+        saveSound = new Soundeffect(manager.get(Assets.save));
+
+        waitingTime = new Watch(10);
 
         // set size
         setSize(25, 25);
@@ -113,31 +119,14 @@ public class AntiBug extends MovingEntity
         }
     }
     
-    public void playSound(Soundeffect sound) {
+    public void playSound() {
     	
-        if(waitingTime == null) { 
-       	sound.play();
-       	waitingTime = new Watch(2);
+        if(!waitingTime.isActive()) {
+       	saveSound.play();
+       	waitingTime.reset(10);
        	waitingTime.startWatch();
-       	}
-       	else {
-       		waitingTime.update();
-       		if(!waitingTime.isActive()) {
-   	    	sound.play();
-   	    	waitingTime = new Watch(2);
-   	    	waitingTime.startWatch();
-       		}
-       		
-       		else return;
        	}
        }
     
-    public boolean WaitingtimeIsActive() {
-    	if(waitingTime == null) 
-    		return false;
-    	else {
-    		waitingTime.update();
-    		return waitingTime.isActive();
-    	}
-    }
+    public boolean WaitingtimeIsActive() { return !waitingTime.isActive(); }
 }

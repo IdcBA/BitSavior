@@ -70,12 +70,20 @@ public class Watch
      * gets the remaining seconds until watch is finished
      * @return : the remaining time of the watch in seconds
      */
-    public int getRemainingSeconds() { return (int)((timeLimit - elapsedTime) / 1000); }
+    public int getRemainingSeconds()
+    {
+        update();
+        return (int)((timeLimit - elapsedTime) / 1000);
+    }
     /**
      * gets the remaining milliseconds until watch is finished
      * @return : the remaining time of the watch in milliseconds
      */
-    public long getRemainingMilliSeconds() { return timeLimit - elapsedTime; }
+    public long getRemainingMilliSeconds()
+    {
+        update();
+        return timeLimit - elapsedTime;
+    }
     /**
      * gets the time limit of the watch
      * @return : the time limit of the watch in seconds
@@ -85,5 +93,9 @@ public class Watch
      * gets if the watch is active or not
      * @return : true if the watch is active, false if not
      */
-    public boolean isActive(){ return isActive; }
+    public boolean isActive()
+    {
+        update();
+        return isActive;
+    }
 }
