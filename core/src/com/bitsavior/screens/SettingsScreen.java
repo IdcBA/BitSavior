@@ -99,7 +99,7 @@ public class SettingsScreen extends ScreenAdapter {
         fontTitle = new BitmapFont(Gdx.files.internal("font/s100verdana_bold_blue.fnt"));
         labelTitleStyle.font = fontTitle;
         Label.LabelStyle labelTextStyle = new Label.LabelStyle();
-        fontText = new BitmapFont(Gdx.files.internal("font/s32verdana_blue.fnt"));
+        fontText = new BitmapFont(Gdx.files.internal("font/s32verdana_bold_blue.fnt"));
         labelTextStyle.font = fontText;
         
         //label to display title
