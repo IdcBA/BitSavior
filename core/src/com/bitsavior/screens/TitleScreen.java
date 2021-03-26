@@ -83,7 +83,7 @@ public class TitleScreen extends ScreenAdapter
         
         //set font&label for title
         Label.LabelStyle labelTitleStyle = new Label.LabelStyle();
-        fontTitle = new BitmapFont(Gdx.files.internal("font/s100verdana_bold_blue.fnt"));
+        fontTitle = new BitmapFont(Gdx.files.internal("font/s100verdana_outlinewhite.fnt"));
         labelTitleStyle.font = fontTitle;
         labelTitle = new Label("Welcome to\nBitsavior", labelTitleStyle);
         labelTitle.setPosition(0, Gdx.graphics.getHeight() * 0.5f);
