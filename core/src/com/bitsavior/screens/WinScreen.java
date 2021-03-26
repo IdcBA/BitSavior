@@ -17,6 +17,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
+/**
+ * screen which is shown after a win
+ */
 public class WinScreen extends ScreenAdapter {
 	
 	//variables for testing
@@ -73,11 +76,11 @@ public class WinScreen extends ScreenAdapter {
     /**
 	 * Constructor
 	 * <p> TODO if necessary: edit data type of timeLeft
-	 * @param game the game (for manager)
+	 * @param screenManager to access other screens
 	 * @param timeLeft time (in seconds?) left
 	 * @param bugsLeft number of living/not caught bugs
 	 */
-    public WinScreen(final BitSavior game, int timeLeft, int bugsLeft) {
+    public WinScreen(final ScreenManager screenManager, int timeLeft, int bugsLeft) {
     	if(ScreenManager.aScreenTestMode) System.out.println("WinScreen created");
         
         //save game results to render them in the text
@@ -136,7 +139,7 @@ public class WinScreen extends ScreenAdapter {
     		}
     		@Override
     		public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
-                game.manager.showScreen(Screens.TITLE);
+                screenManager.showScreen(Screens.TITLE);
             }
        	} );
         stage.addActor(buttonMenu); 

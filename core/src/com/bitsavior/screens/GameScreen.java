@@ -7,13 +7,16 @@ import com.badlogic.gdx.ScreenAdapter;
 import com.bitsavior.game.GameState;
 import com.bitsavior.game.World;
 
+/**
+ * screen which displays the game itself
+ */
 public class GameScreen extends ScreenAdapter {
 
 	//variables for testing
 	/** ... */
 	
 	// private Members
-	private BitSavior game;
+	private ScreenManager screenManager;
 	private World world;
 	/** not needed at the moment because there is only one level */
 	private int gameLevel = 0;
@@ -21,14 +24,14 @@ public class GameScreen extends ScreenAdapter {
 	// public methods
 	/**
 	 * Constructor:
-	 * @param game game
+	 * @param screenManager to access other screens
 	 * @param level current level
 	 */
-	public GameScreen(BitSavior game, int level)
+	public GameScreen(ScreenManager screenManager, int level)
 	{
 		if(ScreenManager.aScreenTestMode) System.out.println("GameScreen created");
 		
-		this.game = game;
+		this.screenManager = screenManager;
 		world = new World(GameState.INITIALIZE, level);    // creating the World
 		world.create();
 		gameLevel = level;
@@ -44,7 +47,7 @@ public class GameScreen extends ScreenAdapter {
 			@Override
 			public boolean keyDown(int keyCode) {
 				if (keyCode == Input.Keys.ESCAPE) {
-					game.manager.showScreen(Screens.TITLE);
+					screenManager.showScreen(Screens.TITLE);
 				}
 				return true;
 			}
@@ -58,12 +61,12 @@ public class GameScreen extends ScreenAdapter {
 		switch(world.update(Delta))
 		{
 			case LOOSE_SHUTDOWN:
-				game.manager.setLoseStats();
-				game.manager.showScreen(Screens.LOSE);
+				screenManager.setLoseStats();
+				screenManager.showScreen(Screens.LOSE);
 				break;
 			case WIN:
-				game.manager.setWinStats(-1, -1); //TODO insert parameters for time and bugs
-				game.manager.showScreen(Screens.WIN);
+				screenManager.setWinStats(-1, -1); //TODO insert parameters for time and bugs
+				screenManager.showScreen(Screens.WIN);
 				break;
 			default:
 		}

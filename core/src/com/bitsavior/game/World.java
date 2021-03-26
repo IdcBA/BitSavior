@@ -14,6 +14,8 @@ import com.bitsavior.asset.Assets;
 import com.bitsavior.entity.*;
 import com.bitsavior.map.Environment;
 import com.bitsavior.map.Tilemap;
+import com.bitsavior.screens.AppPreferences;
+
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -121,12 +123,24 @@ public class World
 	 */
 	private Environment lights;
 	/**
+	 * sound Volume [0,1]
+	 */
+	private float soundVolume;
+	/**
+	 * music Volume [0,1]
+	 */
+	private float musicVolume;
+	/**
 	 * initialise required data for the creation of the world
 	 * @param gameState : initialises the gamestate once, to ensure the correct behaviour
 	 * @param level : the actual level of the game
 	 */
 	public World(GameState gameState, int level)
 	{
+		//load volumes from Preferences
+		soundVolume = (float)AppPreferences.getSoundVolume() / 100f;
+		musicVolume = (float)AppPreferences.getMusicVolume() / 100f;
+		
 		timer = new Watch(105 - (level * 5));
 		// time limit for the entry animation
 		gameStateTimer = new Watch(10);

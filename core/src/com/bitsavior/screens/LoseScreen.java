@@ -13,6 +13,9 @@ import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 
+/**
+ * screen which is shown after a loss
+ */
 public class LoseScreen extends ScreenAdapter {
 
 	//variables for testing
@@ -30,9 +33,9 @@ public class LoseScreen extends ScreenAdapter {
     
     /**
 	 * Constructor
-	 * @param the game
+	 * @param screenManager to access other screens
 	 */
-    public LoseScreen(final BitSavior game) {
+    public LoseScreen(final ScreenManager screenManager) {
     	if(ScreenManager.aScreenTestMode) System.out.println("LoseScreen created");
     	
         //add Stage and batch&font to display objects
@@ -54,7 +57,7 @@ public class LoseScreen extends ScreenAdapter {
         	public boolean keyDown(InputEvent event, int keyCode) {
 				if(aInputTest) System.out.println("key pressed");
         		if (keyCode == Input.Keys.ESCAPE) {
-					game.manager.showScreen(Screens.TITLE);
+					screenManager.showScreen(Screens.TITLE);
 					return true;
 				}
 				return false;

@@ -1,12 +1,10 @@
 package com.bitsavior.screens;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
@@ -18,18 +16,15 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
+/**
+ * Screen for the user to adjust settings
+ */
 public class SettingsScreen extends ScreenAdapter {
 	
 	//variables for testing
 	/** for testing the Volume adjustments */
 	private boolean aStaticTest = false;
 	
-	//settings
-	/** Format: integer 0 to 100 */
-	private static final String PREF_MUSIC_VOLUME = "musicVolume";
-	/** Format: integer 0 to 100 */
-	private static final String PREF_SOUND_VOLUME = "soundVolume";
-	private static final String PREFS_NAME = "b2dtut_v2";
 	/** interval to change settings per button click */
 	private static int changeInterval = 10;
 	
@@ -73,16 +68,16 @@ public class SettingsScreen extends ScreenAdapter {
     /** lineHeight of fontText to adjust button positions
      * <p> Y of the button regarding the line = bLine(line)Y - (2*(line)-1)*lineHeight */
     private float lineHeight;
-    /** Y position for 1. column */
+    /** Y position for buttons in 1. column */
     private float bLine1Y;
-    /** Y position for 2. column */
+    /** Y position for buttons in 2. column */
     private float bLine2Y;
     
     /**
 	 * Constructor
-	 * @param the game
+	 * @param screenManager to access other screens
 	 */
-    public SettingsScreen(final BitSavior game) {
+    public SettingsScreen(final ScreenManager screenManager) {
     	if(ScreenManager.aScreenTestMode) System.out.println("SettingsScreen created");
         
         //add Stage to manage objects
@@ -141,7 +136,7 @@ public class SettingsScreen extends ScreenAdapter {
     		}
     		@Override
     		public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
-                game.manager.showScreen(Screens.TITLE);
+                screenManager.showScreen(Screens.TITLE);
             }
        	} );
         stage.addActor(buttonMenu);
@@ -157,9 +152,11 @@ public class SettingsScreen extends ScreenAdapter {
             }
     		@Override
     		public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
-    			if(getMusicVolume()<=100-changeInterval) {
-                	setMusicVolume(getMusicVolume() + changeInterval);
-                    if(aStaticTest) System.out.println("+1M = "+getMusicVolume());
+    			//if volume stays within [0,100] including changeInterval
+    			if(AppPreferences.getMusicVolume()<=100-changeInterval) {
+    				//then change the volume
+    				AppPreferences.setMusicVolume(AppPreferences.getMusicVolume() + changeInterval);
+                    if(aStaticTest) System.out.println("+1M = "+AppPreferences.getMusicVolume());
                 }
             }
     	});
@@ -176,9 +173,9 @@ public class SettingsScreen extends ScreenAdapter {
             }
     		@Override
     		public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
-    			if(getMusicVolume()>=0+changeInterval) {
-                	setMusicVolume(getMusicVolume() - changeInterval);
-                    if(aStaticTest) System.out.println("-1M = "+getMusicVolume());
+    			if(AppPreferences.getMusicVolume()>=0+changeInterval) {
+    				AppPreferences.setMusicVolume(AppPreferences.getMusicVolume() - changeInterval);
+                    if(aStaticTest) System.out.println("-1M = "+AppPreferences.getMusicVolume());
                 }
             }
     	});
@@ -195,9 +192,9 @@ public class SettingsScreen extends ScreenAdapter {
             }
     		@Override
     		public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
-    			if(getSoundVolume()<=100-changeInterval) {
-                	setSoundVolume(getSoundVolume() + changeInterval);
-                    if(aStaticTest) System.out.println("+1S = "+getSoundVolume());
+    			if(AppPreferences.getSoundVolume()<=100-changeInterval) {
+    				AppPreferences.setSoundVolume(AppPreferences.getSoundVolume() + changeInterval);
+                    if(aStaticTest) System.out.println("+1S = "+AppPreferences.getSoundVolume());
                 }
             }
     	});
@@ -214,9 +211,9 @@ public class SettingsScreen extends ScreenAdapter {
             }
     		@Override
     		public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
-                if(getSoundVolume()>=0+changeInterval) {
-                	setSoundVolume(getSoundVolume() - changeInterval);
-                    if(aStaticTest) System.out.println("-1S = "+getSoundVolume());
+                if(AppPreferences.getSoundVolume()>=0+changeInterval) {
+                	AppPreferences.setSoundVolume(AppPreferences.getSoundVolume() - changeInterval);
+                    if(aStaticTest) System.out.println("-1S = "+AppPreferences.getSoundVolume());
                 }
             }
     	});
@@ -237,7 +234,7 @@ public class SettingsScreen extends ScreenAdapter {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         
         //update text
-        labelText.setText("Music " + getMusicVolume() + "%\n\nSound " + getSoundVolume() + "%");
+        labelText.setText("Music " + AppPreferences.getMusicVolume() + "%\n\nSound " + AppPreferences.getSoundVolume() + "%");
         
         //draw stage(buttons, etc.)
         stage.act();
@@ -257,46 +254,4 @@ public class SettingsScreen extends ScreenAdapter {
     	if(fontText!=null) fontText.dispose();
     }
     
-    
-    //methods to edit settings
-    /** for volume settings */
-    private static Preferences getPrefs() {
-    	return Gdx.app.getPreferences(PREFS_NAME);
-    }
-    
-    /** @return the volume of the music [0,100] as integer ! */
-    static int getMusicVolume() {
-    	return getPrefs().getInteger(PREF_MUSIC_VOLUME, 10);
-    }
-    
-    /** saves the music volume
-     * @param volume 0(silent) to 100(loud)
-     * @return true if volume was 0 to 100 and got accepted
-     */
-    private boolean setMusicVolume(int volume) {
-    	if (0<=volume && volume<=100) {
-			getPrefs().putInteger(PREF_MUSIC_VOLUME, volume);
-			getPrefs().flush();
-			return true;
-		}
-    	else return false;
-    }
-    
-    /** @return the volume of the sound [0,100] as integer ! */
-    static int getSoundVolume() {
-    	return getPrefs().getInteger(PREF_SOUND_VOLUME, 10);
-    }
-    
-    /** saves the sound volume
-     * @param volume 0(silent) to 100(loud)
-     * @return true if volume was 0 to 100 and got accepted
-     */
-    private boolean setSoundVolume(int volume) {
-    	if (0<=volume && volume<=100) {
-	    	getPrefs().putInteger(PREF_SOUND_VOLUME, volume);
-	    	getPrefs().flush();
-	    	return true;
-    	}
-    	else return false;
-    }
 }
