@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -56,15 +57,15 @@ public class SettingsScreen extends ScreenAdapter {
     /** Skin for the Buttons */
     private Skin bSkin1;
     /** norm X size for Buttons */
-    private int bSizeX = 300;
+    private float bSizeX = 300;
     /** norm Y size for Buttons */
-    private int bSizeY = 100;
+    private float bSizeY = 100;
     /** X/Y size for small Buttons */
-    private int bSizeXY = 50;
+    private float bSizeXY = 50;
     /** X position for left buttons (-) */
-    private float bMinusX = Gdx.graphics.getWidth() * 0.375f;
+    private float bMinusX = Gdx.graphics.getWidth() * 0.875f - 0.5f*bSizeXY;
     /** X position for right buttons (+) */
-    private float bPlusX = Gdx.graphics.getWidth() * 0.625f - bSizeXY; // -bSizeXY to be mirrored
+    private float bPlusX = Gdx.graphics.getWidth() * 0.875f + bSizeXY; // (-bSizeXY to be mirrored) not necessary due that text is not in the middle
     /** lineHeight of fontText to adjust button positions
      * <p> Y of the button regarding the line = bLine(line)Y - (2*(line)-1)*lineHeight */
     private float lineHeight;
@@ -83,19 +84,19 @@ public class SettingsScreen extends ScreenAdapter {
         //add Stage to manage objects
         stage = new Stage(new ScreenViewport());
         
-        /*add background as Texture wrapped in an Image
-      	textureBackground = new Texture("...");  //TODO add filename of background
+        //add background as Texture wrapped in an Image
+      	textureBackground = new Texture("setting_screen.png");
       	textureBackground.setWrap(TextureWrap.MirroredRepeat, TextureWrap.MirroredRepeat);
       	tRegion = new TextureRegion(textureBackground);
       	tRegion.setRegion(0, 0, textureBackground.getWidth(), textureBackground.getHeight());
       	imageBackground = new Image(tRegion);
       	imageBackground.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
       	imageBackground.setPosition(0, 0);
-      	stage.addActor(imageBackground);*/
+      	stage.addActor(imageBackground);
 
         //set fonts for labels
         Label.LabelStyle labelTitleStyle = new Label.LabelStyle();
-        fontTitle = new BitmapFont(Gdx.files.internal("font/s64verdana_blue.fnt"));
+        fontTitle = new BitmapFont(Gdx.files.internal("font/s100verdana_bold_blue.fnt"));
         labelTitleStyle.font = fontTitle;
         Label.LabelStyle labelTextStyle = new Label.LabelStyle();
         fontText = new BitmapFont(Gdx.files.internal("font/s32verdana_blue.fnt"));
@@ -103,14 +104,14 @@ public class SettingsScreen extends ScreenAdapter {
         
         //label to display title
         labelTitle = new Label("Settings", labelTitleStyle);
-        labelTitle.setPosition(0, Gdx.graphics.getHeight() * 0.5f);
-        labelTitle.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight() * 0.5f);
-        labelTitle.setAlignment(Align.center);
+        labelTitle.setPosition(0, 0);
+        labelTitle.setSize(Gdx.graphics.getWidth() * 0.8f, Gdx.graphics.getHeight() * 0.9f);
+        labelTitle.setAlignment(Align.top);
         stage.addActor(labelTitle);
         //label to display text
         labelText = new Label("Music x%\n\nSound x%", labelTextStyle);
-        labelText.setPosition(0, 0);
-        labelText.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight() * 0.5f);
+        labelText.setPosition(Gdx.graphics.getWidth() * 0.5f, 0);
+        labelText.setSize(Gdx.graphics.getWidth() * 0.5f, Gdx.graphics.getHeight() * 0.5f);
         labelText.setAlignment(Align.top);
         stage.addActor(labelText);
         
