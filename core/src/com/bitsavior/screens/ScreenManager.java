@@ -35,8 +35,8 @@ public class ScreenManager {
 	 */
 	public ScreenManager(BitSavior game) {
 		this.game = game;
-		tScreen = new TitleScreen(game);
-		settingsScreen = new SettingsScreen(game);
+		tScreen = new TitleScreen(this);
+		settingsScreen = new SettingsScreen(this);
 		//game is created with setGameLevel
 		//winScreen  is created with setWinStats
 		//loseScreen is created with setLoseStats
@@ -109,11 +109,11 @@ public class ScreenManager {
 	 */
 	public void setGameLevel(int level) {
 		if(!gameIsRunning()) {
-			gScreen = new GameScreen(game, level);
+			gScreen = new GameScreen(this, level);
 		}
 		else {
 			gScreen.dispose();
-			gScreen = new GameScreen(game, level);
+			gScreen = new GameScreen(this, level);
 		}
 	}
 	/** returns current Level of the GameScreen; not used at the moment due to only one level */
@@ -133,7 +133,7 @@ public class ScreenManager {
 			winScreen = null;
 			System.out.println("unexpected winScreen disposed");
 		}
-		winScreen = new WinScreen(game, time, bugs);
+		winScreen = new WinScreen(this, time, bugs);
 	}
 	
 	//methods to manage loseScreen
@@ -146,7 +146,7 @@ public class ScreenManager {
 			loseScreen = null;
 			System.out.println("unexpected loseScreen disposed");
 		}
-		loseScreen = new LoseScreen(game);
+		loseScreen = new LoseScreen(this);
 	}
 
 	/**

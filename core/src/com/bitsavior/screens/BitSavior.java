@@ -1,11 +1,6 @@
 package com.bitsavior.screens;
 
 import com.badlogic.gdx.Game;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Graphics;
-import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.bitsavior.game.WorldBounds;
-
 
 /**
  * entry point from Desktop launcher
@@ -13,20 +8,16 @@ import com.bitsavior.game.WorldBounds;
  */
 public class BitSavior extends Game {
 	/**
-	 * screenmanager for managing the different screens of the application
+	 * ScreenManager for managing the different screens of the application
 	 */
 	public ScreenManager manager;
 
 	/**
-	 * sets the titlescreen
+	 * creates the ScreenManager
 	 */
 	@Override
 	public void create() {
-
-
-		setScreen(new TitleScreen(this));
 		
-		//with ScreenManager
 		manager = new ScreenManager(this);
 		manager.showScreen(Screens.TITLE);
 	}

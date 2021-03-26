@@ -6,9 +6,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.utils.Align;
@@ -19,6 +17,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
+/**
+ * Main menu and first screen which is shown
+ */
 public class TitleScreen extends ScreenAdapter
 {
     //variables for testing
@@ -27,11 +28,11 @@ public class TitleScreen extends ScreenAdapter
 	private float colorDepthRed = 0f;
 	private float colorDepthGreen = 0.25f;
 	private float colorDepthBlue = 0f;
-
 	
-    //Stage to store/draw Buttons, fonts, etc
+    //Stage to store/draw Buttons, Labels, Images
     private Stage stage;
     
+    //visuals
     /** background */
 	private Texture textureBackground;
 	/** background region */
@@ -61,9 +62,9 @@ public class TitleScreen extends ScreenAdapter
 
     /**
      * Constructor
-     * @param the game
+     * @param screenManager to access other screens
      */
-    public TitleScreen(final BitSavior game) {
+    public TitleScreen(final ScreenManager screenManager) {
     	if(ScreenManager.aScreenTestMode) System.out.println("TitleScreen created");
 
         //add Stage
@@ -106,8 +107,8 @@ public class TitleScreen extends ScreenAdapter
             }
             @Override
             public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
-                game.manager.setGameLevel(1);
-                game.manager.showScreen(Screens.GAME);
+                screenManager.setGameLevel(1);
+                screenManager.showScreen(Screens.GAME);
             }
         } );
         stage.addActor(button1);
@@ -125,9 +126,9 @@ public class TitleScreen extends ScreenAdapter
             @Override
             public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
                 //continue paused game...
-                if(game.manager.gameIsRunning()) {
+                if(screenManager.gameIsRunning()) {
                     if(ScreenManager.aScreenTestMode) System.out.println("last gScreen gets loaded");
-                    game.manager.showScreen(Screens.GAME);
+                    screenManager.showScreen(Screens.GAME);
                 }
                 //...or edit Buttons text
                 else {
@@ -166,7 +167,7 @@ public class TitleScreen extends ScreenAdapter
             }
             @Override
             public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
-            	game.manager.showScreen(Screens.SETTINGS);
+            	screenManager.showScreen(Screens.SETTINGS);
             }
         } );
         stage.addActor(buttonSettings);
@@ -177,13 +178,13 @@ public class TitleScreen extends ScreenAdapter
 	        	@Override
 	        	public boolean keyDown(InputEvent event, int keyCode) {
 					if (keyCode == Input.Keys.NUM_1) {
-						game.manager.setWinStats(-1, -1);
-						game.manager.showScreen(Screens.WIN);
+						screenManager.setWinStats(-1, -1);
+						screenManager.showScreen(Screens.WIN);
 						return true;
 					}
 					if (keyCode == Input.Keys.NUM_2) {
-						game.manager.setLoseStats();
-						game.manager.showScreen(Screens.LOSE);
+						screenManager.setLoseStats();
+						screenManager.showScreen(Screens.LOSE);
 						return true;
 					}
 					if (keyCode == Input.Keys.Q && colorChange) { //+red
@@ -229,8 +230,8 @@ public class TitleScreen extends ScreenAdapter
 
     @Override
     public void render(float delta) {
-        if(colorChange) Gdx.gl.glClearColor(colorDepthRed, colorDepthGreen, colorDepthBlue, 1); 
-        else Gdx.gl.glClearColor(0, 0.25f, 0, 1); //old/first green
+        if(!colorChange) Gdx.gl.glClearColor(0, 0.25f, 0, 1); //old/first green
+        else Gdx.gl.glClearColor(colorDepthRed, colorDepthGreen, colorDepthBlue, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         stage.act();
