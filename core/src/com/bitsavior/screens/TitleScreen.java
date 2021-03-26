@@ -6,6 +6,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
@@ -70,21 +71,21 @@ public class TitleScreen extends ScreenAdapter
         //add Stage
         stage = new Stage(); //new (ScreenViewport())
         
-        /*add background as Texture wrapped in an Image
-      	textureBackground = new Texture("...");  //TODO add filename of background
+        //add background as Texture wrapped in an Image
+      	textureBackground = new Texture("title_screen.png");
       	textureBackground.setWrap(TextureWrap.MirroredRepeat, TextureWrap.MirroredRepeat);
       	tRegion = new TextureRegion(textureBackground);
       	tRegion.setRegion(0, 0, textureBackground.getWidth(), textureBackground.getHeight());
       	imageBackground = new Image(tRegion);
       	imageBackground.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
       	imageBackground.setPosition(0, 0);
-      	stage.addActor(imageBackground);*/
+      	stage.addActor(imageBackground);
         
         //set font&label for title
         Label.LabelStyle labelTitleStyle = new Label.LabelStyle();
-        fontTitle = new BitmapFont(Gdx.files.internal("font/s64verdana_blue.fnt"));
+        fontTitle = new BitmapFont(Gdx.files.internal("font/s100verdana_bold_blue.fnt"));
         labelTitleStyle.font = fontTitle;
-        labelTitle = new Label("Welcome to Bitsavior!", labelTitleStyle);
+        labelTitle = new Label("Welcome to\nBitsavior", labelTitleStyle);
         labelTitle.setPosition(0, Gdx.graphics.getHeight() * 0.5f);
         labelTitle.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight() * 0.5f);
         labelTitle.setAlignment(Align.center);
