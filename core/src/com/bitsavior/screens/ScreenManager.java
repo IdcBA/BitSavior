@@ -64,6 +64,15 @@ public class ScreenManager {
 			case GAME :
 				if(!gameIsRunning()) System.out.println("GameScreen is null");
 				else game.setScreen(gScreen);
+				//delete old win-/loseScreens
+				if(winScreen!=null) {
+					winScreen.dispose();
+					winScreen = null;
+				}
+				if(loseScreen!=null) {
+					loseScreen.dispose();
+					loseScreen = null;
+				}
 				break;
 			case WIN :
 				if(winScreen==null) System.out.println("WinScreen is null");

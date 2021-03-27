@@ -522,7 +522,7 @@ public class World
 		if(lightBuffer!=null) lightBuffer.dispose();
 		if(music!=null)
 		{
-			System.out.println("Music disposed");
+			if(aWorldTest) System.out.println("Music disposed");
 			music.dispose();
 		}
 		if(sound!=null) sound.dispose();
