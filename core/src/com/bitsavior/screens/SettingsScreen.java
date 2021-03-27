@@ -2,7 +2,6 @@ package com.bitsavior.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -29,9 +28,10 @@ public class SettingsScreen extends ScreenAdapter {
 	/** interval to change settings per button click */
 	private static int changeInterval = 10;
 	
-	//visuals e.g. stage, font
+	//visuals e.g. stage, images, labels
 	/** Stage to store Buttons, fonts, etc */
     private Stage stage;
+    //background
     /** background */
 	private Texture textureBackground;
 	/** background region */
@@ -39,9 +39,11 @@ public class SettingsScreen extends ScreenAdapter {
 	/** background image */
 	private Image imageBackground;
 	/** font for title */
+	//title
     private BitmapFont fontTitle;
     /** label to write title */
     private Label labelTitle;
+    //text (music,sound)
     /** font for text */
     private BitmapFont fontText;
     /** label to write text */
@@ -65,9 +67,8 @@ public class SettingsScreen extends ScreenAdapter {
     /** X position for left buttons (-) */
     private float bMinusX = Gdx.graphics.getWidth() * 0.875f - 0.5f*bSizeXY;
     /** X position for right buttons (+) */
-    private float bPlusX = Gdx.graphics.getWidth() * 0.875f + bSizeXY; // (-bSizeXY to be mirrored) not necessary due that text is not in the middle
-    /** lineHeight of fontText to adjust button positions
-     * <p> Y of the button regarding the line = bLine(line)Y - (2*(line)-1)*lineHeight */
+    private float bPlusX = Gdx.graphics.getWidth() * 0.875f + bSizeXY; // (-bSizeXY to be mirrored) not necessary due that text is not in the middle anymore
+    /** lineHeight of fontText to adjust button positions */
     private float lineHeight;
     /** Y position for buttons in 1. column */
     private float bLine1Y;
@@ -75,7 +76,7 @@ public class SettingsScreen extends ScreenAdapter {
     private float bLine2Y;
     
     /**
-	 * Constructor
+	 * Creates the settings screen
 	 * @param screenManager to access other screens
 	 */
     public SettingsScreen(final ScreenManager screenManager) {
@@ -118,8 +119,9 @@ public class SettingsScreen extends ScreenAdapter {
         //load Skin for buttons
         bSkin1 = new Skin(Gdx.files.internal("skin/glassy-ui.json"));
         
-        //load lineHeight of font to adjust button positions
+        //load lineHeight of font to adjust button Y positions
         lineHeight = fontText.getLineHeight();
+        //bLine(line) = Gdx.graphics.getHeight() - (2*(line)-1)*lineHeight
         bLine1Y = Gdx.graphics.getHeight() * 0.5f - 1*lineHeight;
         bLine2Y = Gdx.graphics.getHeight() * 0.5f - 3*lineHeight;
         
@@ -221,6 +223,9 @@ public class SettingsScreen extends ScreenAdapter {
         stage.addActor(buttonSoundMinus);
     }
     
+    /**
+     * sets the input to the stage
+     */
     @Override
     public void show() {
     	if(ScreenManager.aScreenTestMode) System.out.println("SettingScreen is shown");
@@ -229,11 +234,12 @@ public class SettingsScreen extends ScreenAdapter {
     	Gdx.input.setInputProcessor(stage);
     }
     
+    /**
+     * updates the labelText to display current settings
+     * <p> calls the stage to draw everything
+     */
     @Override
-    public void render(float delta) {    	
-        Gdx.gl.glClearColor(0, 0.25f, 0, 1);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        
+    public void render(float delta) {
         //update text
         labelText.setText("Music " + AppPreferences.getMusicVolume() + "%\n\nSound " + AppPreferences.getSoundVolume() + "%");
         
@@ -242,17 +248,25 @@ public class SettingsScreen extends ScreenAdapter {
         stage.draw();
     }
     
+    /**
+     * sets the InputProcessor to null to prevent bugs
+     */
     @Override
     public void hide() {
         Gdx.input.setInputProcessor(null);
     }
     
+    /**
+     * disposes stage and other holders (e.g. font, textures)
+     */
     public void dispose() {
     	if(ScreenManager.aScreenTestMode) System.out.println("SettingsScreen is disposed");
     	
     	if(stage!=null) stage.dispose();
     	if(fontTitle!=null) fontTitle.dispose();
     	if(fontText!=null) fontText.dispose();
+    	if(textureBackground!=null) textureBackground.dispose();
+    	if(bSkin1!=null) bSkin1.dispose();
     }
     
 }

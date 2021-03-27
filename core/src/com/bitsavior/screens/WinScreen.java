@@ -2,7 +2,6 @@ package com.bitsavior.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -18,23 +17,28 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 /**
- * screen which is shown after a win
+ * Screen which is shown after a win
  */
 public class WinScreen extends ScreenAdapter {
 	
 	//variables for testing
-	/** true for messages */
-	private boolean aErrorMessage = false;
+	//...
 	
 	//visuals e.g. stage, font
 	/** Stage to store and display Buttons, etc */
     private Stage stage;
-    /** "console" background */
-	private Texture textureBackground;
-	/** "console" background position */
-	private TextureRegion tRegion;
-	/** "console" background image */
-	private Image imageBackground;
+    /** texture of the background */
+    private Texture textureBackground;
+    /** necessary for image */
+    private TextureRegion tRegionBackground;
+    /** background image (which gets displayed) */
+    private Image imageBackground;
+    /** rectangle for "console" */
+	private Texture textureConsole;
+	/** necessary for image */
+	private TextureRegion tRegionConsole;
+	/** "console" image (which gets displayed) */
+	private Image imageConsole;
 	/** "console" font */
 	private BitmapFont font;
 	/** "console" text */
@@ -55,78 +59,67 @@ public class WinScreen extends ScreenAdapter {
 	private String line7;
 	private String line8;
 	private String line9;
-    
-	//game result
-	/** timeLeft to display it <p> -10 is default */
-	private int timeLeft = -10;
-	/** bugsLeft to display it <p> -10 is default */
-	private int bugsLeft = -10;
 	
     //Button properties
     /** Skin for the Buttons */
     private Skin bSkin1;
     /** Button: to return to main menu */
     private TextButton buttonMenu;
+    /** Button 2: start Level 2 */
+    private TextButton button2;
     /** norm X size for Buttons */
     private int bSizeX = 300;
     /** norm Y size for Buttons */
     private int bSizeY = 100;
 
-    
     /**
-	 * Constructor
-	 * <p> TODO if necessary: edit data type of timeLeft
+	 * Creates the win screen
 	 * @param screenManager to access other screens
-	 * @param timeLeft time (in seconds?) left
+	 * @param timeLeft time left in seconds
 	 * @param bugsLeft number of living/not caught bugs
+     * @param gameLevel level which was completed
 	 */
-    public WinScreen(final ScreenManager screenManager, int timeLeft, int bugsLeft) {
+    public WinScreen(final ScreenManager screenManager, int timeLeft, int bugsLeft, final int gameLevel) {
     	if(ScreenManager.aScreenTestMode) System.out.println("WinScreen created");
-        
-        //save game results to render them in the text
-    	this.timeLeft=timeLeft;
-    	this.bugsLeft=bugsLeft;
     	
     	//add Stage
         stage = new Stage(new ScreenViewport());
         
-        //add "console" background as Texture wrapped in an Image
-		textureBackground = new Texture("winscreen_back.png");
-		textureBackground.setWrap(TextureWrap.MirroredRepeat, TextureWrap.MirroredRepeat);
-		tRegion = new TextureRegion(textureBackground);
-		tRegion.setRegion(0, 0, textureBackground.getWidth(), textureBackground.getHeight());
-		imageBackground = new Image(tRegion);
-		imageBackground.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight() / 2);
-		imageBackground.setPosition(0, Gdx.graphics.getHeight() / 2);
-		stage.addActor(imageBackground);
+        //add background as Texture wrapped in an Image
+        textureBackground = new Texture("title_screen.png");
+        textureBackground.setWrap(TextureWrap.MirroredRepeat, TextureWrap.MirroredRepeat);
+        tRegionBackground = new TextureRegion(textureBackground);
+        tRegionBackground.setRegion(0, 0, textureBackground.getWidth(), textureBackground.getHeight());
+        imageBackground = new Image(tRegionBackground);
+        imageBackground.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        imageBackground.setPosition(0, 0);
+        stage.addActor(imageBackground);
+        
+        //add "console" as Texture wrapped in an Image
+		textureConsole = new Texture("winscreen_back.png");
+		textureConsole.setWrap(TextureWrap.MirroredRepeat, TextureWrap.MirroredRepeat);
+		tRegionConsole = new TextureRegion(textureConsole);
+		tRegionConsole.setRegion(0, 0, textureConsole.getWidth(), textureConsole.getHeight());
+		imageConsole = new Image(tRegionConsole);
+		imageConsole.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight() / 2);
+		imageConsole.setPosition(0, Gdx.graphics.getHeight() / 2);
+		stage.addActor(imageConsole);
 		
         //add label and its font for "console" text
         Label.LabelStyle lStyle = new Label.LabelStyle();
         font = new BitmapFont(Gdx.files.internal("font/s32arial_2_white.fnt"));
         lStyle.font = font;
         labelText = new Label("", lStyle);
-        //edit height: 1 is top and higher is nearer screenCenter
         labelText.setPosition(Gdx.graphics.getWidth() * 0.015f, Gdx.graphics.getHeight() * -0.020f);
         labelText.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         labelText.setAlignment(Align.topLeft);
         stage.addActor(labelText);
         
-        //TODO set lines for delayed text output
-        line1 = "> Executing Task: Bitsavior.level 1 \n";
-        line2 = "> Task:core:Bitsavior:level 1:compile \n\n";
-		line3 = "> Task:core:Bitsavior:level 1:classes \n\n";
-		line4 = "> Task:core:Bitsavior:level 1:main:compile successfull\n";
-        line5 = "> Log:\n";
-        line6 = "> compiled with 0 errors and " + bugsLeft + " warnings\n";
-        line7 = "> compiled in " + timeLeft + " seconds";
-        line8 = "";
-        line9 = "";
-
         //load Skin for Buttons
         bSkin1 = new Skin(Gdx.files.internal("skin/glassy-ui.json"));
         
-        //initialize Button 1
-        buttonMenu = new TextButton("Back to main menu", bSkin1, "small");
+        //initialize menu Button
+        buttonMenu = new TextButton("Back to main menu\n(Progress lost)", bSkin1, "small");
         buttonMenu.setSize(bSizeX, bSizeY);
         buttonMenu.setPosition(Gdx.graphics.getWidth()*0.5f - bSizeX / 2,
         		Gdx.graphics.getHeight()*0.25f - bSizeY / 2 ); //height()*... from bottom
@@ -142,9 +135,41 @@ public class WinScreen extends ScreenAdapter {
                 screenManager.showScreen(Screens.TITLE);
             }
        	} );
-        stage.addActor(buttonMenu); 
+        stage.addActor(buttonMenu);
+        
+        //initialize Button 2
+        button2 = new TextButton("Start new Level " + (gameLevel+1), bSkin1, "small");
+        button2.setSize(bSizeX, bSizeY);
+        button2.setPosition(Gdx.graphics.getWidth() * 0.5f  - bSizeX / 2,
+                Gdx.graphics.getHeight() * 0.5f - (bSizeY * 1.5f) );
+        button2.addListener(new InputListener() {
+            @Override
+            public boolean touchDown (InputEvent event, float x, float y, int pointer, int button) {
+                return true;
+            }
+            @Override
+            public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
+                screenManager.setGameLevel(gameLevel+1);
+                screenManager.showScreen(Screens.GAME);
+            }
+        } );
+        stage.addActor(button2);
+        
+        //TODO set lines for delayed text output
+        line1 = "> Executing Task: Bitsavior.level" + gameLevel + "\n";
+        line2 = "> Task:core:Bitsavior:level"+ gameLevel + ":compile \n\n";
+		line3 = "> Task:core:Bitsavior:level"+ gameLevel + ":classes \n\n";
+		line4 = "> Task:core:Bitsavior:level"+ gameLevel + ":main:compile successfull\n";
+        line5 = "> Log:\n";
+        line6 = "> compiled with 0 errors and " + bugsLeft + " warnings\n";
+        line7 = "> compiled in " + timeLeft + " seconds";
+        line8 = "";
+        line9 = "";
     }
     
+    /**
+     * sets the input to the stage
+     */
     @Override
     public void show() {
     	if(ScreenManager.aScreenTestMode) System.out.println("WinScreen is shown");
@@ -156,11 +181,13 @@ public class WinScreen extends ScreenAdapter {
     	Gdx.input.setInputProcessor(stage);
     }
     
+    /**
+     * updates the text
+     * <p> calls the stage to draw everything
+     */
     @Override
-    public void render(float delta) {    	
-        Gdx.gl.glClearColor(0, 0.6353f, 0.9294f, 1); //microsoft blue --> https://encycolorpedia.com/00a2ed
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        
+    public void render(float delta) {
+    	
         //update the text
         updateText();
         
@@ -169,6 +196,9 @@ public class WinScreen extends ScreenAdapter {
         stage.draw();
     }
     
+    /**
+     * sets the InputProcessor to null to prevent bugs
+     */
     @Override
     public void hide() {
         Gdx.input.setInputProcessor(null);
@@ -190,10 +220,16 @@ public class WinScreen extends ScreenAdapter {
     	else if (startTime+(delayTime*1) < System.currentTimeMillis()) labelText.setText(line1);
     }
     
+    /**
+     * disposes stage and other holders (e.g. font, textures)
+     */
+    @Override
     public void dispose() {
     	if(ScreenManager.aScreenTestMode) System.out.println("WinScreen is disposed");
     	
     	if(stage!=null) stage.dispose();
-    	if(textureBackground!=null) textureBackground.dispose();
+    	if(font!=null) font.dispose();
+    	if(textureConsole!=null) textureConsole.dispose();
+    	if(bSkin1!=null) bSkin1.dispose();
     }
 }

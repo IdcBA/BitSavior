@@ -98,7 +98,7 @@ public class ScreenManager {
 	}
 	
 	//methods to manage GameScreen
-	/** true if the GameScreen is not null*/
+	/** true if the GameScreen is not null */
 	public boolean gameIsRunning() {
 		if(gScreen==null) return false;
 		else return true;
@@ -126,14 +126,15 @@ public class ScreenManager {
 	 * deletes old and creates new WinScreen
 	 * @param time time left
 	 * @param bugs bugs left
+	 * @param gameLevel 
 	 */
-	public void setWinStats(int time, int bugs) {
+	public void setWinStats(int time, int bugs, int gameLevel) {
 		if(winScreen!=null) {
 			winScreen.dispose();
 			winScreen = null;
 			System.out.println("unexpected winScreen disposed");
 		}
-		winScreen = new WinScreen(this, time, bugs);
+		winScreen = new WinScreen(this, time, bugs, gameLevel);
 	}
 	
 	//methods to manage loseScreen
