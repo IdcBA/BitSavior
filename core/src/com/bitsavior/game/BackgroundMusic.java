@@ -1,5 +1,7 @@
 package com.bitsavior.game;
 
+import com.badlogic.gdx.Audio;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
 
 /**
@@ -33,7 +35,8 @@ public class BackgroundMusic{
 	 * constructor
 	 * @param music : the music file
 	 */
-	public BackgroundMusic(Music music) {
+	public BackgroundMusic(Music music)
+	{
 		this.music = music;
 	}
 	/**
@@ -80,7 +83,10 @@ public class BackgroundMusic{
 	 *               must be between 0.f and 100.f
 	 */
 	public void setVolume (float volume) {
-		music.setVolume(volume);
+		if(volume <= 0.f)
+			music.setVolume(0.f);
+		else
+			music.setVolume(volume);
 	}
 
 	public float getVolume(){ return music.getVolume(); }

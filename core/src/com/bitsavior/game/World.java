@@ -210,6 +210,7 @@ public class World
 
 		debugger = new AntiBug(assets.holder);
 		music = new BackgroundMusic(assets.holder.get(Assets.background));
+		winSound = new Soundeffect(assets.holder.get(Assets.winMusic));
 		lights = new Environment(assets.holder);
 
 		// create FrameBuffer with width/height of the screen
@@ -384,9 +385,6 @@ public class World
 	}
 	private void winUpdate(float Delta)
 	{
-		winSound = new Soundeffect(assets.holder.get(Assets.winMusic));
-
-
 		for(MovingEntity firework : fireworks)
 		{
 			firework.update(Delta);
@@ -413,8 +411,9 @@ public class World
 			}
 		}
 
-		if(!gameStateTimer.isActive())
+		if(!gameStateTimer.isActive()) {
 			gameState = GameState.WIN_SHUTDOWN;
+		}
 	}
 
 	/**
@@ -521,7 +520,11 @@ public class World
 	{
 		if(userInterface!=null) userInterface.dispose();
 		if(lightBuffer!=null) lightBuffer.dispose();
-		if(music!=null) music.dispose();
+		if(music!=null)
+		{
+			System.out.println("Music disposed");
+			music.dispose();
+		}
 		if(sound!=null) sound.dispose();
 		if(shapeRenderer!=null) shapeRenderer.dispose();
 		if(batch!=null) batch.dispose();
