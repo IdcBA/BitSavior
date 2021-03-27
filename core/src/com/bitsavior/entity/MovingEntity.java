@@ -41,6 +41,8 @@ public class MovingEntity extends Entity implements ICollision
     /**
      * contains the actual movement direction
      */
+    private boolean recentlyCollided = false;
+
     public Movement direction;
     /**
      * constructor
@@ -130,8 +132,11 @@ public class MovingEntity extends Entity implements ICollision
      */
     public void update(float Delta)
     {
-        stateTime += Delta;
-        keyFrame =  entityAnimation.getKeyFrame(stateTime, true);
+
+        if(isAlive) {
+            stateTime += Delta;
+            keyFrame = entityAnimation.getKeyFrame(stateTime, true);
+        }
     }
     /**
      * check object layer of the map if a collision happened
@@ -150,8 +155,10 @@ public class MovingEntity extends Entity implements ICollision
             {
                 // if a collision happened, correct position
                 move(-1, Gdx.graphics.getDeltaTime());
+                recentlyCollided = true;
                 break;
             }
+            recentlyCollided = false;
         }
     }
     /**
@@ -170,4 +177,6 @@ public class MovingEntity extends Entity implements ICollision
                     getSize().x, getSize().y,1.f, 1.f, rotation);
         }
     }
+    protected boolean isRecentlyCollided() { return recentlyCollided; }
+
 }

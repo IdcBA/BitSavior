@@ -82,6 +82,8 @@ public class BackgroundMusic{
 	public void setVolume (float volume) {
 		music.setVolume(volume);
 	}
+
+	public float getVolume(){ return music.getVolume(); }
 	/**
 	 * activates the stuttering effect with a given interval
 	 * @param interval : the desired length of the interval that the music should
@@ -126,7 +128,7 @@ public class BackgroundMusic{
 	}
 
 	public void dispose() {
-		music.dispose();		
+		music.dispose();
 	}
 }
 

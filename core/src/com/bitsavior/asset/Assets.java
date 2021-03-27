@@ -21,21 +21,26 @@ public class Assets
     public static final AssetDescriptor<Texture> antibug =
             new AssetDescriptor<Texture>("spritesheet_antibug.png", Texture.class);
     public static final AssetDescriptor<TiledMap> currentMap =
-            new AssetDescriptor<TiledMap>("map_1.tmx", TiledMap.class);
+            new AssetDescriptor<TiledMap>("map_1_extended.tmx", TiledMap.class);
     public static final AssetDescriptor<Texture> player =
             new AssetDescriptor<Texture>("spritesheet_test3.png", Texture.class);
+    public static final AssetDescriptor<Texture> explosion =
+            new AssetDescriptor<Texture>("firework.png", Texture.class);
+
     public static final AssetDescriptor<Texture> pickUp =
             new AssetDescriptor<Texture>("memory-leaks.jpg", Texture.class);
     public static final AssetDescriptor<Texture> breakpoint =
             new AssetDescriptor<Texture>("metallic_light.png", Texture.class);
     public static final AssetDescriptor<Texture> light =
-            new AssetDescriptor<Texture>("lightcone3.png", Texture.class);
+            new AssetDescriptor<Texture>("lightcone_imp.png", Texture.class);
     public static final AssetDescriptor<Texture> redLight =
             new AssetDescriptor<Texture>("redLight_1.png", Texture.class);
     public static final AssetDescriptor<Texture> uiRect =
             new AssetDescriptor<Texture>("ui_rect_2.png", Texture.class);
     public static final AssetDescriptor<Music> background =
-            new AssetDescriptor<Music>("backgroundmusic.mp3", Music.class);
+            new AssetDescriptor<Music>("background_alt.mp3", Music.class);
+    public static final AssetDescriptor<Sound> winMusic =
+            new AssetDescriptor<Sound>("win_sound.wav", Sound.class);
     public static final AssetDescriptor<Sound> blop =
     		new AssetDescriptor<>("blop.wav", Sound.class);
     public static final AssetDescriptor<Sound> lose =
@@ -67,6 +72,7 @@ public class Assets
             holder.load(player);
             holder.load(pickUp);
             holder.load(light);
+            holder.load(explosion);
             holder.load(redLight);
             holder.load(currentMap);
             holder.load(breakpoint);
@@ -76,6 +82,7 @@ public class Assets
             holder.load(lose);
             holder.load(sirene);
             holder.load(save);
+            holder.load(winMusic);
 
             holder.finishLoading();
     }

@@ -23,11 +23,15 @@ public enum GameState
      */
     WIN,
     /**
+     * game is shutting down(win)
+     */
+    WIN_SHUTDOWN,
+    /**
      * game is lost due timeout or caught
      */
     LOOSE,
     /**
-     * game is shutting down
+     * game is shutting down(lose)
      */
     LOOSE_SHUTDOWN
 }

@@ -28,7 +28,6 @@ public class UserInterface {
      * holds a graphical textbox for the user interface
      */
     Entity uiRect_2;
-
     /**
      * holds the time left in seconds for the remaining game session
      */
@@ -68,7 +67,7 @@ public class UserInterface {
     public void update() {
 
             this.timeLeft = timer.getRemainingSeconds();
-            this.pickUpsLeft = PickUp.pickUpCounter;
+            this.pickUpsLeft = NumberOfPickups - PickUp.pickUpCounter;
     }
     /**
      * draws the user interface

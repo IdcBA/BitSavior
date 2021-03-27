@@ -46,7 +46,7 @@ public class Player
         saveTime = new Watch(10);
 
         // set player size
-        setSize(25, 25);
+        setSize(20, 20);
 		
     }
     /**

@@ -63,7 +63,7 @@ public class Environment
         lightPositions[0] = new Vector2(370, 30);
         lightPositions[1] = new Vector2(625, 752);
         lightPositions[2] = new Vector2(1252, 0);
-        lightPositions[3] = new Vector2(152, 590);
+        lightPositions[3] = new Vector2(145, 590);
 
         soundTimer = new Watch(10);
         sirene = new Soundeffect(manager.get(Assets.sirene));
@@ -79,7 +79,6 @@ public class Environment
         }
 
         lights.get(0).setEffect(LightedEntity.EffectType.PULSATING, 500L);
-        lights.get(1).setLightRadius(100.f);
         lights.get(2).setEffect(LightedEntity.EffectType.PULSATING);
         lights.get(2).setLightRadius(80.f);
         lights.get(3).setEffect(LightedEntity.EffectType.PULSATING, 500L);
@@ -151,13 +150,16 @@ public class Environment
 			lights.get(i).setEffect(type);
 		}
 	}
-	public void playSirene()
+	public void sirene(boolean active)
     {
         if(!soundTimer.isActive()) {
             soundTimer.startWatch();
             sirene.play();
             changeEffect(LightedEntity.EffectType.PULSATING, soundTimer.getTimeLimit());
         }
+
+        if(!active)
+            sirene.stop();
     }
     public void dispose()
     {
