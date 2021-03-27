@@ -82,6 +82,7 @@ public class GameScreen extends ScreenAdapter {
 		if(ScreenManager.aScreenTestMode) System.out.println("GameScreen is disposed");
 		
 		world.dispose();
+		System.out.println("gScreen: world disposed");
 		if(ScreenManager.aScreenTestMode) System.out.println("gScreen: world disposed");
 	}
 	
