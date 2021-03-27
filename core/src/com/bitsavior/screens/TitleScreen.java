@@ -4,7 +4,6 @@ package com.bitsavior.screens;//package com.bitsavior.game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.ScreenAdapter;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -22,15 +21,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
  * Main menu and first screen which is shown
  */
 public class TitleScreen extends ScreenAdapter
-{
-    //variables for testing
-    /** to find best background color with QWE ASD*/
-	private boolean colorChange = false;
-	private float colorDepthRed = 0f;
-	private float colorDepthGreen = 0.25f;
-	private float colorDepthBlue = 0f;
-	
-    //Stage to store/draw Buttons, Labels, Images
+{	
+    /** to store/draw Buttons, Labels, Images */
     private Stage stage;
     
     //visuals
@@ -48,7 +40,7 @@ public class TitleScreen extends ScreenAdapter
     //Button properties
     /** Skin for the Buttons */
     private Skin bSkin1;
-    /** Button 1: New Game */
+    /** Button 1: starts a new level 1*/
     private TextButton button1;
     /** Button 9: continues if there is a paused game */
     private TextButton button9;
@@ -62,14 +54,14 @@ public class TitleScreen extends ScreenAdapter
     private float bSizeY = 100;
 
     /**
-     * Constructor
+     * Creates the main menu screen
      * @param screenManager to access other screens
      */
     public TitleScreen(final ScreenManager screenManager) {
     	if(ScreenManager.aScreenTestMode) System.out.println("TitleScreen created");
 
         //add Stage
-        stage = new Stage(); //new (ScreenViewport())
+        stage = new Stage();
         
         //add background as Texture wrapped in an Image
       	textureBackground = new Texture("title_screen.png");
@@ -95,7 +87,7 @@ public class TitleScreen extends ScreenAdapter
         bSkin1 = new Skin(Gdx.files.internal("skin/glassy-ui.json"));
 
         //initialize Button 1
-        button1 = new TextButton("Start new Game", bSkin1, "small");
+        button1 = new TextButton("Start new Level 1", bSkin1, "small");
         button1.setSize(bSizeX, bSizeY);
         button1.setPosition(Gdx.graphics.getWidth() * 0.5f - bSizeX / 2,
                 Gdx.graphics.getHeight() * 0.5f - (bSizeY * 0.5f) );
@@ -179,7 +171,7 @@ public class TitleScreen extends ScreenAdapter
 	        	@Override
 	        	public boolean keyDown(InputEvent event, int keyCode) {
 					if (keyCode == Input.Keys.NUM_1) {
-						screenManager.setWinStats(-1, -1);
+						screenManager.setWinStats(-1, -1, 0);
 						screenManager.showScreen(Screens.WIN);
 						return true;
 					}
@@ -188,36 +180,16 @@ public class TitleScreen extends ScreenAdapter
 						screenManager.showScreen(Screens.LOSE);
 						return true;
 					}
-					if (keyCode == Input.Keys.Q && colorChange) { //+red
-						if(colorDepthRed<1) colorDepthRed += 0.125f;
-				        labelTitle.setText(colorDepthRed+" "+colorDepthGreen+" "+colorDepthBlue);
-					}
-					if (keyCode == Input.Keys.A && colorChange) { //-red
-						if(colorDepthRed>0) colorDepthRed -= 0.125f;
-				        labelTitle.setText(colorDepthRed+" "+colorDepthGreen+" "+colorDepthBlue);
-					}
-					if (keyCode == Input.Keys.W && colorChange) { //+green
-						if(colorDepthGreen<1) colorDepthGreen += 0.125f;
-				        labelTitle.setText(colorDepthRed+" "+colorDepthGreen+" "+colorDepthBlue);
-					}
-					if (keyCode == Input.Keys.S && colorChange) { //-green
-						if(colorDepthGreen>0) colorDepthGreen -= 0.125f;
-				        labelTitle.setText(colorDepthRed+" "+colorDepthGreen+" "+colorDepthBlue);
-					}
-					if (keyCode == Input.Keys.E && colorChange) { //+blue
-						if(colorDepthBlue<1) colorDepthBlue += 0.125f;
-				        labelTitle.setText(colorDepthRed+" "+colorDepthGreen+" "+colorDepthBlue);
-					}
-					if (keyCode == Input.Keys.D && colorChange) { //-blue
-						if(colorDepthBlue>0) colorDepthBlue -= 0.125f;
-				        labelTitle.setText(colorDepthRed+" "+colorDepthGreen+" "+colorDepthBlue);
-					}
 					return false;
 				}
 			});
         }
     }
 
+    /**
+     * sets the input to the stage
+     * <p> resets the text of the continue button
+     */
     @Override
     public void show() {
     	if(ScreenManager.aScreenTestMode) System.out.println("TitleScreen is shown");
@@ -229,26 +201,32 @@ public class TitleScreen extends ScreenAdapter
         button9.setText("Continue paused Game");
     }
 
+    /**
+     * calls the stage to draw everything
+     */
     @Override
     public void render(float delta) {
-        if(!colorChange) Gdx.gl.glClearColor(0, 0.25f, 0, 1); //old/first green
-        else Gdx.gl.glClearColor(colorDepthRed, colorDepthGreen, colorDepthBlue, 1);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-
         stage.act();
         stage.draw();
     }
 
+    /**
+     * sets the InputProcessor to null to prevent bugs
+     */
     @Override
-    public void hide()
-    {
+    public void hide() {
         Gdx.input.setInputProcessor(null);
     }
 
+    /**
+     * disposes stage and other holders (e.g. font, textures)
+     */
     public void dispose() {
     	if(ScreenManager.aScreenTestMode) System.out.println("TitleScreen is disposed");
     	
         if(stage!=null) stage.dispose();
         if(fontTitle!=null) fontTitle.dispose();
+        if(textureBackground!=null) textureBackground.dispose();
+    	if(bSkin1!=null) bSkin1.dispose();
     }
 }

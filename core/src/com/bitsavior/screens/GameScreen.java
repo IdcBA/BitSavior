@@ -3,12 +3,14 @@ package com.bitsavior.screens;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputAdapter;
+import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.ScreenAdapter;
 import com.bitsavior.game.GameState;
 import com.bitsavior.game.World;
 
 /**
- * screen which displays the game itself
+ * Screen which displays the game itself
+ * <p> connects other screens and the "world"
  */
 public class GameScreen extends ScreenAdapter {
 
@@ -16,14 +18,16 @@ public class GameScreen extends ScreenAdapter {
 	/** ... */
 	
 	// private Members
+	/** to access interact with other screens */
 	private ScreenManager screenManager;
+	/** @see World */
 	private World world;
-	/** not needed at the moment because there is only one level */
-	private int gameLevel = 0;
+	/** level of current game*/
+	private int gameLevel;
 
 	// public methods
 	/**
-	 * Constructor:
+	 * Creates the game screen
 	 * @param screenManager to access other screens
 	 * @param level current level
 	 */
@@ -32,12 +36,14 @@ public class GameScreen extends ScreenAdapter {
 		if(ScreenManager.aScreenTestMode) System.out.println("GameScreen created");
 		
 		this.screenManager = screenManager;
+		this.gameLevel = level;
 		world = new World(GameState.INITIALIZE, level);    // creating the World
 		world.create();
-		gameLevel = level;
 	}
 
-
+	/**
+	 * adds an {@link InputProcessor} to pause with ESCAPE
+	 */
 	@Override
 	public void show()
 	{
@@ -54,7 +60,10 @@ public class GameScreen extends ScreenAdapter {
 		} );
 	}
 
-
+	/**
+	 * calls update of the world and if so sets lose/win
+	 * <p> calls render of the world
+	 */
 	@Override
 	public void render(float Delta)
 	{
@@ -65,7 +74,7 @@ public class GameScreen extends ScreenAdapter {
 				screenManager.showScreen(Screens.LOSE);
 				break;
 			case WIN_SHUTDOWN:
-				screenManager.setWinStats(world.getRemainingTime(), world.getRemainingBugs());
+				screenManager.setWinStats(world.getRemainingTime(), world.getRemainingBugs(), gameLevel);
 				screenManager.showScreen(Screens.WIN);
 				break;
 			default:
@@ -73,9 +82,12 @@ public class GameScreen extends ScreenAdapter {
 		world.render(Delta);
 	}
 
+	/** @return current gameLevel */
 	public int getGameLevel() { return gameLevel; }
 
-
+	/**
+	 * disposes the world
+	 */
 	@Override
 	public void dispose()
 	{
@@ -85,6 +97,9 @@ public class GameScreen extends ScreenAdapter {
 		if(ScreenManager.aScreenTestMode) System.out.println("gScreen: world disposed");
 	}
 	
+	/**
+     * sets the InputProcessor to null to prevent bugs
+     */
 	@Override
 	public void hide()
 	{
