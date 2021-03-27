@@ -24,6 +24,11 @@ import java.util.Random;
  */
 public class World
 {
+
+	/**
+	 * trigger for one time adjustments regarding the translation between run and win gamestate
+	 */
+	boolean winEffectTrigger = true;
 	/**
 	 * if true: sends dispose message
 	 */
@@ -39,9 +44,9 @@ public class World
 	 */
 	private UserInterface userInterface;
 	/**
-	 * hold timer data for the time limit
+	 * the timer for the time limit of the level
 	 */
-	private final Watch timer;
+	private final Watch gameTimer;
 	/**
 	 * holds the time required for starting a game and animate the entrysequence
 	 */
@@ -70,6 +75,10 @@ public class World
 	 * holds the backgroundmusic of the current level
 	 */
 	private BackgroundMusic music;
+	/**
+	 * holds the music when the player wins the level
+	 */
+	private Soundeffect winSound;
 	/**
 	 * holds the sound effect currently needed
 	 */
@@ -131,6 +140,10 @@ public class World
 	 */
 	private float musicVolume;
 	/**
+	 * firework animation for exploding bugs
+	 */
+	private ArrayList<MovingEntity> fireworks;
+	/**
 	 * initialise required data for the creation of the world
 	 * @param gameState : initialises the gamestate once, to ensure the correct behaviour
 	 * @param level : the actual level of the game
@@ -140,25 +153,28 @@ public class World
 		//load volumes from Preferences
 		soundVolume = (float)AppPreferences.getSoundVolume() / 100f;
 		musicVolume = (float)AppPreferences.getMusicVolume() / 100f;
-		
-		timer = new Watch(105 - (level * 5));
+
+		// time limit for the game session
+		gameTimer = new Watch(105 - (level * 5));
 		// time limit for the entry animation
 		gameStateTimer = new Watch(10);
+
 		assets = new Assets();
 		batch = new SpriteBatch();
 		camera = new OrthographicCamera();
-
 		shapeRenderer = new ShapeRenderer();
 
+		// setup numbers for enemies and pickups
+		NumberOfEnemies = 5 + level;
+		//NumberOfPickUps = 7 + level;
+		NumberOfPickUps = 1;
 
-		// setup numbers
-		NumberOfEnemies = 7 + level;
-		NumberOfPickUps = 9 + level;
-
+		// setup numbers for various fade effects
 		fadeAlpha = 1.0f;
 		fadeTimer = 0L;
 		fadeVolume = 0f;
 
+		// show only the entry animation if it is level 1
 		if(level != 1)
 			this.gameState = GameState.START;
 		else
@@ -166,7 +182,7 @@ public class World
 
 		ListOfEnemies = new ArrayList<Bug>();
 		ListOfPickUps = new ArrayList<PickUp>();
-
+		fireworks = new ArrayList<MovingEntity>();
 	}
 	/**
 	 * config camera, map, player and load assets
@@ -181,11 +197,10 @@ public class World
 		// set the projection matrix of the ScreenBatch to camera's size
 		batch.setProjectionMatrix(camera.combined);
 
-
 		// load assets
 		assets.load();
 
-		userInterface = new UserInterface(assets.holder, timer, NumberOfPickUps);
+		userInterface = new UserInterface(assets.holder, gameTimer, NumberOfPickUps);
 
 		// distribute textures & create Entities
 		map = new Tilemap(assets.holder.get(Assets.currentMap), camera);
@@ -194,10 +209,7 @@ public class World
 		player.setPosition(625.f, 465.f);
 
 		debugger = new AntiBug(assets.holder);
-
 		music = new BackgroundMusic(assets.holder.get(Assets.background));
-
-
 		lights = new Environment(assets.holder);
 
 		// create FrameBuffer with width/height of the screen
@@ -207,6 +219,7 @@ public class World
 		lightBufferRegion = new TextureRegion(lightBuffer.getColorBufferTexture(), 0, 0, 1280, 960);
 		lightBufferRegion.flip(false, true);
 
+		// if level 1 is active start the entry animation
 		if(gameState == GameState.INITIALIZE)
 		{
 			// start timer for the entry animation
@@ -224,23 +237,22 @@ public class World
 	private void startGameSession()
 	{
 		player.isAlive = true;
-		debugger.spawn(625, 400);
+		debugger.spawn(55, 465);
 
 		spawnEnemies();
 		spawnPickUps();
 
 		lights.create();
 
-		music.setloop(true);
 		music.setVolume(0.5f);
 		music.play();
 		music.setloop(true);
 
-		// start game timer
-		timer.startWatch();
+		// start timer for the game session
+		gameTimer.startWatch();
 
-		// reset gameStateTimer for later use
-		gameStateTimer.reset(6);
+		// reset alpha fading to normal for later animations
+		fadeAlpha = 1.f;
 
 		gameState = GameState.RUN;
 	}
@@ -255,13 +267,16 @@ public class World
 		switch(gameState)
 		{
 			case START:
-				startUpdate();
+				startUpdate(Delta);
 				break;
 			case RUN:
 				runUpdate(Delta);
 				break;
 			case LOOSE:
 				looseUpdate(Delta);
+				break;
+			case WIN:
+				winUpdate(Delta);
 				break;
 			default:
 		}
@@ -274,29 +289,28 @@ public class World
 	/**
 	 * handles the entry animations including fading in effects etc.
 	 */
-	private void startUpdate()
+	private void startUpdate(float Delta)
 	{
-		gameStateTimer.update();
-
-		// change the alphablending over the first 5 seconds
-		if(gameStateTimer.isActive && gameStateTimer.getRemainingSeconds() > 5 && fadeAlpha > 0.f)
+		// fade in graphics
+		if(gameStateTimer.isActive() && gameStateTimer.getRemainingSeconds() > 5 && fadeAlpha > 0.f)
 		{
 			if(fadeTimer >= (gameStateTimer.getRemainingMilliSeconds() + 50L))
 			{
 				fadeTimer = gameStateTimer.getRemainingMilliSeconds();
-				fadeAlpha -= 0.01;
-				fadeVolume += 0.005;
+				fadeAlpha -= 0.5 * Delta;
+				fadeVolume += 0.5 * Delta;
 			}
 		}
-		else if(gameStateTimer.isActive && gameStateTimer.getRemainingSeconds() <= 5)
+		// set player alive
+		else if(gameStateTimer.isActive() && gameStateTimer.getRemainingSeconds() <= 5)
 			player.isAlive = true;
 
-		if(gameStateTimer.isActive && gameStateTimer.getRemainingSeconds() <= 3)
+		// darken the screen
+		if(gameStateTimer.isActive() && gameStateTimer.getRemainingSeconds() <= 3)
 			fadeAlpha = 1.f;
 
-		
 		// if time is over start the game session and allow user manipulation
-		if(!gameStateTimer.isActive)
+		if(!gameStateTimer.isActive())
 			startGameSession();
 	}
 	/**
@@ -307,6 +321,7 @@ public class World
 	 */
 	private void runUpdate(float Delta)
 	{
+
 			handlePlayerInput();
 			player.update(Delta);
 			debugger.update(Delta);
@@ -317,20 +332,42 @@ public class World
 
 			checkCollisions();
 
+			// if player is saved by the debugger, pause music and play sirene sound
 			if(player.isSaved())
 			{
 				debugger.playSound();
 				music.pause();
-				lights.playSirene();
+				lights.sirene(true);
 			}
 			else
 				music.play();
 
-			if (!timer.isActive || !player.isAlive) {
+			// if player is loosing, start lose animation
+			if (!gameTimer.isActive() || !player.isAlive) {
 				gameState = GameState.LOOSE;
+				gameStateTimer.reset(6);
 				gameStateTimer.startWatch();
 				music.setStuttering(0.3f);
 				lights.changeEffect(LightedEntity.EffectType.DEACTIVATE);
+			}
+			// if player is win, start win animation
+			else if(player.getPickUpCounter() == NumberOfPickUps) {
+				gameState = GameState.WIN;
+				gameStateTimer.reset(18);
+				gameStateTimer.startWatch();
+				fadeTimer = gameStateTimer.getRemainingMilliSeconds();
+
+				// for all remaining bugs, create a firework and set the position to position of the bugs
+				for(Bug remainingBug : ListOfEnemies)
+				{
+					fireworks.add(new MovingEntity(assets.holder.get(Assets.explosion), 0.f, 5, 1, 0.1f));
+					fireworks.get(fireworks.size() - 1).setSize(90, 120);
+					// dont look at me, i am ugly(sets the position of the firework correctly to the position of the bug)
+					fireworks.get(fireworks.size() - 1).setPosition(remainingBug.getCenter().x - (fireworks.get(fireworks.size() - 1).getSize().x / 2), remainingBug.getCenter().y - (fireworks.get(fireworks.size() - 1).getSize().y / 2 ));
+				}
+				// stop the sirene sound
+				lights.sirene(false);
+				music.play();
 			}
 	}
 
@@ -338,14 +375,48 @@ public class World
 	 * updates the game logic when players looses the game
 	 * @param Delta : elapsed time since last frame
 	 */
-	public void looseUpdate(float Delta)
+	private void looseUpdate(float Delta)
 	{
-		gameStateTimer.update();
-		if(!gameStateTimer.isActive)
+		if(!gameStateTimer.isActive())
 			gameState = GameState.LOOSE_SHUTDOWN;
 
 		music.update();
 	}
+	private void winUpdate(float Delta)
+	{
+		winSound = new Soundeffect(assets.holder.get(Assets.winMusic));
+
+
+		for(MovingEntity firework : fireworks)
+		{
+			firework.update(Delta);
+		}
+
+		if(fadeTimer >= (gameStateTimer.getRemainingMilliSeconds() + 50L))
+		{
+			fadeTimer = gameStateTimer.getRemainingMilliSeconds();
+			fadeAlpha -= 0.1 * Delta;
+			music.setVolume(music.getVolume() - 0.3f * Delta);
+
+			if(music.getVolume() <= 0.f)
+				music.stop();
+			if(gameStateTimer.getRemainingSeconds() < 12)
+			{
+				if(winEffectTrigger) {
+					for(Bug bug : ListOfEnemies)
+						bug.isAlive = false;
+					for(MovingEntity firework : fireworks)
+						firework.isAlive = true;
+					winSound.play();
+					winEffectTrigger = false;
+				}
+			}
+		}
+
+		if(!gameStateTimer.isActive())
+			gameState = GameState.WIN_SHUTDOWN;
+	}
+
 	/**
 	 * manages all render calls inside the world
 	 * @param Delta : elapsed time since last frame
@@ -365,6 +436,7 @@ public class World
 				break;
 			case RUN:
 			case LOOSE:
+			case WIN:
 				runRender(Delta);
 				break;
 			default:
@@ -416,7 +488,7 @@ public class World
 		Gdx.gl.glEnable(GL20.GL_BLEND);
 
 		// clear the second bufferscreen
-		Gdx.gl.glClearColor(0.f, 0.f, 0.f, 1.f);
+		Gdx.gl.glClearColor(0.f, 0.f, 0.f, fadeAlpha);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
 		// draw the lightsources
@@ -432,12 +504,16 @@ public class World
 		batch.begin();
 		batch.draw(lightBufferRegion, 0, 0, 1280, 960);
 
+		for(MovingEntity firework : fireworks)
+		{
+			firework.draw(batch, Delta);
+		}
+
 		player.draw(batch, Delta);
 		debugger.draw(batch, Delta);
 		userInterface.draw(batch);
 		batch.end();
 	}
-	
 	/**
 	 * free all resources
 	 */
@@ -450,6 +526,8 @@ public class World
 		if(shapeRenderer!=null) shapeRenderer.dispose();
 		if(batch!=null) batch.dispose();
 		if(assets!=null) assets.dispose();
+		if(lights!= null) lights.dispose();
+		if(winSound!= null) winSound.dispose();
 
 		PickUp.pickUpCounter = 0;
 
@@ -524,7 +602,7 @@ public class World
 	/**
 	 * spawn the maximum amount of enemies given by MaxNumberOfEnemies
 	 */
-	void spawnEnemies()
+	private void spawnEnemies()
 	{
 		Random random = new Random();
 
@@ -545,6 +623,7 @@ public class World
 	 */
 	private void spawnPickUps()
 	{
+		/*
 		Random random = new Random();
 
 		for(int i = 0; i < NumberOfPickUps; i++)
@@ -556,6 +635,10 @@ public class World
 				ListOfPickUps.get(i).spawn(random.nextInt((int)WorldBounds.WIDTH), random.nextInt((int)WorldBounds.HEIGHT));
 			} while(map.isCollided(ListOfPickUps.get(i)));
 		}
+
+		 */
+		ListOfPickUps.add(new PickUp(assets.holder.get(Assets.pickUp)));
+		ListOfPickUps.get(0).spawn(625.f, 420.f);
 	}
 	/**
 	 * checks if pickups are collected and can be deleted
@@ -577,9 +660,14 @@ public class World
 
 			ListOfEnemies.get(i).update(Delta, player);
 
-			if (ListOfEnemies.get(i).isAlive == false) {
+			if (!ListOfEnemies.get(i).isAlive) {
 				ListOfEnemies.remove(i);
 			}
 		}
 	}
+
+	public int getRemainingTime() {return gameTimer.getRemainingSeconds(); }
+
+	public int getRemainingBugs() {return ListOfEnemies.size(); }
+
 }

@@ -22,7 +22,7 @@ public class Watch
     /**
      * shows if the watch is active or not
      */
-    boolean isActive = false;
+    private boolean isActive = false;
     /**
      * constructor
      * @param timeLimit : time limit in seconds

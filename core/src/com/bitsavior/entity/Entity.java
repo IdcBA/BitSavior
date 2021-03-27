@@ -96,6 +96,10 @@ public class Entity
      */
     public Vector2 getSize() { return new Vector2(sprite.getWidth(), sprite.getHeight()); }
 
+    public Vector2 getCenter()
+    {
+        return new Vector2(sprite.getX() + (sprite.getWidth() / 2), sprite.getY() + (sprite.getHeight() / 2) );
+    }
     /**
      * get the bounding rectangle of the entity
      * @return : bounding rectangle

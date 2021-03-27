@@ -30,18 +30,18 @@ public class Bug
     /**
      * maximum walk distance before change of direction
      */
-    private final float maxWalkingDistance = 100.f;
+    private final float maxMovingDistance = 150.f;
     /**
      * walked worldunits before direction change
      */
-    private float walkDistance = 0.f;
+    private float coveredDistance = 0.f;
     /**
      * constructor
      * @param texture : texture of the enemy
      */
     public Bug(Texture texture)
     {
-        super(texture, 100.f, 2, 1, 0.1f);
+        super(texture, 90.f, 2, 1, 0.1f);
 
         nVelocity = velocity;
 
@@ -62,7 +62,6 @@ public class Bug
      */
     public void spawn(float x, float y)
     {
-        // testing
         isAlive = true;
         setPosition(x, y);
         chooseDirection();
@@ -85,12 +84,12 @@ public class Bug
            velocity = nVelocity;
 
         // change enemies direction if moved enough
-        if(walkDistance >= maxWalkingDistance)
+        if(coveredDistance >= maxMovingDistance || isRecentlyCollided())
             chooseDirection();
         move(1, Delta);
 
         // add covered distance of the frame
-        walkDistance += velocity * Delta;
+        coveredDistance += velocity * Delta;
     }
     /**
      * return the viewrange of the enemy
@@ -110,7 +109,7 @@ public class Bug
         Random random = new Random();
 
         // reset walked distance
-        walkDistance = 0.f;
+        coveredDistance = 0.f;
 
         switch(random.nextInt(4))
         {

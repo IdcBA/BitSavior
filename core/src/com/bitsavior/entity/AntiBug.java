@@ -21,11 +21,11 @@ public class AntiBug extends MovingEntity
     /**
      * maximum walk distance before change of direction
      */
-    private final float maxWalkingDistance = 100.f;
+    private final float maxMovingDistance = 150.f;
     /**
      * walked worldunits before direction change
      */
-    private float walkDistance = 0.f;
+    private float coveredDistance = 0.f;
 
     private Soundeffect saveSound;
 
@@ -70,14 +70,14 @@ public class AntiBug extends MovingEntity
     {
         super.update(Delta);
         // change enemies direction if moved enough
-        if(walkDistance >= maxWalkingDistance)
+        if(coveredDistance >= maxMovingDistance || isRecentlyCollided())
             chooseDirection();
         move(1, Delta);
 
         flashlight.update();
 
         // add covered distance of the frame
-        walkDistance += velocity * Delta;
+        coveredDistance += velocity * Delta;
 
     }
     /**
@@ -98,7 +98,7 @@ public class AntiBug extends MovingEntity
         Random random = new Random();
 
         // reset walked distance
-        walkDistance = 0.f;
+        coveredDistance = 0.f;
 
         switch(random.nextInt(4))
         {

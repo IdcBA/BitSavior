@@ -9,8 +9,10 @@ public class DesktopLauncher {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 		config.width = 1280;
 		config.height = 960;
+		config.foregroundFPS = 60;
 		config.fullscreen = true;
 		config.resizable = false;
+
 		new LwjglApplication(new BitSavior(), config);
 	}
 }

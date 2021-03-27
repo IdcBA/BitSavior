@@ -64,8 +64,8 @@ public class GameScreen extends ScreenAdapter {
 				screenManager.setLoseStats();
 				screenManager.showScreen(Screens.LOSE);
 				break;
-			case WIN:
-				screenManager.setWinStats(-1, -1); //TODO insert parameters for time and bugs
+			case WIN_SHUTDOWN:
+				screenManager.setWinStats(world.getRemainingTime(), world.getRemainingBugs());
 				screenManager.showScreen(Screens.WIN);
 				break;
 			default:

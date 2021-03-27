@@ -98,7 +98,7 @@ public class LightedEntity extends Entity
         this.light.attach(this);
 
         this.setSize(30, 30);
-        this.light.setRadius(30.f);
+        this.light.setRadius(100.f);
 
         timer = System.currentTimeMillis();
     }
@@ -144,6 +144,7 @@ public class LightedEntity extends Entity
                 sizeChange = false;
                 pulsating = false;
                 flicker = false;
+                light.setIntensity(0.99f);
             default:
         }
     }
