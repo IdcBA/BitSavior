@@ -20,6 +20,8 @@ public class ScreenManager {
 	//the Screens
 	/** The main menu */
 	private TitleScreen tScreen;
+	/** The TutorialScreen */
+	private TutorialScreen tutorialScreen;
 	/** The GameScreen */
 	private GameScreen gScreen;
 	/** The WinScreen after winning the game */
@@ -38,21 +40,23 @@ public class ScreenManager {
 		this.game = game;
 		tScreen = new TitleScreen(this);
 		settingsScreen = new SettingsScreen(this);
+		//tutorial is created within
 		//game is created with setGameLevel
-		//winScreen  is created with setWinStats
-		//loseScreen is created with setLoseStats
+		//win  is created with setWinStats
+		//lose is created with setLoseStats
 	}
 	
 	/**
 	 * shows the requested screen
 	 * @param screenName e.g.: "Screens.TITLE" ; consider screen comments!
+	 * @see {@link Screens}
 	 */
 	public void showScreen(Screens screenName) {
 		switch(screenName) {
 			case TITLE : 				
 				if(tScreen==null) System.out.println("TitleScreen is null");
 				else game.setScreen(tScreen);
-				//delete old win-/loseScreens
+				//delete old win-/loseScreens AFTER the new screen is shown
 				if(winScreen!=null) {
 					winScreen.dispose();
 					winScreen = null;
@@ -62,17 +66,22 @@ public class ScreenManager {
 					loseScreen = null;
 				}
 				break;
+			case TUTORIAL :
+				tutorialScreen = new TutorialScreen(this);
+				game.setScreen(tutorialScreen);
+				break;
 			case GAME :
 				if(!gameIsRunning()) System.out.println("GameScreen is null");
 				else game.setScreen(gScreen);
-				//delete old win-/loseScreens
+				//delete winScreen after second (or higher) level is started
 				if(winScreen!=null) {
 					winScreen.dispose();
 					winScreen = null;
 				}
-				if(loseScreen!=null) {
-					loseScreen.dispose();
-					loseScreen = null;
+				//deletes tutorialScreen after first level is started
+				if(tutorialScreen!=null) {
+					tutorialScreen.dispose();
+					tutorialScreen = null;
 				}
 				break;
 			case WIN :
