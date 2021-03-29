@@ -5,7 +5,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.bitsavior.asset.Assets;
 import com.bitsavior.entity.LightedEntity;
-import com.bitsavior.game.Soundeffect;
+import com.bitsavior.game.SoundEffect;
 import com.bitsavior.game.Watch;
 
 import java.util.ArrayList;
@@ -39,7 +39,7 @@ public class Environment
     /**
      * soundeffect for the light objects
      */
-    private Soundeffect sirene;
+    private SoundEffect sirene;
     /**
      * timer for the sound effect
      */
@@ -66,7 +66,7 @@ public class Environment
         lightPositions[3] = new Vector2(145, 590);
 
         soundTimer = new Watch(10);
-        sirene = new Soundeffect(manager.get(Assets.sirene));
+        sirene = new SoundEffect(manager.get(Assets.sirene));
     }
 
     /**
@@ -150,6 +150,11 @@ public class Environment
 			lights.get(i).setEffect(type);
 		}
 	}
+
+    /**
+     * plays the sirene sound
+     * @param active : true for playing the sound, false for deactivate a playing sound
+     */
 	public void sirene(boolean active)
     {
         if(!soundTimer.isActive()) {
@@ -161,9 +166,4 @@ public class Environment
         if(!active)
             sirene.stop();
     }
-    public void dispose()
-    {
-        sirene.dispose();
-    }
-
 }

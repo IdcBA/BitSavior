@@ -3,6 +3,7 @@ package com.bitsavior.game;
 import com.badlogic.gdx.Audio;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
+import com.bitsavior.screens.AppPreferences;
 
 /**
  * represents the backgroundmusic of the actual game session
@@ -51,7 +52,7 @@ public class BackgroundMusic{
 	 *               must between 0.f - 100.f
 	 */
 	public void play(float volume) {
-		music.setVolume(volume);
+		this.setVolume(volume);
 		music.play();
 	}
 	/**
@@ -83,12 +84,20 @@ public class BackgroundMusic{
 	 *               must be between 0.f and 100.f
 	 */
 	public void setVolume (float volume) {
+
+		volume *= ((float) AppPreferences.getMusicVolume() / 100.f);
 		if(volume <= 0.f)
 			music.setVolume(0.f);
+		else if(volume >= 1.f)
+			music.setVolume(1.f);
 		else
 			music.setVolume(volume);
 	}
 
+	/**
+	 * gets the current music volume
+	 * @return the volume of the music from (0,1) 0 = silent, 1= loud
+	 */
 	public float getVolume(){ return music.getVolume(); }
 	/**
 	 * activates the stuttering effect with a given interval
@@ -132,7 +141,9 @@ public class BackgroundMusic{
 	public void pause () {
 		music.pause();
 	}
-
+	/**
+	 * dispose the music
+	 */
 	public void dispose() {
 		music.dispose();
 	}

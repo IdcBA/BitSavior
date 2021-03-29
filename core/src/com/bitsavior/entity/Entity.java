@@ -85,23 +85,25 @@ public class Entity
      */
     public void setVelocity(float velocity){ this.velocity = velocity; }
     /**
-     * getPosition()
+     * gets the position of the entity in worldunits
      * @return : current position as worldunits
      */
     public Vector2 getPosition() { return new Vector2(sprite.getX(), sprite.getY()); }
-
     /**
-     * getSize()
+     * gets the size of the entity
      * @return : size of the Object(Width, Height)
      */
     public Vector2 getSize() { return new Vector2(sprite.getWidth(), sprite.getHeight()); }
-
+    /**
+     * gets the position of the entities center
+     * @return : current position as worldunits
+     */
     public Vector2 getCenter()
     {
         return new Vector2(sprite.getX() + (sprite.getWidth() / 2), sprite.getY() + (sprite.getHeight() / 2) );
     }
     /**
-     * get the bounding rectangle of the entity
+     * gets the bounding rectangle of the entity
      * @return : bounding rectangle
      */
     public Rectangle getBoundings() { return new Rectangle(sprite.getBoundingRectangle()); }

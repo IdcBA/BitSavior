@@ -89,6 +89,14 @@ public class Watch
      * @return : the time limit of the watch in seconds
      */
     public int getTimeLimit(){ return (int)(timeLimit / 1000); }
+
+    /**
+     * stops the timer and keep values for evaluation
+     */
+    public void stop()
+    {
+        isActive = false;
+    }
     /**
      * gets if the watch is active or not
      * @return : true if the watch is active, false if not

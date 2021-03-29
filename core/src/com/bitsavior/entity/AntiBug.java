@@ -3,7 +3,7 @@ package com.bitsavior.entity;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.bitsavior.asset.Assets;
-import com.bitsavior.game.Soundeffect;
+import com.bitsavior.game.SoundEffect;
 import com.bitsavior.game.Watch;
 import java.util.Random;
 
@@ -16,7 +16,9 @@ public class AntiBug extends MovingEntity
      * lightsource to implement light effects
      */
     private LightSource flashlight;
-
+    /**
+     * timer to track if a sound should be played
+     */
     private Watch waitingTime;
     /**
      * maximum walk distance before change of direction
@@ -26,9 +28,10 @@ public class AntiBug extends MovingEntity
      * walked worldunits before direction change
      */
     private float coveredDistance = 0.f;
-
-    private Soundeffect saveSound;
-
+    /**
+     * soundeffect for colliding with the debugger
+     */
+    private SoundEffect saveSound;
     /**
      * constructor
      * load texture and attach lightsource
@@ -43,7 +46,7 @@ public class AntiBug extends MovingEntity
         flashlight = new LightSource(manager.get(Assets.light));
         flashlight.attach(this);
 
-        saveSound = new Soundeffect(manager.get(Assets.save));
+        saveSound = new SoundEffect(manager.get(Assets.save));
 
         waitingTime = new Watch(10);
 
@@ -118,7 +121,9 @@ public class AntiBug extends MovingEntity
                 System.out.println("fail");
         }
     }
-    
+    /**
+     * plays the save sound if the waiting time is over
+     */
     public void playSound() {
     	
         if(!waitingTime.isActive()) {

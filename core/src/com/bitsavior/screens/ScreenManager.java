@@ -3,8 +3,8 @@ package com.bitsavior.screens;
 /**
  * This Class holds and manages the Screens
  * <p> TODO for new screens:
- * <li>Here: add them to constructor, showScreen and dispose
- * <li>Screens.java: add the enum to access it
+ * <li> Here: add them to constructor, showScreen and dispose
+ * <li> Screens.java: add the enum to access it
  */
 public class ScreenManager {
 	
@@ -32,6 +32,7 @@ public class ScreenManager {
 	/** 
 	 * Constructor
 	 * <p>initializes titleScreen and settingsScreen
+	 * @param game : the current game
 	 */
 	public ScreenManager(BitSavior game) {
 		this.game = game;
@@ -107,10 +108,12 @@ public class ScreenManager {
 	}
 	
 	//methods to manage GameScreen
-	/** true if the GameScreen is not null */
+	/**
+	 * true if the GameScreen is not null
+	 * @return : true if the game is running false when the game isn't running
+	 */
 	public boolean gameIsRunning() {
-		if(gScreen==null) return false;
-		else return true;
+		return gScreen != null;
 	}
 	/** sets the GameScreen or replaces the existing one
 	 * <p> has to be set before the GameScreen can be shown
@@ -125,7 +128,10 @@ public class ScreenManager {
 			gScreen = new GameScreen(this, level);
 		}
 	}
-	/** returns current Level of the GameScreen; not used at the moment due to only one level */
+	/**
+	 * the current Level of the GameScreen; not used at the moment due to only one level
+	 * @return : the current level
+	 */
 	public int getGameLevel() {
 		return gScreen.getGameLevel();
 	}
@@ -135,7 +141,7 @@ public class ScreenManager {
 	 * deletes old and creates new WinScreen
 	 * @param time time left
 	 * @param bugs bugs left
-	 * @param gameLevel 
+	 * @param gameLevel : current level
 	 */
 	public void setWinStats(int time, int bugs, int gameLevel) {
 		if(winScreen!=null) {

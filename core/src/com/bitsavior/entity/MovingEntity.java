@@ -42,7 +42,9 @@ public class MovingEntity extends Entity implements ICollision
      * contains the actual movement direction
      */
     private boolean recentlyCollided = false;
-
+    /**
+     * current moving direction
+     */
     public Movement direction;
     /**
      * constructor
@@ -177,6 +179,10 @@ public class MovingEntity extends Entity implements ICollision
                     getSize().x, getSize().y,1.f, 1.f, rotation);
         }
     }
-    protected boolean isRecentlyCollided() { return recentlyCollided; }
 
+    /**
+     * gets back if the entityy is recently collided(since the last frame)
+     * @return : true if collided since the last frame, false if not collided since the last frame
+     */
+    protected boolean isRecentlyCollided() { return recentlyCollided; }
 }

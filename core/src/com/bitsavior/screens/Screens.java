@@ -5,12 +5,24 @@ package com.bitsavior.screens;
  * <p> WIN and LOSE delete the last gameScreen
  */
 public enum Screens {
+	/**
+	 * title screen
+	 */
 	TITLE,
-	/** Level has to be set before with manager.setGameLevel(int level) */
+	/**
+	 * level has to be set before with manager.setGameLevel(int level)
+	 */
 	GAME,
-	/** WinScreen has to be initialized before with manager.setLoseStats */
+	/**
+	 * winScreen has to be initialized before with manager.setLoseStats
+	 */
 	WIN,
-	/** Losecreen has to be initialized before with manager.setLoseStats */
+	/**
+	 * losecreen has to be initialized before with manager.setLoseStats
+	 */
 	LOSE,
+	/**
+	 * setting screen
+	 */
 	SETTINGS
 }
