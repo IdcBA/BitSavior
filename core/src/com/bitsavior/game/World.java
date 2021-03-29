@@ -169,8 +169,7 @@ public class World
 
 		// setup numbers for enemies and pickups
 		NumberOfEnemies = 5 + level;
-		//NumberOfPickUps = 7 + level;
-		NumberOfPickUps = 1;
+		NumberOfPickUps = 7 + level;
 
 		// setup numbers for various fade effects
 		fadeAlpha = 1.0f;
@@ -624,7 +623,6 @@ public class World
 	 */
 	private void spawnPickUps()
 	{
-		/*
 		Random random = new Random();
 
 		for(int i = 0; i < NumberOfPickUps; i++)
@@ -636,10 +634,6 @@ public class World
 				ListOfPickUps.get(i).spawn(random.nextInt((int)WorldBounds.WIDTH), random.nextInt((int)WorldBounds.HEIGHT));
 			} while(map.isCollided(ListOfPickUps.get(i)));
 		}
-
-		 */
-		ListOfPickUps.add(new PickUp(assets.holder.get(Assets.pickUp)));
-		ListOfPickUps.get(0).spawn(625.f, 420.f);
 	}
 	/**
 	 * checks if pickups are collected and can be deleted
