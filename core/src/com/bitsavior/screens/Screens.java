@@ -1,14 +1,17 @@
 package com.bitsavior.screens;
 
 /**
- * for easier Screen switching
- * <p> WIN and LOSE delete the last gameScreen
+ * Enum for easier Screen switching
  */
 public enum Screens {
 	/**
 	 * title screen
 	 */
 	TITLE,
+	/**
+	 * creates tutorial screen
+	 */
+	TUTORIAL,
 	/**
 	 * level has to be set before with manager.setGameLevel(int level)
 	 */
@@ -18,7 +21,7 @@ public enum Screens {
 	 */
 	WIN,
 	/**
-	 * losecreen has to be initialized before with manager.setLoseStats
+	 * loseScreen has to be initialized before with manager.setLoseStats
 	 */
 	LOSE,
 	/**

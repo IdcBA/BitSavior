@@ -100,8 +100,7 @@ public class TitleScreen extends ScreenAdapter
             }
             @Override
             public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
-                screenManager.setGameLevel(1);
-                screenManager.showScreen(Screens.GAME);
+                screenManager.showScreen(Screens.TUTORIAL);
             }
         } );
         stage.addActor(button1);
