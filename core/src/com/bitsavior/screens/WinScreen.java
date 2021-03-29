@@ -49,7 +49,9 @@ public class WinScreen extends ScreenAdapter {
 	private long startTime = 0;
 	/** delay between "console" messages */
 	private long delayTime = 1000;
-	//messages
+    /**
+     * displayed text
+     */
 	private String line1;
 	private String line2;
 	private String line3;
@@ -156,11 +158,11 @@ public class WinScreen extends ScreenAdapter {
         stage.addActor(button2);
         
         //TODO set lines for delayed text output
-        line1 = "> Executing Task: Bitsavior.level" + gameLevel + "\n";
-        line2 = "> Task:core:Bitsavior:level"+ gameLevel + ":compile \n\n";
-		line3 = "> Task:core:Bitsavior:level"+ gameLevel + ":classes \n\n";
-		line4 = "> Task:core:Bitsavior:level"+ gameLevel + ":main:compile successfull\n";
-        line5 = "> Log:\n";
+        line1 = "> Executing Task: Bitsavior.level_" + gameLevel + "\n";
+        line2 = "> Task:core:Bitsavior:level_"+ gameLevel + ": compile \n\n";
+		line3 = "> Task:core:Bitsavior:level_"+ gameLevel + ": classes \n\n";
+		line4 = "> Task:core:Bitsavior:level_"+ gameLevel + ": main:compiling successfull\n";
+        line5 = "> Log: debug/release\n";
         line6 = "> compiled with 0 errors and " + bugsLeft + " warnings\n";
         line7 = "> compiled in " + timeLeft + " seconds";
         line8 = "";

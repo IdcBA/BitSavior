@@ -13,6 +13,9 @@ import com.badlogic.gdx.maps.tiled.TmxMapLoader;
  */
 public class Assets
 {
+    /**
+     * holds and manages all the assets
+     */
     public AssetManager holder;
 
     // add all needed asset descriptors
@@ -26,7 +29,6 @@ public class Assets
             new AssetDescriptor<Texture>("spritesheet_test3.png", Texture.class);
     public static final AssetDescriptor<Texture> explosion =
             new AssetDescriptor<Texture>("firework.png", Texture.class);
-
     public static final AssetDescriptor<Texture> pickUp =
             new AssetDescriptor<Texture>("memory-leaks.jpg", Texture.class);
     public static final AssetDescriptor<Texture> breakpoint =
@@ -49,9 +51,6 @@ public class Assets
             new AssetDescriptor<>("sirene.wav", Sound.class);
     public static final AssetDescriptor<Sound> save =
     		new AssetDescriptor<>("save.wav", Sound.class);
-
-
-
     /**
      * constructor
      * create new AssetManager and add a loader for tmx files

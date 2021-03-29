@@ -88,14 +88,19 @@ public class Player
      */
     public int getPickUpCounter() { return pickUpCounter; }
 
-
+    /**
+     * if called the player cannot be destroyed be bugs
+     */
 	public void save() {
         if(!saveTime.isActive()) {
             saveTime.reset(10);
             saveTime.startWatch();
         }
 	}
-	
+    /**
+     * checks if the player is currently saved
+     * @return : true if the player is save, false if the player isn't safe
+     */
 	public boolean isSaved() {
 		if(saveTime == null) 
 			return false;

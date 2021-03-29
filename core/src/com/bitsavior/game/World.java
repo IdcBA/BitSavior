@@ -67,9 +67,12 @@ public class World
 	 */
 	private final SpriteBatch batch;
 	/**
-	 * handles the blending of the scene
+	 * second framebuffer for rendering the "lights"
 	 */
 	private FrameBuffer lightBuffer;
+	/**
+	 * texture region of the second framebuffer
+	 */
 	private TextureRegion lightBufferRegion;
 	/**
 	 * holds the backgroundmusic of the current level
@@ -78,11 +81,11 @@ public class World
 	/**
 	 * holds the music when the player wins the level
 	 */
-	private Soundeffect winSound;
+	private SoundEffect winSound;
 	/**
 	 * holds the sound effect currently needed
 	 */
-	private Soundeffect sound;
+	private SoundEffect sound;
 	/**
 	 * class contains the Tiled Map, additional renderer and related data
 	 */
@@ -210,7 +213,7 @@ public class World
 
 		debugger = new AntiBug(assets.holder);
 		music = new BackgroundMusic(assets.holder.get(Assets.background));
-		winSound = new Soundeffect(assets.holder.get(Assets.winMusic));
+		winSound = new SoundEffect(assets.holder.get(Assets.winMusic));
 		lights = new Environment(assets.holder);
 
 		// create FrameBuffer with width/height of the screen
@@ -245,7 +248,7 @@ public class World
 
 		lights.create();
 
-		music.setVolume(0.5f);
+		//music.setVolume(0.5f);
 		music.play();
 		music.setloop(true);
 
@@ -288,7 +291,8 @@ public class World
 	}
 
 	/**
-	 * handles the entry animations including fading in effects etc.
+	 * handles the entry animations including fading in effects etc
+	 * @param Delta : time since the last frame in milliseconds
 	 */
 	private void startUpdate(float Delta)
 	{
@@ -313,6 +317,8 @@ public class World
 		// if time is over start the game session and allow user manipulation
 		if(!gameStateTimer.isActive())
 			startGameSession();
+
+		music.play(fadeVolume);
 	}
 	/**
 	 * updates the game logic
@@ -322,6 +328,7 @@ public class World
 	 */
 	private void runUpdate(float Delta)
 	{
+			music.play();
 
 			handlePlayerInput();
 			player.update(Delta);
@@ -353,6 +360,7 @@ public class World
 			}
 			// if player is win, start win animation
 			else if(player.getPickUpCounter() == NumberOfPickUps) {
+				gameTimer.stop();
 				gameState = GameState.WIN;
 				gameStateTimer.reset(18);
 				gameStateTimer.startWatch();
@@ -383,18 +391,22 @@ public class World
 
 		music.update();
 	}
+
+	/**
+	 * updates the game logic when the player wins the level and controls win animations
+	 * @param Delta : elapsed time since last frame
+	 */
 	private void winUpdate(float Delta)
 	{
 		for(MovingEntity firework : fireworks)
 		{
 			firework.update(Delta);
 		}
-
 		if(fadeTimer >= (gameStateTimer.getRemainingMilliSeconds() + 50L))
 		{
 			fadeTimer = gameStateTimer.getRemainingMilliSeconds();
 			fadeAlpha -= 0.1 * Delta;
-			music.setVolume(music.getVolume() - 0.3f * Delta);
+			music.setVolume(music.getVolume() - (0.4f * Delta));
 
 			if(music.getVolume() <= 0.f)
 				music.stop();
@@ -410,7 +422,6 @@ public class World
 				}
 			}
 		}
-
 		if(!gameStateTimer.isActive()) {
 			gameState = GameState.WIN_SHUTDOWN;
 		}
@@ -457,7 +468,6 @@ public class World
 		shapeRenderer.end();
 		Gdx.gl.glDisable(Gdx.gl.GL_BLEND);
 
-		music.play(fadeVolume);
 		batch.begin();
 		player.draw(batch, Delta);
 		batch.end();
@@ -518,19 +528,7 @@ public class World
 	 */
 	public void dispose()
 	{
-		if(userInterface!=null) userInterface.dispose();
-		if(lightBuffer!=null) lightBuffer.dispose();
-		if(music!=null)
-		{
-			if(aWorldTest) System.out.println("Music disposed");
-			music.dispose();
-		}
-		if(sound!=null) sound.dispose();
-		if(shapeRenderer!=null) shapeRenderer.dispose();
-		if(batch!=null) batch.dispose();
 		if(assets!=null) assets.dispose();
-		if(lights!= null) lights.dispose();
-		if(winSound!= null) winSound.dispose();
 
 		PickUp.pickUpCounter = 0;
 
@@ -575,12 +573,12 @@ public class World
 				if(player.isSaved())
 				{
 					enemy.isAlive = false;
-					sound = new Soundeffect(assets.holder.get(Assets.save));
+					sound = new SoundEffect(assets.holder.get(Assets.save));
 				}
 				else
 				{
 					player.isAlive = false;
-					sound = new Soundeffect(assets.holder.get(Assets.lose));
+					sound = new SoundEffect(assets.holder.get(Assets.lose));
 				}
 				sound.play();
 			}
@@ -594,7 +592,7 @@ public class World
 			if(player.isCollided(pickUp))
 			{
 				player.collect(pickUp);
-				sound = new Soundeffect(assets.holder.get(Assets.blop));
+				sound = new SoundEffect(assets.holder.get(Assets.blop));
 				sound.play();
 			}
 		}
@@ -656,7 +654,11 @@ public class World
 			}
 		}
 	}
-	
+
+	/**
+	 * updates the list of bugs
+	 * @param Delta : time since last frame in milliseconds
+	 */
 	private void updateBugs(float Delta)
 	{
 		for(int i = 0; i < ListOfEnemies.size(); i++) {
@@ -668,9 +670,15 @@ public class World
 			}
 		}
 	}
-
-	public int getRemainingTime() {return gameTimer.getRemainingSeconds(); }
-
+	/**
+	 * gets the passed time since the start of the level
+	 * @return : passed time since the start of the level in seconds
+	 */
+	public int getPassedTime() {return gameTimer.getTimeLimit() - gameTimer.getRemainingSeconds(); }
+	/**
+	 * gets the remaining(not destroyed) bugs of the level
+	 * @return : remaining bugs
+	 */
 	public int getRemainingBugs() {return ListOfEnemies.size(); }
 
 }

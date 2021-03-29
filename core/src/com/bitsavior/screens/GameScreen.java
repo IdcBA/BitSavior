@@ -14,8 +14,6 @@ import com.bitsavior.game.World;
  */
 public class GameScreen extends ScreenAdapter {
 
-	//variables for testing
-	/** ... */
 	
 	// private Members
 	/** to access interact with other screens */
@@ -74,7 +72,7 @@ public class GameScreen extends ScreenAdapter {
 				screenManager.showScreen(Screens.LOSE);
 				break;
 			case WIN_SHUTDOWN:
-				screenManager.setWinStats(world.getRemainingTime(), world.getRemainingBugs(), gameLevel);
+				screenManager.setWinStats(world.getPassedTime(), world.getRemainingBugs(), gameLevel);
 				screenManager.showScreen(Screens.WIN);
 				break;
 			default:
