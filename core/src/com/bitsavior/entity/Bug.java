@@ -13,7 +13,6 @@ import java.util.Random;
  */
 public class Bug
         extends MovingEntity
-        implements ICollision
 {
     /**
      * view range of the enemy in units

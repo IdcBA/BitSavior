@@ -33,8 +33,6 @@ public class TutorialScreen extends ScreenAdapter {
 	private Image imageBackground;
     /** font for the title */
     private BitmapFont fontTitle;
-    /** label to write title */
-    private Label labelTitle;
     /** font for the text */
     private BitmapFont fontText;
     /** label to write text */
@@ -74,22 +72,23 @@ public class TutorialScreen extends ScreenAdapter {
         Label.LabelStyle labelTitleStyle = new Label.LabelStyle();
         fontTitle = new BitmapFont(Gdx.files.internal("font/s100verdana_bold_blue.fnt"));
         labelTitleStyle.font = fontTitle;
-        labelTitle = new Label("Tutorial", labelTitleStyle); //TODO edit title
-        labelTitle.setPosition(0, Gdx.graphics.getHeight() * 0.5f); //TODO adjust title height
-        labelTitle.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight() * 0.5f);
-        labelTitle.setAlignment(Align.center);
-        stage.addActor(labelTitle);
         
         //set font&label for Text
         Label.LabelStyle labelTextStyle = new Label.LabelStyle();
         fontText = new BitmapFont(Gdx.files.internal("font/s32verdana_bold_blue.fnt"));
         labelTextStyle.font = fontText;
         labelText = new Label( //TODO edit text
-        		"bla"
-        		+ "bla"
-        		+ "bla",
+        		"Somewhere in germany...\n It is dark outside, light shines only out of an \nunimpressive basement window at the bottom of the street." +
+                        "\nThe reason for it is a guy sitting in front of a computer,\nsteering at his screen, desperate about the things happening there.\n" +
+                        "The deadline is tomorrow but how should he fix all these memory leaks hidden in his code?\n\nAs the time goes by and he wondered why the hell\n" +
+                        "he decided to go for a language like C++ he fell in a restless sleep..." +
+                        "\n\nRemember...\n" +
+                        "- The debugger is there to protect you from what lurks in the darkness, go and find him!\n" +
+                        "- You need to collect all memory leaks intime before the deadline is over and the system crashes!\n" +
+                        "- Be aware of the bugs! They will be furious if you get close to them.\n" +
+                        "- Next time think about using smart pointers to not get into this kind of trouble again",
         		labelTextStyle);
-        labelText.setPosition(0, 0);
+        labelText.setPosition(0, Gdx.graphics.getHeight() * 0.1f);
         labelText.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         labelText.setAlignment(Align.center);
         stage.addActor(labelText);
