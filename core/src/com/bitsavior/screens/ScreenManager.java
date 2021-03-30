@@ -12,7 +12,7 @@ public class ScreenManager {
     /** when true: prints create, show and dispose of screens */
     static boolean aScreenTestMode = false;
     /** when true: in titleScreen NUM1->winScreen and NUM2->loseScreen */
-    static boolean aScreenEasySwitch = true;
+    static boolean aScreenEasySwitch = false;
 	
 	/** the game BitSavior */
 	private BitSavior game;
