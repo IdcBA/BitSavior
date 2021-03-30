@@ -43,7 +43,7 @@ public class LoseScreen extends ScreenAdapter {
         stage = new Stage();
     	
     	//add "console" background as Texture wrapped in an Image
-    	textureBackground = new Texture("bluescreen_reworked.png");
+    	textureBackground = new Texture("pictures/bluescreen_reworked.png");
     	textureBackground.setWrap(TextureWrap.MirroredRepeat, TextureWrap.MirroredRepeat);
     	tRegion = new TextureRegion(textureBackground);
     	tRegion.setRegion(0, 0, textureBackground.getWidth(), textureBackground.getHeight());
