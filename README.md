@@ -3,7 +3,7 @@ JavaProject2021
 
 Developers: 
 - Valentin Zirngibl
-- Samreet Singh!
+- Samreet Singh
 - Andreas Benz
 
 [bitsvior_pic](https://user-images.githubusercontent.com/76644270/112995635-b8081e00-916b-11eb-9b67-ebd2160edd08.png)
