@@ -20,37 +20,37 @@ public class Assets
 
     // add all needed asset descriptors
     public static final AssetDescriptor<Texture> enemy =
-            new AssetDescriptor<Texture>("spritesheet_enemy.png", Texture.class);
+            new AssetDescriptor<Texture>("sprites/spritesheet_enemy.png", Texture.class);
     public static final AssetDescriptor<Texture> antibug =
-            new AssetDescriptor<Texture>("spritesheet_antibug.png", Texture.class);
+            new AssetDescriptor<Texture>("sprites/spritesheet_antibug.png", Texture.class);
     public static final AssetDescriptor<TiledMap> currentMap =
-            new AssetDescriptor<TiledMap>("map_1_extended.tmx", TiledMap.class);
+            new AssetDescriptor<TiledMap>("maps/map_1_extended.tmx", TiledMap.class);
     public static final AssetDescriptor<Texture> player =
-            new AssetDescriptor<Texture>("spritesheet_test3.png", Texture.class);
+            new AssetDescriptor<Texture>("sprites/spritesheet_test3.png", Texture.class);
     public static final AssetDescriptor<Texture> explosion =
-            new AssetDescriptor<Texture>("firework.png", Texture.class);
+            new AssetDescriptor<Texture>("sprites/firework.png", Texture.class);
     public static final AssetDescriptor<Texture> pickUp =
-            new AssetDescriptor<Texture>("memory-leaks.jpg", Texture.class);
+            new AssetDescriptor<Texture>("sprites/memory-leaks.jpg", Texture.class);
     public static final AssetDescriptor<Texture> breakpoint =
-            new AssetDescriptor<Texture>("metallic_light.png", Texture.class);
+            new AssetDescriptor<Texture>("sprites/metallic_light.png", Texture.class);
     public static final AssetDescriptor<Texture> light =
-            new AssetDescriptor<Texture>("lightcone_imp.png", Texture.class);
+            new AssetDescriptor<Texture>("sprites/lightcone_imp.png", Texture.class);
     public static final AssetDescriptor<Texture> redLight =
-            new AssetDescriptor<Texture>("redLight_1.png", Texture.class);
+            new AssetDescriptor<Texture>("sprites/redLight_1.png", Texture.class);
     public static final AssetDescriptor<Texture> uiRect =
-            new AssetDescriptor<Texture>("ui_rect_2.png", Texture.class);
+            new AssetDescriptor<Texture>("UI/ui_rect_2.png", Texture.class);
     public static final AssetDescriptor<Music> background =
-            new AssetDescriptor<Music>("background_alt.mp3", Music.class);
+            new AssetDescriptor<Music>("music/background_alt.mp3", Music.class);
     public static final AssetDescriptor<Sound> winMusic =
-            new AssetDescriptor<Sound>("win_sound.wav", Sound.class);
+            new AssetDescriptor<Sound>("sound/win_sound.wav", Sound.class);
     public static final AssetDescriptor<Sound> blop =
-    		new AssetDescriptor<>("blop.wav", Sound.class);
+    		new AssetDescriptor<>("sound/blop.wav", Sound.class);
     public static final AssetDescriptor<Sound> lose =
-    		new AssetDescriptor<>("lose.wav", Sound.class);
+    		new AssetDescriptor<>("sound/lose.wav", Sound.class);
     public static final AssetDescriptor<Sound> sirene =
-            new AssetDescriptor<>("sirene.wav", Sound.class);
+            new AssetDescriptor<>("sound/sirene.wav", Sound.class);
     public static final AssetDescriptor<Sound> save =
-    		new AssetDescriptor<>("save.wav", Sound.class);
+    		new AssetDescriptor<>("sound/save.wav", Sound.class);
     /**
      * constructor
      * create new AssetManager and add a loader for tmx files

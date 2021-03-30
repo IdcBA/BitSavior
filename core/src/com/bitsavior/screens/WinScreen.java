@@ -88,7 +88,7 @@ public class WinScreen extends ScreenAdapter {
         stage = new Stage(new ScreenViewport());
         
         //add background as Texture wrapped in an Image
-        textureBackground = new Texture("title_screen.png");
+        textureBackground = new Texture("pictures/title_screen.png");
         textureBackground.setWrap(TextureWrap.MirroredRepeat, TextureWrap.MirroredRepeat);
         tRegionBackground = new TextureRegion(textureBackground);
         tRegionBackground.setRegion(0, 0, textureBackground.getWidth(), textureBackground.getHeight());
@@ -98,7 +98,7 @@ public class WinScreen extends ScreenAdapter {
         stage.addActor(imageBackground);
         
         //add "console" as Texture wrapped in an Image
-		textureConsole = new Texture("winscreen_back.png");
+		textureConsole = new Texture("UI/winscreen_back.png");
 		textureConsole.setWrap(TextureWrap.MirroredRepeat, TextureWrap.MirroredRepeat);
 		tRegionConsole = new TextureRegion(textureConsole);
 		tRegionConsole.setRegion(0, 0, textureConsole.getWidth(), textureConsole.getHeight());

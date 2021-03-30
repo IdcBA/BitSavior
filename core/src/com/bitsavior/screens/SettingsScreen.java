@@ -87,7 +87,7 @@ public class SettingsScreen extends ScreenAdapter {
         stage = new Stage(new ScreenViewport());
         
         //add background as Texture wrapped in an Image
-      	textureBackground = new Texture("setting_screen.png");
+      	textureBackground = new Texture("pictures/setting_screen.png");
       	textureBackground.setWrap(TextureWrap.MirroredRepeat, TextureWrap.MirroredRepeat);
       	tRegion = new TextureRegion(textureBackground);
       	tRegion.setRegion(0, 0, textureBackground.getWidth(), textureBackground.getHeight());
