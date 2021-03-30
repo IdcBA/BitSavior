@@ -1,1 +1,0 @@
-packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"l":"com.bitsavior.ai"},{"l":"com.bitsavior.asset"},{"l":"com.bitsavior.collision"},{"l":"com.bitsavior.entity"},{"l":"com.bitsavior.game"},{"l":"com.bitsavior.game.desktop"},{"l":"com.bitsavior.map"},{"l":"com.bitsavior.screens"}];updateSearchResults();
