@@ -78,7 +78,7 @@ public class WinScreen extends ScreenAdapter {
 	 * Creates the win screen
 	 * @param screenManager to access other screens
 	 * @param timeLeft time left in seconds
-	 * @param bugsLeft number of living/not caught bugs
+	 * @param bugsLeft number of living or not caught bugs
      * @param gameLevel level which was completed
 	 */
     public WinScreen(final ScreenManager screenManager, int timeLeft, int bugsLeft, final int gameLevel) {
