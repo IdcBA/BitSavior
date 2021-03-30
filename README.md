@@ -27,7 +27,12 @@ Eclipse:
 5. Select root directory /BitSavior
 6. Start import process
 
+Controls:
 
+
+Known Issius:
+
+- some screen resolutions cause strange scales in the menu ....
 
 
 
