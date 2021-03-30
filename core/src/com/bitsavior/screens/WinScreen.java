@@ -70,9 +70,9 @@ public class WinScreen extends ScreenAdapter {
     /** Button 2: start Level 2 */
     private TextButton button2;
     /** norm X size for Buttons */
-    private int bSizeX = 300;
+    private float bSizeX = 300;
     /** norm Y size for Buttons */
-    private int bSizeY = 100;
+    private float bSizeY = 100;
 
     /**
 	 * Creates the win screen

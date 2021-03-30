@@ -20,7 +20,14 @@ import java.util.ArrayList;
 import java.util.Random;
 
 /**
- * represents the world of the game
+ * the main class of the game
+ * <p><ul>
+ * <li>initializes the drawable world</li>
+ * <li>creates all actors like player, enemies etc.</li>
+ * <li>maintains the game logic dependent on the actual gamestate</li>
+ * <li>draws the world</li>
+ * </ul><p><h3>UML class diagram</h3>
+ * <img src="./doc-files/game_class_diagram.jpg"/ style="width:500px;height:600px>
  */
 public class World
 {
@@ -327,7 +334,7 @@ public class World
 	 */
 	private void runUpdate(float Delta)
 	{
-			music.play();
+
 
 			handlePlayerInput();
 			player.update(Delta);
@@ -347,8 +354,9 @@ public class World
 				lights.sirene(true);
 			}
 			else
+			{
 				music.play();
-
+			}
 			// if player is loosing, start lose animation
 			if (!gameTimer.isActive() || !player.isAlive) {
 				gameState = GameState.LOOSE;

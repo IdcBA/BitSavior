@@ -47,7 +47,6 @@ public class TutorialScreen extends ScreenAdapter {
     private float bSizeX = 300;
     /** norm Y size for Buttons */
     private float bSizeY = 100;
-    
     /**
      * Creates the tutorial screen
      * @param screenManager to access other screens
