@@ -13,22 +13,22 @@ BitSavior is a pacman-like arcade game.
 You are a programmer in search of memory leaks to prevent your application from freezing.
 
 Features:
-- dangerous bugs that are roaming the corridors, be cautios
+- dangerous bugs that are roaming the corridors, be cautious
 - you are only equipped with a little flashlight, so watch your steps
 - the debugger is there to help you, seek him out and let him save you
 
 
 Installation Guide:
 
-BitSavior is only tested on the windows platform
-
+- BitSavior is only tested on the windows platform.
+- Be sure to have the latest JRE and JDK installed
 Eclipse:
-1. Be sure to have the latest JRE and JDK installed
-2. Unzip the project
-3. Press File/import
-4. Exsisting Gradle project
-5. Select root directory /BitSaviorGitHub
-6. Start import process
+1. Unzip the project
+2. Press File/import
+3. Exsisting Gradle project
+4. Select root directory /BitSaviorGitHub
+5. Start import process
+6. Run desktop luncher.java
 
 Other IDE's
 similar to eclipse.
@@ -46,6 +46,7 @@ Known Issues:
 - Low or odd screen resolutions can cause a incorrect display of the game menu.
   - if you encounter resolution problems with the menu, try to increase the resolution and
     make sure the scale of text & apps is at 100% in the windows resolution settings.
+- Sometimes the music volume can change 
 
 
 
