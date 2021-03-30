@@ -59,6 +59,7 @@ public class SettingsScreen extends ScreenAdapter {
     /** Skin for the Buttons */
     private Skin bSkin1;
     /** norm X size for Buttons */
+    /** norm X size for Buttons */
     private float bSizeX = 300;
     /** norm Y size for Buttons */
     private float bSizeY = 100;

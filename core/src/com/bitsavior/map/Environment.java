@@ -90,21 +90,15 @@ public class Environment
     public void update()
     { 
     	if(timer != null) {
-    		timer.update();
     		if(!timer.isActive()) 
     			changeEffect(standardEffect);
     	}
-    	
         for(LightedEntity lightbulb : lights)
             lightbulb.update();
-
-        soundTimer.update();
-
 
         if(!soundTimer.isActive())
            sirene.stop();
     }
-
     /**
      * draws all lighted entities
      * @param batch : current Spritebatch
@@ -115,7 +109,6 @@ public class Environment
         for(LightedEntity lightbulb : lights)
             lightbulb.draw(batch, Delta);
     }
-
     /**
      * draws all the lightsources of the lighted entities
      * @param batch : current Spritebatch
