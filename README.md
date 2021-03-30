@@ -2,9 +2,10 @@
 JavaProject2021
 
 Developers: 
-Samreet Singh
-Valentin Zirngibl
-Andreas Benz
+- Valentin Zirngibl
+- Samreet Singh
+- Andreas Benz
+
 
 
 Introduction:
