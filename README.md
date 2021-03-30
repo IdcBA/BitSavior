@@ -20,7 +20,7 @@ Features:
 
 Installation Guide:
 
-BitSavior is only tested at the windows platform
+BitSavior is only tested on the windows platform
 
 Eclipse:
 1. Be sure to have the latest JRE and JDK installed
@@ -50,14 +50,14 @@ Known Issues:
 
 
 Source 
-https://miro.medium.com/max/3512/0*zrLTiLtPpTx3nb9-.jpg
-Red lights: https://craftpix.net/freebies/free-objects-and-items-for-2d-tank-game/
+- https://miro.medium.com/max/3512/0*zrLTiLtPpTx3nb9-.jpg
+- Red lights: https://craftpix.net/freebies/free-objects-and-items-for-2d-tank-game/
 
 Sound credits:
-Sound from freesound:
-“save” by Free-Rush (https://freesound.org/people/Free-Rush/sounds/336936/) 
-“lose” by cabled_mess (https://freesound.org/people/cabled_mess/sounds/350985/)
-“blop” by CrazyFrog249(https://freesound.org/people/CrazyFrog249/sounds/161628/)
-"sirene" by julius_galla(https://freesound.org/people/julius_galla/sounds/198107/)
-"background_alt" by edtijo(https://freesound.org/people/edtijo/sounds/240376/)
-"win_sound" by Mrthenoronha(https://freesound.org/people/Mrthenoronha/sounds/369920/)
+- Sound from freesound:
+  - “save” by Free-Rush (https://freesound.org/people/Free-Rush/sounds/336936/) 
+  - “lose” by cabled_mess (https://freesound.org/people/cabled_mess/sounds/350985/)
+  - “blop” by CrazyFrog249(https://freesound.org/people/CrazyFrog249/sounds/161628/)
+  - "sirene" by julius_galla(https://freesound.org/people/julius_galla/sounds/198107/)
+  - "background_alt" by edtijo(https://freesound.org/people/edtijo/sounds/240376/)
+  - "win_sound" by Mrthenoronha(https://freesound.org/people/Mrthenoronha/sounds/369920/)
